@@ -31,7 +31,6 @@ CREATE TABLE product (
 ```
 - create an model map to this table.
 ```java
-@DbTable(name = "product") // custom table name.
 public class Product {
     @QueryColumn(name = "product_id") // custom column name
     private Integer productID;
