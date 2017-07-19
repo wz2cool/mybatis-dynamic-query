@@ -53,7 +53,7 @@ List<Product> getProductByDynamic(Map<String, Object> params);
     <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
 </select>
 ```
-- generate dynamic expression and param map.
+- generate expression and param map (NOTE: expression string also put into map).
 ```java
 @Test
 public void simpleDemo() throws Exception {
