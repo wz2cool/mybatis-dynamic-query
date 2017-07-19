@@ -7,7 +7,50 @@ MyBatis Dynamic Query
 
 The MyBatis Dynamic Query framework makes it easier to generate "where" and "order" expression dynamically in mapper xml.
 <b>mybatis-dynamic-query comes to solve four problem:</b>
-- do not write lots of code in xml.
+- no need write lots of code in xml.
 - filtering or sorting maintained by java code.
 - hot update "where" and "order" expression. 
 - save filter or sort descriptor and re-use them.
+
+## Database support
+- H2
+- MySql
+- Postresql
+- SqlServer
+- Oracle (TODO)
+
+## Example
+- create a table by sql.
+```sql
+CREATE TABLE product (
+  product_id    INT PRIMARY KEY,
+  category_id   INT NOT NULL,
+  product_name  VARCHAR (50) NOT NULL,
+  price         DECIMAL
+);
+```
+- create an model map to this table.
+```java
+@DbTable(name = "product") // custom table name.
+public class Product {
+    @QueryColumn(name = "product_id") // custom column name
+    private Integer productID;
+    private String productName;
+    private BigDecimal price;
+    private Integer categoryID;
+
+    // get, set method.
+}
+```
+- create a dynamic select in mapper interface / xml
+```java
+List<Product> getProductByDynamic(Map<String, Object> params);
+```
+```xml
+<select id="getProductByDynamic" parameterType="java.util.Map"
+        resultType="Product">
+    SELECT * FROM product
+    <if test="whereExpression != null and paramExpression != ''">WHERE ${whereExpression}</if>
+    <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
+</select>
+```
