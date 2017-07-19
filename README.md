@@ -29,7 +29,7 @@ CREATE TABLE product (
   price         DECIMAL
 );
 ```
-- create an model map to this table.
+- create a model map to this table.
 ```java
 public class Product {
     @QueryColumn(name = "product_id") // custom column name
