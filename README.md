@@ -58,13 +58,14 @@ List<Product> getProductByDynamic(Map<String, Object> params);
 ```java
 @Test
 public void simpleDemo() throws Exception {
+    // create a filter descriptor.
     FilterDescriptor idFilter =
         new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
-
+    // generater expression and params base on filter descriptor.
     Map<String, Object> queryParams =
         mybatisQueryProvider.getWhereQueryParamMap(
             Product.class, "whereExpression", idFilter);
-
+    // pass query params.
     Product productView =
         northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
     
