@@ -268,4 +268,18 @@ public class DbFilterTest {
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
         assertEquals(Long.valueOf(3), productViews.get(0).getProductID());
     }
+
+    @Test
+    public void simpleDemo() throws Exception {
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
+
+        Map<String, Object> queryParams =
+                mybatisQueryProvider.getWhereQueryParamMap(
+                        Product.class, "whereExpression", idFilter);
+
+        Product productView =
+                northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
+        assertEquals(Integer.valueOf(2), productView.getProductID());
+    }
 }

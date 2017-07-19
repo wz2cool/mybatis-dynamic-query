@@ -42,15 +42,32 @@ public class Product {
     // get, set method.
 }
 ```
-- create a dynamic select in mapper interface / xml
+- create a dynamic select in mapper interface / xml.
 ```java
 List<Product> getProductByDynamic(Map<String, Object> params);
 ```
 ```xml
 <select id="getProductByDynamic" parameterType="java.util.Map"
-        resultType="Product">
+         resultType="com.frwan.query.dynamic.mybatis.db.model.entity.table.Product">
     SELECT * FROM product
-    <if test="whereExpression != null and paramExpression != ''">WHERE ${whereExpression}</if>
+    <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
     <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
 </select>
+```
+- generate dynamic expression and param map.
+```java
+@Test
+public void simpleDemo() throws Exception {
+    FilterDescriptor idFilter =
+        new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
+
+    Map<String, Object> queryParams =
+        mybatisQueryProvider.getWhereQueryParamMap(
+            Product.class, "whereExpression", idFilter);
+
+    Product productView =
+        northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
+    
+    assertEquals(Integer.valueOf(2), productView.getProductID());
+}
 ```

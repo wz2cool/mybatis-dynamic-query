@@ -11,10 +11,17 @@
         SELECT * FROM product
     </select>
 
+    <select id="getProductByDynamic" parameterType="java.util.Map"
+            resultType="com.frwan.query.dynamic.mybatis.db.model.entity.table.Product">
+        SELECT * FROM product
+        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
+        <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
+    </select>
+
     <select id="getProductViewsByDynamic" parameterType="java.util.Map"
             resultType="com.frwan.query.dynamic.mybatis.db.model.entity.view.ProductView">
         SELECT * FROM product LEFT JOIN category ON product.category_id = category.category_id
-        <if test="whereExpression != null and paramExpression != ''">WHERE ${whereExpression}</if>
+        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
         <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
     </select>
 </mapper>

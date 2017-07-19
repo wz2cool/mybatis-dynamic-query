@@ -17,5 +17,7 @@ public interface NorthwindDao {
 
     List<Product> getProducts();
 
+    List<Product> getProductByDynamic(Map<String, Object> params);
+
     List<ProductView> getProductViewsByDynamic(Map<String, Object> params);
 }
