@@ -1,5 +1,8 @@
 language: java
 sudo: false
 
+after_success:
+  - mvn clean test saga:coverage coveralls:report
+
 jdk:
   - oraclejdk8

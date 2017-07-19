@@ -18,6 +18,14 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <repoToken>DxOkGlczBj4k3KWc5Z1nO2x3TKTqNcXoO</repoToken>
+                </configuration>
+            </plugin>
         </plugins>
         <testResources>
             <testResource>
@@ -89,4 +97,6 @@
             <version>9.1-901.jdbc4</version>
         </dependency>
     </dependencies>
+
+
 </project>
