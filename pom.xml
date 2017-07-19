@@ -8,6 +8,47 @@
     <artifactId>mybatis-dynamic-query</artifactId>
     <version>0.0.1</version>
 
+    <organization>
+        <name>wz2cool</name>
+        <url>https://github.com/wz2cool</url>
+    </organization>
+
+    <!-- issue -->
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/wz2cool/mybatis-dynamic-query/issues</url>
+    </issueManagement>
+
+    <!-- license -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <id>wz2cool</id>
+            <name>Frank Wang</name>
+            <email>wz2cool@live.cn</email>
+            <roles>
+                <role>creator</role>
+                <role>manager</role>
+                <role>developer</role>
+                <role>committer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- 代码库 -->
+    <scm>
+        <connection>scm:git:git@github.com:wz2cool/mybatis-dynamic-query.git</connection>
+        <developerConnection>scm:git:git@github.com:wz2cool/mybatis-dynamic-query.git</developerConnection>
+        <url>git@github.com:wz2cool/mybatis-dynamic-query.git</url>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
