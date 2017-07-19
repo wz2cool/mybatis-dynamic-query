@@ -6,3 +6,8 @@ MyBatis Dynamic Query
 [![Coverage Status](https://coveralls.io/repos/github/wz2cool/mybatis-dynamic-query/badge.svg?branch=master)](https://coveralls.io/github/wz2cool/mybatis-dynamic-query?branch=master)
 
 The MyBatis Dynamic Query framework makes it easier to generate "where" and "order" expression dynamically in mapper xml.
+<b>mybatis-dynamic-query comes to solve four problem:</b>
+- do not write lots of code in xml.
+- filtering or sorting maintained by java code.
+- hot update "where" and "order" expression. 
+- save filter or sort descriptor and re-use them.
