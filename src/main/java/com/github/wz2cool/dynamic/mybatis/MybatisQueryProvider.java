@@ -6,7 +6,7 @@ import com.github.wz2cool.dynamic.FilterGroupDescriptor;
 import com.github.wz2cool.dynamic.SortDescriptor;
 import com.github.wz2cool.exception.InternalRuntimeException;
 import com.github.wz2cool.exception.PropertyNotFoundException;
-import org.apache.commons.lang3.StringUtils;
+import com.github.wz2cool.helper.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

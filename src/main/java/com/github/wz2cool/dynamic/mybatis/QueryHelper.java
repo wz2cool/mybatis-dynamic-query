@@ -2,7 +2,7 @@ package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.helper.CommonsHelper;
-import org.apache.commons.lang3.StringUtils;
+import com.github.wz2cool.helper.StringUtils;
 
 import java.security.InvalidParameterException;
 import java.util.*;
