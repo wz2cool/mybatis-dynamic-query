@@ -47,7 +47,7 @@ List<Product> getProductByDynamic(Map<String, Object> params);
 ```
 ```xml
 <select id="getProductByDynamic" parameterType="java.util.Map"
-         resultType="com.frwan.query.dynamic.mybatis.db.model.entity.table.Product">
+         resultType="Product">
     SELECT * FROM product
     <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
     <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>

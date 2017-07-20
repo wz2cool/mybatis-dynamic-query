@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao">
+    <select id="getCategories" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category">
+        SELECT * FROM category
+    </select>
+
+    <select id="getProducts" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product">
+        SELECT * FROM product
+    </select>
+
+    <select id="getProductByDynamic" parameterType="java.util.Map"
+            resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product">
+        SELECT * FROM product
+        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
+        <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
+    </select>
+
+    <select id="getProductViewsByDynamic" parameterType="java.util.Map"
+            resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
+        SELECT * FROM product LEFT JOIN category ON product.category_id = category.category_id
+        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
+        <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
+    </select>
+</mapper>
