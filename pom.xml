@@ -47,6 +47,7 @@
         <connection>scm:git:git@github.com:wz2cool/mybatis-dynamic-query.git</connection>
         <developerConnection>scm:git:git@github.com:wz2cool/mybatis-dynamic-query.git</developerConnection>
         <url>git@github.com:wz2cool/mybatis-dynamic-query.git</url>
+        <tag>master</tag>
     </scm>
 
     <build>
@@ -90,10 +91,9 @@
     </build>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
     </parent>
 
     <dependencies>
