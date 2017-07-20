@@ -4,6 +4,7 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 // copy some method from org.apache.commons.lang3;
+@SuppressWarnings({"squid:CommentedOutCodeLine", "squid:S2259", "squid:S1226", "squid:S1118"})
 public class StringUtils {
     public static final String EMPTY = "";
     public static final int INDEX_NOT_FOUND = -1;
