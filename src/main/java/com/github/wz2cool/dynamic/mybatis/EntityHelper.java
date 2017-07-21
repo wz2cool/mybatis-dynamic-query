@@ -4,7 +4,7 @@ import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
 import com.github.wz2cool.dynamic.mybatis.annotation.DbTable;
 import com.github.wz2cool.dynamic.mybatis.annotation.QueryColumn;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
-import com.github.wz2cool.helper.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

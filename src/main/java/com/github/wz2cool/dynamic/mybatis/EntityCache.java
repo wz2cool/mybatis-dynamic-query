@@ -2,7 +2,7 @@ package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
-import com.github.wz2cool.helper.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
