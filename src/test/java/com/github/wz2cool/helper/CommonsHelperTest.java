@@ -1,7 +1,6 @@
 package com.github.wz2cool.helper;
 
 import com.github.wz2cool.model.Student;
-import com.sun.org.apache.xpath.internal.operations.String;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
