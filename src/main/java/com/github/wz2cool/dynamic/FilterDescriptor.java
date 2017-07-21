@@ -12,6 +12,7 @@ public class FilterDescriptor extends FilterDescriptorBase {
      * Instantiates a new Filter descriptor.
      */
     public FilterDescriptor() {
+        // create a empty instance.
     }
 
     /**

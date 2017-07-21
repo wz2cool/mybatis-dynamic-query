@@ -12,6 +12,7 @@ public class SortDescriptor {
      * Instantiates a new Sort descriptor.
      */
     public SortDescriptor() {
+        // create a empty instance.
     }
 
     /**
