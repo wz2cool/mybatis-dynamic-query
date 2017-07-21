@@ -146,6 +146,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*StringUtils.*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
         <testResources>

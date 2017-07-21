@@ -8,6 +8,7 @@ import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
@@ -143,5 +144,32 @@ public class MybatisQueryProviderTest {
 
         Object result = mybatisQueryProvider.getFieldValue(student, nameField);
         assertEquals("frank", result);
+    }
+
+    @Test
+    public void testGetSortQueryParamMap() throws Exception {
+        SortDescriptor ageSort = new SortDescriptor();
+        ageSort.setPropertyPath("age");
+        ageSort.setSortDirection(SortDirection.DESC);
+        Map<String, Object> result = mybatisQueryProvider.getSortQueryParamMap(Student.class, "sortExpression", ageSort);
+        assertEquals("age DESC", result.get("sortExpression"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetSortQueryParamMapThrowNull() throws Exception {
+        SortDescriptor ageSort = new SortDescriptor();
+        ageSort.setPropertyPath("age");
+        ageSort.setSortDirection(SortDirection.DESC);
+        mybatisQueryProvider.getSortQueryParamMap(Student.class, "", ageSort);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetWhereQueryParamMapThrowNull() throws Exception {
+        FilterDescriptor nameFilter = new FilterDescriptor();
+        nameFilter.setPropertyPath("name");
+        nameFilter.setOperator(FilterOperator.EQUAL);
+        nameFilter.setValue("frank");
+
+        mybatisQueryProvider.getWhereQueryParamMap(Student.class, "", nameFilter);
     }
 }
