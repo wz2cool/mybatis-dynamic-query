@@ -19,6 +19,15 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 - Postresql (BETA)
 - Oracle (TODO)
 
+## Maven Download
+```xml
+<dependency>
+    <groupId>com.github.wz2cool</groupId>
+    <artifactId>mybatis-dynamic-query</artifactId>
+    <version>1.0.0.RELEASE</version>
+</dependency>
+```
+
 ## Example
 - create a table by sql.
 ```sql
