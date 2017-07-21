@@ -376,6 +376,42 @@ public class DbExpressionHelperTest {
     }
 
     @Test
+    public void testGetBetweenExpression() {
+        DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
+        QueryColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+
+        String result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
+        assertEquals("string_property BETWEEN #{p1} AND #{p2}", result);
+    }
+
+    @Test
+    public void testGetBetweenExpressionForPostresql() {
+        DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
+
+        // string field.
+        QueryColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+
+
+        String result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
+        assertEquals("string_property BETWEEN #{p1} AND #{p2}", result);
+
+        queryColumnInfo =
+                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+
+        result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
+        assertEquals("integer_property BETWEEN #{p1}::NUMERIC AND #{p2}::NUMERIC", result);
+
+        queryColumnInfo =
+                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+
+        result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
+        assertEquals("date_property::TEXT BETWEEN #{p1} AND #{p2}", result);
+    }
+
+
+    @Test
     public void testGetBitAndGreaterZero() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
         QueryColumnInfo queryColumnInfo =

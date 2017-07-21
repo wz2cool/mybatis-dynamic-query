@@ -15,8 +15,8 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 ## Database support
 - H2
 - MySql
-- Postresql
 - SqlServer
+- Postresql (BETA)
 - Oracle (TODO)
 
 ## Example
