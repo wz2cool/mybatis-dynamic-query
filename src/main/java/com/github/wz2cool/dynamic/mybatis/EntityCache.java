@@ -1,6 +1,5 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.constants.ParamConstants;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.helper.StringUtils;
@@ -16,6 +15,7 @@ class EntityCache {
     private final Map<Class, String[]> propertyNameCacheMap = new HashMap<>();
     private final Map<Class, Map<String, QueryColumnInfo>> queryColumnInfoCacheMap = new HashMap<>();
     private final Map<Class, Map<String, DbColumnInfo>> dbColumnInfoCacheMap = new HashMap<>();
+    private static final String ENTITY_CLASS = "entityClass";
 
     // region implement singleton.
     private EntityCache() {
@@ -29,7 +29,7 @@ class EntityCache {
 
     synchronized String[] getPropertyNames(final Class entityClass) {
         if (entityClass == null) {
-            throw new NullPointerException(ParamConstants.ENTITY_CLASS);
+            throw new NullPointerException(ENTITY_CLASS);
         }
 
         if (propertyNameCacheMap.containsKey(entityClass)) {
@@ -63,7 +63,7 @@ class EntityCache {
 
     synchronized QueryColumnInfo getQueryColumnInfo(Class entityClass, String propertyName) {
         if (entityClass == null) {
-            throw new NullPointerException(ParamConstants.ENTITY_CLASS);
+            throw new NullPointerException(ENTITY_CLASS);
         }
 
         if (propertyName == null) {
@@ -118,7 +118,7 @@ class EntityCache {
 
     private synchronized Map<String, DbColumnInfo> getPropertyDbColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
-            throw new NullPointerException(ParamConstants.ENTITY_CLASS);
+            throw new NullPointerException(ENTITY_CLASS);
         }
 
         Map<String, DbColumnInfo> propertyDbColumnMap;

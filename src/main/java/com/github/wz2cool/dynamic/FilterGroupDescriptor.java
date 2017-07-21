@@ -28,26 +28,8 @@ public class FilterGroupDescriptor extends FilterDescriptorBase {
      * @param newFilters the new filters
      * @return the boolean
      */
-    public boolean addFilters(FilterDescriptorBase... newFilters) {
-        if (newFilters == null) {
-            return false;
-        }
-
-        return addFilters(Arrays.asList(newFilters));
-    }
-
-    /**
-     * Add filters boolean.
-     *
-     * @param newFilters the new filters
-     * @return the boolean
-     */
-    public boolean addFilters(Collection<FilterDescriptorBase> newFilters) {
-        if (newFilters == null) {
-            return false;
-        }
-
-        return filters.addAll(newFilters);
+    public boolean addFilters(final FilterDescriptorBase... newFilters) {
+        return filters.addAll(Arrays.asList(newFilters));
     }
 
     /**
