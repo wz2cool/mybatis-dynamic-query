@@ -1,10 +1,17 @@
 package com.github.wz2cool.dynamic;
 
+
 /**
- * Created by Frank on 3/21/2017.
+ * The enum Sort direction.
  */
 public enum SortDirection {
+    /**
+     * Asc sort direction.
+     */
     ASC,
+    /**
+     * Desc sort direction.
+     */
     DESC
 }
 

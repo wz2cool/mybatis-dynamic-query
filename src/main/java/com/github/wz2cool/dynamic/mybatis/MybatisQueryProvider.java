@@ -14,17 +14,29 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 /**
- * Created by Frank on 7/12/2017.
+ * The type Mybatis query provider.
  */
 public class MybatisQueryProvider {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final QueryHelper queryHelper;
 
+    /**
+     * Instantiates a new Mybatis query provider.
+     *
+     * @param databaseType the database type
+     */
     public MybatisQueryProvider(DatabaseType databaseType) {
         queryHelper = new QueryHelper(databaseType);
     }
 
+    /**
+     * Gets insert expression.
+     *
+     * @param tableEntity the table entity
+     * @return the insert expression
+     */
     public ParamExpression getInsertExpression(final Object tableEntity) {
         if (tableEntity == null) {
             throw new NullPointerException("tableEntity");
@@ -54,6 +66,14 @@ public class MybatisQueryProvider {
         return insertExpression;
     }
 
+    /**
+     * Gets update expression.
+     *
+     * @param tableEntity the table entity
+     * @param filters     the filters
+     * @return the update expression
+     * @throws PropertyNotFoundException the property not found exception
+     */
     public ParamExpression getUpdateExpression(final Object tableEntity, final FilterDescriptorBase... filters)
             throws PropertyNotFoundException {
         if (tableEntity == null) {
@@ -100,7 +120,15 @@ public class MybatisQueryProvider {
     }
 
 
-    // region dynamic query
+    /**
+     * Gets where query param map.
+     *
+     * @param entityClass                the entity class
+     * @param whereExpressionPlaceholder the where expression placeholder
+     * @param filters                    the filters
+     * @return the where query param map
+     * @throws PropertyNotFoundException the property not found exception
+     */
     public Map<String, Object> getWhereQueryParamMap(
             final Class entityClass,
             final String whereExpressionPlaceholder,
@@ -118,12 +146,29 @@ public class MybatisQueryProvider {
         return queryParams;
     }
 
+    /**
+     * Gets where expression.
+     *
+     * @param entityClass the entity class
+     * @param filters     the filters
+     * @return the where expression
+     * @throws PropertyNotFoundException the property not found exception
+     */
     public ParamExpression getWhereExpression(final Class entityClass, final FilterDescriptorBase... filters)
             throws PropertyNotFoundException {
         validFilters(entityClass, filters);
         return queryHelper.toWhereExpression(entityClass, filters);
     }
 
+    /**
+     * Gets sort query param map.
+     *
+     * @param entityClass               the entity class
+     * @param sortExpressionPlaceholder the sort expression placeholder
+     * @param sorts                     the sorts
+     * @return the sort query param map
+     * @throws PropertyNotFoundException the property not found exception
+     */
     public Map<String, Object> getSortQueryParamMap(
             final Class entityClass,
             final String sortExpressionPlaceholder,
@@ -138,18 +183,37 @@ public class MybatisQueryProvider {
         return queryParams;
     }
 
+    /**
+     * Gets sort expression.
+     *
+     * @param entityClass the entity class
+     * @param sorts       the sorts
+     * @return the sort expression
+     * @throws PropertyNotFoundException the property not found exception
+     */
     public String getSortExpression(final Class entityClass, final SortDescriptor... sorts)
             throws PropertyNotFoundException {
         validSorts(entityClass, sorts);
         return queryHelper.toSortExpression(entityClass, sorts);
     }
 
-    // endregion
-
+    /**
+     * To placeholder string.
+     *
+     * @param propertyName the property name
+     * @return the string
+     */
     String toPlaceholder(String propertyName) {
         return String.format("#{%s}", propertyName);
     }
 
+    /**
+     * Valid filters.
+     *
+     * @param entityClass the entity class
+     * @param filters     the filters
+     * @throws PropertyNotFoundException the property not found exception
+     */
     void validFilters(final Class entityClass, final FilterDescriptorBase... filters)
             throws PropertyNotFoundException {
         if (filters == null || filters.length == 0) {
@@ -171,6 +235,13 @@ public class MybatisQueryProvider {
         }
     }
 
+    /**
+     * Valid sorts.
+     *
+     * @param entityClass the entity class
+     * @param sorts       the sorts
+     * @throws PropertyNotFoundException the property not found exception
+     */
     void validSorts(final Class entityClass, final SortDescriptor... sorts)
             throws PropertyNotFoundException {
         if (sorts == null || sorts.length == 0) {
@@ -186,6 +257,13 @@ public class MybatisQueryProvider {
         }
     }
 
+    /**
+     * Gets field value.
+     *
+     * @param obj   the obj
+     * @param field the field
+     * @return the field value
+     */
     Object getFieldValue(final Object obj, final Field field) {
         try {
             return field.get(obj);
