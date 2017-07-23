@@ -82,3 +82,5 @@ public void simpleDemo() throws Exception {
     assertEquals(Integer.valueOf(2), productView.getProductID());
 }
 ```
+## Docs
+[中文文档](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
