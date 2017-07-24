@@ -1,8 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
-import com.github.wz2cool.dynamic.mybatis.annotation.DbTable;
-import com.github.wz2cool.dynamic.mybatis.annotation.QueryColumn;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
+import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,15 +25,15 @@ class EntityHelper {
         if (annotations != null && annotations.length > 0) {
             Annotation dbTableAnnotation = null;
             for (Annotation annotation : annotations) {
-                if (annotation != null && annotation instanceof DbTable) {
+                if (annotation != null && annotation instanceof Table) {
                     dbTableAnnotation = annotation;
                     break;
                 }
             }
 
             if (dbTableAnnotation != null) {
-                DbTable dbTable = (DbTable) dbTableAnnotation;
-                String dbTableName = dbTable.name();
+                Table table = (Table) dbTableAnnotation;
+                String dbTableName = table.name();
                 if (StringUtils.isNotBlank(dbTableName)) {
                     return dbTableName;
                 }
@@ -45,33 +44,11 @@ class EntityHelper {
         return camelCaseToDashCase(useTableName);
     }
 
-    static String getQueryColumnByProperty(final String propertyName, final Field[] properties) {
+    static String getColumnNameByProperty(final String propertyName, final Field[] properties) {
         Field matchProperty = getPropertyField(propertyName, properties);
-        Annotation[] annotations = matchProperty.getAnnotations();
-        if (annotations != null && annotations.length > 0) {
-            Annotation queryColumnAnnotation = null;
-            for (Annotation annotation : annotations) {
-                if (annotation != null && annotation instanceof QueryColumn) {
-                    queryColumnAnnotation = annotation;
-                    break;
-                }
-            }
-
-            if (queryColumnAnnotation != null) {
-                QueryColumn queryColumn = (QueryColumn) queryColumnAnnotation;
-                return queryColumn.name();
-            }
-        }
-
-        String usePropertyName = matchProperty.getName();
-        return camelCaseToDashCase(usePropertyName);
-    }
-
-    static String getDBColumnNameByProperty(final String propertyName, final Field[] properties) {
-        Field matchProperty = getPropertyField(propertyName, properties);
-        DbColumn dbColumn = getDbColumnByProperty(propertyName, properties);
-        if (dbColumn != null && StringUtils.isNotBlank(dbColumn.name())) {
-            return dbColumn.name();
+        Column column = getColumnByProperty(propertyName, properties);
+        if (column != null && StringUtils.isNotBlank(column.name())) {
+            return column.name();
         }
 
 
@@ -80,26 +57,26 @@ class EntityHelper {
     }
 
     static boolean isPropertyUpdateIfNull(final String propertyName, final Field[] properties) {
-        DbColumn dbColumn = getDbColumnByProperty(propertyName, properties);
-        if (dbColumn == null) {
+        Column column = getColumnByProperty(propertyName, properties);
+        if (column == null) {
             return false;
         }
-        return dbColumn.updateIfNull();
+        return column.updateIfNull();
     }
 
-    static DbColumn getDbColumnByProperty(final String propertyName, final Field[] properties) {
+    static Column getColumnByProperty(final String propertyName, final Field[] properties) {
         Field matchProperty = getPropertyField(propertyName, properties);
         Annotation[] annotations = matchProperty.getAnnotations();
         if (annotations != null && annotations.length > 0) {
             Annotation dbColumnAnnotation = null;
             for (Annotation annotation : annotations) {
-                if (annotation != null && annotation instanceof DbColumn) {
+                if (annotation != null && annotation instanceof Column) {
                     dbColumnAnnotation = annotation;
                     break;
                 }
             }
 
-            return (DbColumn) dbColumnAnnotation;
+            return (Column) dbColumnAnnotation;
         }
 
         return null;

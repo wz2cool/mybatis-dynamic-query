@@ -13,52 +13,53 @@ public class EntityCacheTest {
 
     @Test
     public void TestGetQueryColumn() {
-        QueryColumnInfo result = EntityCache.getInstance().getQueryColumnInfo(Student.class, "name");
+        ColumnInfo result = EntityCache.getInstance().getColumnInfo(Student.class, "name");
         assertEquals("name", result.getQueryColumn());
 
-        result = EntityCache.getInstance().getQueryColumnInfo(Student.class, "note");
+        result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
         assertEquals("queryColumn.note", result.getQueryColumn());
+        assertEquals("queryColumn", result.getTableOrAlias());
     }
 
     @Test(expected = NullPointerException.class)
     public void TestGetQueryColumnEntityClassNull() {
-        EntityCache.getInstance().getQueryColumnInfo(null, "name");
+        EntityCache.getInstance().getColumnInfo(null, "name");
     }
 
     @Test(expected = NullPointerException.class)
     public void TestGetQueryColumnPropertyNull() {
-        EntityCache.getInstance().getQueryColumnInfo(Student.class, null);
+        EntityCache.getInstance().getColumnInfo(Student.class, null);
     }
 
     @Test(expected = PropertyNotFoundInternalException.class)
     public void TestGetQueryColumnPropertyNotFound() {
-        EntityCache.getInstance().getQueryColumnInfo(Student.class, "notFoundProperty");
+        EntityCache.getInstance().getColumnInfo(Student.class, "notFoundProperty");
     }
 
     @Test
     public void TestGetDbColumnInfo() {
-        DbColumnInfo result = EntityCache.getInstance().getDbColumnInfo(Student.class, "name");
-        assertEquals("name", result.getDbColumnName());
+        ColumnInfo result = EntityCache.getInstance().getColumnInfo(Student.class, "name");
+        assertEquals("name", result.getColumnName());
         assertEquals(false, result.isUpdateIfNull());
 
-        result = EntityCache.getInstance().getDbColumnInfo(Student.class, "note");
-        assertEquals("dbColumn.note", result.getDbColumnName());
+        result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
+        assertEquals("note", result.getColumnName());
         assertEquals(true, result.isUpdateIfNull());
     }
 
     @Test(expected = NullPointerException.class)
     public void TestGetDbColumnInfoEntityClassNull() {
-        EntityCache.getInstance().getDbColumnInfo(null, "name");
+        EntityCache.getInstance().getColumnInfo(null, "name");
     }
 
     @Test(expected = NullPointerException.class)
     public void TestGetDbColumnInfoPropertyNull() {
-        EntityCache.getInstance().getDbColumnInfo(Student.class, null);
+        EntityCache.getInstance().getColumnInfo(Student.class, null);
     }
 
     @Test(expected = PropertyNotFoundInternalException.class)
     public void TestGetDbColumnPropertyNotFound() {
-        EntityCache.getInstance().getDbColumnInfo(Student.class, "notFoundProperty");
+        EntityCache.getInstance().getColumnInfo(Student.class, "notFoundProperty");
     }
 
     @Test

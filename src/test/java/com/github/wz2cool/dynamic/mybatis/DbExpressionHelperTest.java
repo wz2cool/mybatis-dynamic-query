@@ -14,8 +14,8 @@ public class DbExpressionHelperTest {
     public void testGetEqualExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         Object filterValue = null;
         String placeholder = "placeholder";
 
@@ -32,8 +32,8 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         Object filterValue = null;
         String placeholder = "placeholder";
 
@@ -46,7 +46,7 @@ public class DbExpressionHelperTest {
 
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         filterValue = "123";
         result = dbExpressionHelper.getEqualExpression(queryColumnInfo, filterValue, placeholder);
@@ -54,7 +54,7 @@ public class DbExpressionHelperTest {
 
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         filterValue = "2017-7-19";
         result = dbExpressionHelper.getEqualExpression(queryColumnInfo, filterValue, placeholder);
@@ -65,8 +65,8 @@ public class DbExpressionHelperTest {
     public void testGetNotEqualExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         Object filterValue = null;
         String placeholder = "placeholder";
 
@@ -83,8 +83,8 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         Object filterValue = null;
         String placeholder = "placeholder";
 
@@ -97,7 +97,7 @@ public class DbExpressionHelperTest {
 
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         filterValue = "123";
         result = dbExpressionHelper.getNotEqualExpression(queryColumnInfo, filterValue, placeholder);
@@ -105,7 +105,7 @@ public class DbExpressionHelperTest {
 
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         filterValue = "2017-7-19";
         result = dbExpressionHelper.getNotEqualExpression(queryColumnInfo, filterValue, placeholder);
@@ -117,8 +117,8 @@ public class DbExpressionHelperTest {
     public void testLessThanExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         String placeholder = "placeholder";
 
         String result = h2DbExpressionHelper.getLessThanExpression(queryColumnInfo, placeholder);
@@ -130,22 +130,22 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getLessThanExpression(queryColumnInfo, placeholder);
         assertEquals("string_property < #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getLessThanExpression(queryColumnInfo, placeholder);
         assertEquals("integer_property < #{placeholder}::NUMERIC", result);
 
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getLessThanExpression(queryColumnInfo, placeholder);
         assertEquals("date_property::TEXT < #{placeholder}", result);
@@ -155,8 +155,8 @@ public class DbExpressionHelperTest {
     public void testGetLessThanOrEqualExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         String placeholder = "placeholder";
 
         String result = h2DbExpressionHelper.getLessThanOrEqualExpression(queryColumnInfo, placeholder);
@@ -168,21 +168,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getLessThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("string_property <= #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getLessThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("integer_property <= #{placeholder}::NUMERIC", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getLessThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("date_property::TEXT <= #{placeholder}", result);
@@ -192,8 +192,8 @@ public class DbExpressionHelperTest {
     public void testGetGreaterThanOrEqualExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         String placeholder = "placeholder";
 
         String result = h2DbExpressionHelper.getGreaterThanOrEqualExpression(queryColumnInfo, placeholder);
@@ -205,21 +205,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getGreaterThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("string_property >= #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getGreaterThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("integer_property >= #{placeholder}::NUMERIC", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getGreaterThanOrEqualExpression(queryColumnInfo, placeholder);
         assertEquals("date_property::TEXT >= #{placeholder}", result);
@@ -230,8 +230,8 @@ public class DbExpressionHelperTest {
     public void testGetGreaterThanExpression() {
         DbExpressionHelper h2DbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
 
-        QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-        queryColumnInfo.setQueryColumn("name");
+        ColumnInfo queryColumnInfo = new ColumnInfo();
+        queryColumnInfo.setColumnName("name");
         String placeholder = "placeholder";
 
         String result = h2DbExpressionHelper.getGreaterThanExpression(queryColumnInfo, placeholder);
@@ -243,21 +243,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getGreaterThanExpression(queryColumnInfo, placeholder);
         assertEquals("string_property > #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getGreaterThanExpression(queryColumnInfo, placeholder);
         assertEquals("integer_property > #{placeholder}::NUMERIC", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getGreaterThanExpression(queryColumnInfo, placeholder);
         assertEquals("date_property::TEXT > #{placeholder}", result);
@@ -266,8 +266,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetLikeExpression() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getLikeExpression(queryColumnInfo, placeholder);
@@ -279,21 +279,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
         String placeholder = "placeholder";
 
         String result = dbExpressionHelper.getLikeExpression(queryColumnInfo, placeholder);
         assertEquals("string_property LIKE #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getLikeExpression(queryColumnInfo, placeholder);
         assertEquals("integer_property::TEXT LIKE #{placeholder}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getLikeExpression(queryColumnInfo, placeholder);
         assertEquals("date_property::TEXT LIKE #{placeholder}", result);
@@ -302,8 +302,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetInExpressionTest() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getInExpression(queryColumnInfo);
         assertEquals("", result);
@@ -317,21 +317,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property IN (#{p1},#{p2})", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("integer_property IN (#{p1}::NUMERIC,#{p2}::NUMERIC)", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("date_property::TEXT IN (#{p1},#{p2})", result);
@@ -340,8 +340,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetNotInExpressionTest() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getNotInExpression(queryColumnInfo);
         assertEquals("", result);
@@ -355,21 +355,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getNotInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property NOT IN (#{p1},#{p2})", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getNotInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("integer_property NOT IN (#{p1}::NUMERIC,#{p2}::NUMERIC)", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getNotInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("date_property::TEXT NOT IN (#{p1},#{p2})", result);
@@ -378,8 +378,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBetweenExpression() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property BETWEEN #{p1} AND #{p2}", result);
@@ -390,21 +390,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property BETWEEN #{p1} AND #{p2}", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
         assertEquals("integer_property BETWEEN #{p1}::NUMERIC AND #{p2}::NUMERIC", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getBetweenExpression(queryColumnInfo, "p1", "p2");
         assertEquals("date_property::TEXT BETWEEN #{p1} AND #{p2}", result);
@@ -414,8 +414,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndGreaterZero() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndGreaterZero(queryColumnInfo, "p1");
         assertEquals("string_property & #{p1} > 0", result);
@@ -424,8 +424,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndGreaterZeroForH2() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndGreaterZero(queryColumnInfo, "p1");
         assertEquals("BITAND(string_property, #{p1}) > 0", result);
@@ -436,21 +436,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getBitAndGreaterZero(queryColumnInfo, "p1");
         assertEquals("string_property::BIGINT & #{p1}::BIGINT > 0", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getBitAndGreaterZero(queryColumnInfo, "p1");
         assertEquals("integer_property & #{p1}::BIGINT > 0", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getBitAndGreaterZero(queryColumnInfo, "p1");
         assertEquals("date_property::BIGINT & #{p1}::BIGINT > 0", result);
@@ -459,8 +459,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndEqualZero() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndEqualZero(queryColumnInfo, "p1");
         assertEquals("string_property & #{p1} = 0", result);
@@ -469,8 +469,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndEqualZeroForH2() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndEqualZero(queryColumnInfo, "p1");
         assertEquals("BITAND(string_property, #{p1}) = 0", result);
@@ -481,21 +481,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getBitAndEqualZero(queryColumnInfo, "p1");
         assertEquals("string_property::BIGINT & #{p1}::BIGINT = 0", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getBitAndEqualZero(queryColumnInfo, "p1");
         assertEquals("integer_property & #{p1}::BIGINT = 0", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getBitAndEqualZero(queryColumnInfo, "p1");
         assertEquals("date_property::BIGINT & #{p1}::BIGINT = 0", result);
@@ -505,8 +505,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndEqualInput() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.MYSQL);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndEqualInput(queryColumnInfo, "p1");
         assertEquals("string_property & #{p1} = #{p1}", result);
@@ -515,8 +515,8 @@ public class DbExpressionHelperTest {
     @Test
     public void testGetBitAndEqualInputForH2() {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.H2);
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getBitAndEqualInput(queryColumnInfo, "p1");
         assertEquals("BITAND(string_property, #{p1}) = #{p1}", result);
@@ -527,21 +527,21 @@ public class DbExpressionHelperTest {
         DbExpressionHelper dbExpressionHelper = new DbExpressionHelper(DatabaseType.POSTRESQL);
 
         // string field.
-        QueryColumnInfo queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "stringProperty");
+        ColumnInfo queryColumnInfo =
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
 
         String result = dbExpressionHelper.getBitAndEqualInput(queryColumnInfo, "p1");
         assertEquals("string_property::BIGINT & #{p1}::BIGINT = #{p1}::BIGINT", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "integerProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "integerProperty");
 
         result = dbExpressionHelper.getBitAndEqualInput(queryColumnInfo, "p1");
         assertEquals("integer_property & #{p1}::BIGINT = #{p1}::BIGINT", result);
 
         queryColumnInfo =
-                EntityCache.getInstance().getQueryColumnInfo(HelloWorld.class, "dateProperty");
+                EntityCache.getInstance().getColumnInfo(HelloWorld.class, "dateProperty");
 
         result = dbExpressionHelper.getBitAndEqualInput(queryColumnInfo, "p1");
         assertEquals("date_property::BIGINT & #{p1}::BIGINT = #{p1}::BIGINT", result);

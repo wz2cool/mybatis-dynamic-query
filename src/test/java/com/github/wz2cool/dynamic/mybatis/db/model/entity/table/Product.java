@@ -1,16 +1,16 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
-import com.github.wz2cool.dynamic.mybatis.annotation.DbTable;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
+import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 
 import java.math.BigDecimal;
 
 /**
  * Created by Frank on 2017/7/15.
  */
-@DbTable(name = "product")
+@Table(name = "product")
 public class Product {
-    @DbColumn(name = "product_id")
+    @Column(name = "product_id")
     private Integer productID;
     private String productName;
     private BigDecimal price;

@@ -1,14 +1,14 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
-import com.github.wz2cool.dynamic.mybatis.annotation.DbTable;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
+import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 
 /**
  * Created by Frank on 2017/7/15.
  */
-@DbTable(name = "category")
+@Table(name = "category")
 public class Category {
-    @DbColumn(name = "category_id")
+    @Column(name = "category_id")
     private Integer categoryID;
     private String categoryName;
     private String description;
