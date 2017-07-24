@@ -42,7 +42,7 @@ public class EntityCacheTest {
         assertEquals(false, result.isUpdateIfNull());
 
         result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
-        assertEquals("dbColumn.note", result.getColumnName());
+        assertEquals("note", result.getColumnName());
         assertEquals(true, result.isUpdateIfNull());
     }
 

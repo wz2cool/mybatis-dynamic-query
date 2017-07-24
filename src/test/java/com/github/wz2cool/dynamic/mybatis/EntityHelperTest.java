@@ -129,7 +129,7 @@ public class EntityHelperTest {
                 .toArray(Field[]::new);
 
         String result = EntityHelper.getColumnNameByProperty("note", properties);
-        assertEquals("dbColumn.note", result);
+        assertEquals("note", result);
 
         result = EntityHelper.getColumnNameByProperty("name", properties);
         assertEquals("name", result);

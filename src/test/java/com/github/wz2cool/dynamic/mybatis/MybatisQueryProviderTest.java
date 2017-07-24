@@ -24,7 +24,7 @@ public class MybatisQueryProviderTest {
         newStudent.setNote("this is a test");
 
         ParamExpression result = mybatisQueryProvider.getInsertExpression(newStudent);
-        assertEquals("INSERT INTO student (dbColumn.note, name, age) VALUES (#{note}, #{name}, #{age})", result.getExpression());
+        assertEquals("INSERT INTO student (note, name, age) VALUES (#{note}, #{name}, #{age})", result.getExpression());
         assertEquals("frank", result.getParamMap().get("name"));
         assertEquals(30, result.getParamMap().get("age"));
         assertEquals("this is a test", result.getParamMap().get("note"));
@@ -42,12 +42,12 @@ public class MybatisQueryProviderTest {
         newStudent.setAge(30);
         newStudent.setNote("this is a test");
         ParamExpression result = mybatisQueryProvider.getUpdateExpression(newStudent);
-        assertEquals("UPDATE student SET `dbColumn.note`=#{note}, `name`=#{name}, `age`=#{age}", result.getExpression());
+        assertEquals("UPDATE student SET `note`=#{note}, `name`=#{name}, `age`=#{age}", result.getExpression());
 
         FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
         result = mybatisQueryProvider.getUpdateExpression(newStudent, filterDescriptor);
 
-        String pattern = "^UPDATE student SET `dbColumn\\.note`=#\\{note\\}, `name`=#\\{name\\}, `age`=#\\{age\\} WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
+        String pattern = "^UPDATE student SET `note`=#\\{note\\}, `name`=#\\{name\\}, `age`=#\\{age\\} WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
         assertEquals(true, Pattern.matches(pattern, result.getExpression()));
         assertEquals("frank", result.getParamMap().get("name"));
         assertEquals(30, result.getParamMap().get("age"));
