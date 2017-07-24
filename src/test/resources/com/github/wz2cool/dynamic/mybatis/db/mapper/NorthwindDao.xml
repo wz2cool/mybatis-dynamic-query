@@ -24,4 +24,12 @@
         <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
         <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
     </select>
+
+    <insert id="insert" parameterType="java.util.Map">
+        ${insertExpression}
+    </insert>
+
+    <update id="update" parameterType="java.util.Map">
+        ${updateExpression}
+    </update>
 </mapper>
