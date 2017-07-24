@@ -6,7 +6,7 @@
 
     <groupId>com.github.wz2cool</groupId>
     <artifactId>mybatis-dynamic-query</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.1.RELEASE</version>
     <packaging>jar</packaging>
 
     <organization>
