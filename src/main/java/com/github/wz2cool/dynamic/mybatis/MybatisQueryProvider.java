@@ -43,16 +43,16 @@ public class MybatisQueryProvider {
         }
 
         Class tableClass = tableEntity.getClass();
-        DbColumnInfo[] dbColumnInfos = entityCache.getDbColumnInfos(tableClass);
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(tableClass);
         Map<String, Object> propValueMap = new LinkedHashMap<>();
         Collection<String> columns = new ArrayList<>();
         Collection<String> placeholders = new ArrayList<>();
 
-        for (DbColumnInfo dbColumnInfo : dbColumnInfos) {
-            Field propertyField = dbColumnInfo.getField();
+        for (ColumnInfo columnInfo : columnInfos) {
+            Field propertyField = columnInfo.getField();
             Object value = getFieldValue(tableEntity, propertyField);
             propValueMap.put(propertyField.getName(), value);
-            columns.add(dbColumnInfo.getDbColumnName());
+            columns.add(columnInfo.getColumnName());
             placeholders.add(toPlaceholder(propertyField.getName()));
         }
 
@@ -83,17 +83,17 @@ public class MybatisQueryProvider {
         validFilters(tableClass, filters);
 
         Map<String, Object> allParamMap = new LinkedHashMap<>();
-        DbColumnInfo[] dbColumnInfos = entityCache.getDbColumnInfos(tableClass);
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(tableClass);
         Map<String, Object> propValueMap = new LinkedHashMap<>();
         Collection<String> setValueStrings = new ArrayList<>();
 
-        for (DbColumnInfo dbColumnInfo : dbColumnInfos) {
-            Field field = dbColumnInfo.getField();
+        for (ColumnInfo columnInfo : columnInfos) {
+            Field field = columnInfo.getField();
             Object value = getFieldValue(tableEntity, field);
-            if (dbColumnInfo.isUpdateIfNull() || value != null) {
+            if (columnInfo.isUpdateIfNull() || value != null) {
                 propValueMap.put(field.getName(), value);
                 String setValueString =
-                        String.format("`%s`=%s", dbColumnInfo.getDbColumnName(), toPlaceholder(field.getName()));
+                        String.format("`%s`=%s", columnInfo.getColumnName(), toPlaceholder(field.getName()));
                 setValueStrings.add(setValueString);
             }
         }

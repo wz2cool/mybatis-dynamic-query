@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -13,8 +14,7 @@ import java.util.Map;
 class EntityCache {
     private static EntityCache instance = new EntityCache();
     private final Map<Class, String[]> propertyNameCacheMap = new HashMap<>();
-    private final Map<Class, Map<String, QueryColumnInfo>> queryColumnInfoCacheMap = new HashMap<>();
-    private final Map<Class, Map<String, DbColumnInfo>> dbColumnInfoCacheMap = new HashMap<>();
+    private final Map<Class, Map<String, ColumnInfo>> columnInfoCacheMap = new HashMap<>();
     private static final String ENTITY_CLASS = "entityClass";
 
     // region implement singleton.
@@ -61,48 +61,12 @@ class EntityCache {
         return false;
     }
 
-    synchronized QueryColumnInfo getQueryColumnInfo(Class entityClass, String propertyName) {
-        if (entityClass == null) {
-            throw new NullPointerException(ENTITY_CLASS);
-        }
-
+    synchronized ColumnInfo getColumnInfo(Class entityClass, String propertyName) {
         if (propertyName == null) {
             throw new NullPointerException("propertyName");
         }
 
-        Map<String, QueryColumnInfo> propertyQueryColumnMap;
-        if (queryColumnInfoCacheMap.containsKey(entityClass)) {
-            propertyQueryColumnMap = queryColumnInfoCacheMap.get(entityClass);
-        } else {
-            Field[] properties = ReflectHelper.getProperties(entityClass);
-            Map<String, QueryColumnInfo> map = new HashMap<>();
-            for (Field p : properties) {
-                String pName = p.getName();
-                String queryColumn = EntityHelper.getQueryColumnByProperty(pName, properties);
-                QueryColumnInfo queryColumnInfo = new QueryColumnInfo();
-                queryColumnInfo.setQueryColumn(queryColumn);
-                queryColumnInfo.setField(p);
-
-                map.put(pName, queryColumnInfo);
-            }
-
-            queryColumnInfoCacheMap.put(entityClass, map);
-            propertyQueryColumnMap = map;
-        }
-
-        if (!propertyQueryColumnMap.containsKey(propertyName)) {
-            throw new PropertyNotFoundInternalException(String.format("Can't found property: %s", propertyName));
-        }
-
-        return propertyQueryColumnMap.get(propertyName);
-    }
-
-    synchronized DbColumnInfo getDbColumnInfo(Class entityClass, String propertyName) {
-        if (propertyName == null) {
-            throw new NullPointerException("propertyName");
-        }
-
-        Map<String, DbColumnInfo> propertyDbColumnMap = getPropertyDbColumnInfoMap(entityClass);
+        Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
         if (!propertyDbColumnMap.containsKey(propertyName)) {
             throw new PropertyNotFoundInternalException(String.format("Can't found property: %s", propertyName));
         }
@@ -110,35 +74,39 @@ class EntityCache {
         return propertyDbColumnMap.get(propertyName);
     }
 
-    synchronized DbColumnInfo[] getDbColumnInfos(Class entityClass) {
-        Map<String, DbColumnInfo> propertyDbColumnMap = getPropertyDbColumnInfoMap(entityClass);
-        Collection<DbColumnInfo> dbColumnInfoCollection = propertyDbColumnMap.values();
-        return dbColumnInfoCollection.toArray(new DbColumnInfo[dbColumnInfoCollection.size()]);
+    synchronized ColumnInfo[] getColumnInfos(Class entityClass) {
+        Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
+        Collection<ColumnInfo> columnInfoCollection = propertyDbColumnMap.values();
+        return columnInfoCollection.toArray(new ColumnInfo[columnInfoCollection.size()]);
     }
 
-    private synchronized Map<String, DbColumnInfo> getPropertyDbColumnInfoMap(Class entityClass) {
+    private synchronized Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }
 
-        Map<String, DbColumnInfo> propertyDbColumnMap;
-        if (dbColumnInfoCacheMap.containsKey(entityClass)) {
-            propertyDbColumnMap = dbColumnInfoCacheMap.get(entityClass);
+        Map<String, ColumnInfo> propertyDbColumnMap;
+        if (columnInfoCacheMap.containsKey(entityClass)) {
+            propertyDbColumnMap = columnInfoCacheMap.get(entityClass);
         } else {
-            Map<String, DbColumnInfo> map = new HashMap<>();
+            Map<String, ColumnInfo> map = new HashMap<>();
             Field[] properties = ReflectHelper.getProperties(entityClass);
             for (Field field : properties) {
                 field.setAccessible(true);
-                DbColumnInfo dbColumnInfo = new DbColumnInfo();
-                dbColumnInfo.setField(field);
+                ColumnInfo columnInfo = new ColumnInfo();
+                columnInfo.setField(field);
                 String pName = field.getName();
                 boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
-                String dbColumnName = EntityHelper.getDBColumnNameByProperty(pName, properties);
-                dbColumnInfo.setUpdateIfNull(updateIfNull);
-                dbColumnInfo.setDbColumnName(dbColumnName);
-                map.put(pName, dbColumnInfo);
+                String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
+                columnInfo.setUpdateIfNull(updateIfNull);
+                columnInfo.setColumnName(columnName);
+
+                Column column = EntityHelper.getColumnByProperty(pName, properties);
+                String tableOrAlias = column == null ? "" : column.tableOrAlias();
+                columnInfo.setTableOrAlias(tableOrAlias);
+                map.put(pName, columnInfo);
             }
-            dbColumnInfoCacheMap.put(entityClass, map);
+            columnInfoCacheMap.put(entityClass, map);
             propertyDbColumnMap = map;
         }
 

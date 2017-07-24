@@ -121,9 +121,9 @@ class QueryHelper {
             final Class entityClass, final FilterDescriptor filterDescriptor, final String... paramPlaceholders) {
         String propertyPath = filterDescriptor.getPropertyPath();
         Object value = filterDescriptor.getValue();
-        QueryColumnInfo queryColumnInfo = entityCache.getQueryColumnInfo(entityClass, propertyPath);
+        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, propertyPath);
 
-        return dbExpressionHelper.getExpression(filterDescriptor.getOperator(), queryColumnInfo, value, paramPlaceholders);
+        return dbExpressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
     }
 
     String[] getFilterValues(final FilterDescriptor filterDescriptor) {
@@ -192,8 +192,8 @@ class QueryHelper {
 
     // region sort
     private String toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
-        QueryColumnInfo queryColumnInfo = entityCache.getQueryColumnInfo(entityClass, sortDescriptor.getPropertyPath());
-        return String.format("%s %s", queryColumnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
+        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyPath());
+        return String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
     }
 
     String toSortExpression(final Class entityClass, final SortDescriptor... sorts) {

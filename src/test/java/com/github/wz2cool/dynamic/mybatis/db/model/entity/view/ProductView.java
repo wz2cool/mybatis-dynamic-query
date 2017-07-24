@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.view;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.QueryColumn;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 
 import java.math.BigDecimal;
 
@@ -8,18 +8,18 @@ import java.math.BigDecimal;
  * Created by Frank on 2017/7/15.
  */
 public class ProductView {
-    @QueryColumn(name = "product.product_id")
+    @Column(name = "product_id", tableOrAlias = "product")
     private Long productID;
-    @QueryColumn(name = "product.product_name")
+    @Column(name = "product_name", tableOrAlias = "product")
     private String productName;
-    @QueryColumn(name = "product.price")
+    @Column(name = "price", tableOrAlias = "product")
     private BigDecimal price;
 
-    @QueryColumn(name = "category.category_id")
+    @Column(name = "category_id", tableOrAlias = "category")
     private Long categoryID;
-    @QueryColumn(name = "category.category_name")
+    @Column(name = "category_name", tableOrAlias = "category")
     private String categoryName;
-    @QueryColumn(name = "category.description")
+    @Column(name = "description", tableOrAlias = "category")
     private String description;
 
     public Long getProductID() {

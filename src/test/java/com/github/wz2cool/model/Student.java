@@ -1,19 +1,17 @@
 package com.github.wz2cool.model;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
-import com.github.wz2cool.dynamic.mybatis.annotation.DbTable;
-import com.github.wz2cool.dynamic.mybatis.annotation.QueryColumn;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
+import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 
 /**
  * Created by Frank on 7/10/2017.
  */
-@DbTable(name = "student")
+@Table(name = "student")
 public class Student {
     private long serialId = 123456;
     private String name;
     private Integer age;
-    @QueryColumn(name = "queryColumn.note")
-    @DbColumn(name = "dbColumn.note", updateIfNull = true)
+    @Column(name = "note", tableOrAlias = "queryColumn", updateIfNull = true)
     private String note;
 
     public String getNote() {

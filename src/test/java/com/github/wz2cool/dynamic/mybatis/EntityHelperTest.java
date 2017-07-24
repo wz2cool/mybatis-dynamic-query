@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.DbColumn;
+import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.ChildClass;
@@ -72,10 +72,10 @@ public class EntityHelperTest {
                 .filter(x -> ReflectHelper.isProperty(x, methods))
                 .toArray(Field[]::new);
 
-        DbColumn result = EntityHelper.getDbColumnByProperty("note", properties);
+        Column result = EntityHelper.getColumnByProperty("note", properties);
         assertEquals(true, result != null);
 
-        result = EntityHelper.getDbColumnByProperty("name", properties);
+        result = EntityHelper.getColumnByProperty("name", properties);
         assertEquals(false, result != null);
 
 
@@ -88,7 +88,7 @@ public class EntityHelperTest {
         Field[] properties = Arrays.stream(fields)
                 .filter(x -> ReflectHelper.isProperty(x, methods))
                 .toArray(Field[]::new);
-        DbColumn result = EntityHelper.getDbColumnByProperty("noPropertyTest", properties);
+        Column result = EntityHelper.getColumnByProperty("noPropertyTest", properties);
         assertEquals(false, result != null);
     }
 
@@ -128,10 +128,10 @@ public class EntityHelperTest {
                 .filter(x -> ReflectHelper.isProperty(x, methods))
                 .toArray(Field[]::new);
 
-        String result = EntityHelper.getDBColumnNameByProperty("note", properties);
+        String result = EntityHelper.getColumnNameByProperty("note", properties);
         assertEquals("dbColumn.note", result);
 
-        result = EntityHelper.getDBColumnNameByProperty("name", properties);
+        result = EntityHelper.getColumnNameByProperty("name", properties);
         assertEquals("name", result);
     }
 
@@ -143,7 +143,7 @@ public class EntityHelperTest {
                 .filter(x -> ReflectHelper.isProperty(x, methods))
                 .toArray(Field[]::new);
 
-        String result = EntityHelper.getDBColumnNameByProperty("noPropertyTest", properties);
+        String result = EntityHelper.getColumnNameByProperty("noPropertyTest", properties);
         assertEquals("", result);
     }
 
@@ -151,16 +151,13 @@ public class EntityHelperTest {
     public void TestGetQueryColumnByProperty() {
         Field[] properties = ReflectHelper.getProperties(ChildClass.class);
 
-        String result = EntityHelper.getQueryColumnByProperty("childP1", properties);
+        String result = EntityHelper.getColumnNameByProperty("childP1", properties);
         assertEquals("child_p1", result);
-
-        result = EntityHelper.getQueryColumnByProperty("parentP1", properties);
-        assertEquals("test.parent_p1", result);
     }
 
     @Test(expected = PropertyNotFoundInternalException.class)
     public void TestGetQueryColumnByPropertyNotFound() {
         Field[] properties = ReflectHelper.getProperties(ChildClass.class);
-        EntityHelper.getQueryColumnByProperty("", properties);
+        EntityHelper.getColumnNameByProperty("", properties);
     }
 }

@@ -3,13 +3,11 @@ package com.github.wz2cool.dynamic.mybatis.annotation;
 import java.lang.annotation.*;
 
 /**
- * Created by Frank on 2017/6/23.
+ * Created by Frank on 2017/6/18.
  */
 @Documented
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DbColumn {
+public @interface Table {
     String name() default "";
-
-    boolean updateIfNull() default false;
 }
