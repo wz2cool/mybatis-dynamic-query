@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 /**
  * Created by Frank on 2017/6/25.
  */
-class DbColumnInfo {
+class DbColumnInfo  {
     private String dbColumnName;
     private boolean updateIfNull;
     private Field field;
