@@ -18,6 +18,7 @@ public class EntityCacheTest {
 
         result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
         assertEquals("queryColumn.note", result.getQueryColumn());
+        assertEquals("queryColumn", result.getTableOrAlias());
     }
 
     @Test(expected = NullPointerException.class)
