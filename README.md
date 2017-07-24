@@ -43,7 +43,7 @@ CREATE TABLE product (
 - create a model map to this table.
 ```java
 public class Product {
-    @QueryColumn(name = "product_id") // custom column name
+    @Column(name = "product_id") // custom column name
     private Integer productID;
     private String productName;
     private BigDecimal price;
