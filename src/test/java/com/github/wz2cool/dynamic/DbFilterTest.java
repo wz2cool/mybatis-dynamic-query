@@ -271,12 +271,25 @@ public class DbFilterTest {
     @Test
     public void simpleDemo() throws Exception {
         FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
-
+                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
         Map<String, Object> queryParams =
                 mybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", idFilter);
+        northwindDao.getProductByDynamic(queryParams);
+    }
 
+    @Test
+    public void multiFilterDemo() throws Exception {
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
+        FilterDescriptor priceFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        "price", FilterOperator.LESS_THAN, 15);
+
+        Map<String, Object> queryParams =
+                mybatisQueryProvider.getWhereQueryParamMap(
+                        Product.class, "whereExpression", idFilter, priceFilter);
         Product productView =
                 northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
         assertEquals(Integer.valueOf(2), productView.getProductID());
