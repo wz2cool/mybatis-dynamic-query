@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic;
 
+import java.util.function.Function;
+
 /**
  * The type Filter descriptor.
  */
@@ -24,6 +26,17 @@ public class FilterDescriptor extends FilterDescriptorBase {
      * @param value        the value
      */
     public FilterDescriptor(FilterCondition condition, String propertyPath, FilterOperator operator, Object value) {
+        this.setCondition(condition);
+        this.operator = operator;
+        this.propertyPath = propertyPath;
+        this.value = value;
+    }
+
+    public <T> FilterDescriptor(FilterCondition condition,
+                                Class<T> entityClass,
+                                Function<T, Object> getPropertyFunc,
+                                FilterOperator operator,
+                                Object value) {
         this.setCondition(condition);
         this.operator = operator;
         this.propertyPath = propertyPath;

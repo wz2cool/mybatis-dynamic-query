@@ -1,8 +1,14 @@
 package com.github.wz2cool.helper;
 
+import com.github.wz2cool.exception.PropertyNotFoundException;
+import com.github.wz2cool.exception.PropertyNotFoundInternalException;
+import jodd.methref.Methref;
+import jodd.util.StringUtil;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * Created by Frank on 7/7/2017.
@@ -64,5 +70,19 @@ public class CommonsHelper {
         }
 
         return obj.toString();
+    }
+
+    public static <T> String getPropertryName(final Class<T> target, final Function<T, Object> getMethodFunc) {
+        String methodName = obtainGetMethodName(target, getMethodFunc);
+        if (methodName.startsWith("get")) {
+            return methodName.substring(3, methodName.length());
+        }
+        return methodName;
+    }
+
+    public static <T> String obtainGetMethodName(final Class<T> target, final Function<T, Object> getMethodFunc) {
+        Methref<T> methodRef = Methref.on(target);
+        getMethodFunc.apply(methodRef.to());
+        return methodRef.ref();
     }
 }

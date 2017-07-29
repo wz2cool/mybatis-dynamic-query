@@ -122,4 +122,19 @@ public class CommonsHelperTest {
         result = CommonsHelper.isNumeric(Student.class);
         assertEquals(false, result);
     }
+
+    @Test
+    public void testObtainGetMethodName() {
+        String result = CommonsHelper.obtainGetMethodName(Student.class, Student::getAge);
+        assertEquals("getAge", result);
+
+        result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getName());
+        assertEquals("getName", result);
+    }
+
+    @Test
+    public void testGetPropertyName(){
+        String result = CommonsHelper.getPropertryName(Student.class, Student::getAge);
+        assertEquals("Age", result);
+    }
 }
