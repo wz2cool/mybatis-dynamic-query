@@ -31,7 +31,7 @@ public class SortDescriptor {
     }
 
     public <T> SortDescriptor(Class<T> entityClass, Function<T, Object> getFieldFunc, SortDirection sortDirection) {
-        this.propertyPath = CommonsHelper.getPropertryName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
         this.sortDirection = sortDirection;
     }
 

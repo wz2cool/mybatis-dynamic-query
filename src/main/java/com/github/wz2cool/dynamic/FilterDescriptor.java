@@ -41,7 +41,7 @@ public class FilterDescriptor extends FilterDescriptorBase {
                                 Object value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertryName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
         this.value = value;
     }
 
