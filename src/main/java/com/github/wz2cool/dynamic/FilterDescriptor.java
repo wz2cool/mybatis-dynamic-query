@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.wz2cool.helper.CommonsHelper;
+
 import java.util.function.Function;
 
 /**
@@ -34,12 +36,12 @@ public class FilterDescriptor extends FilterDescriptorBase {
 
     public <T> FilterDescriptor(FilterCondition condition,
                                 Class<T> entityClass,
-                                Function<T, Object> getPropertyFunc,
+                                Function<T, Object> getFieldFunc,
                                 FilterOperator operator,
                                 Object value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = propertyPath;
+        this.propertyPath = CommonsHelper.getPropertryName(entityClass, getFieldFunc);
         this.value = value;
     }
 

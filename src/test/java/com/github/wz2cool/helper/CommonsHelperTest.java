@@ -135,6 +135,6 @@ public class CommonsHelperTest {
     @Test
     public void testGetPropertyName(){
         String result = CommonsHelper.getPropertryName(Student.class, Student::getAge);
-        assertEquals("Age", result);
+        assertEquals("age", result);
     }
 }

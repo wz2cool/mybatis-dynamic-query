@@ -75,8 +75,9 @@ public class CommonsHelper {
     public static <T> String getPropertryName(final Class<T> target, final Function<T, Object> getMethodFunc) {
         String methodName = obtainGetMethodName(target, getMethodFunc);
         if (methodName.startsWith("get")) {
-            return methodName.substring(3, methodName.length());
+            return java.beans.Introspector.decapitalize(methodName.substring(3, methodName.length()));
         }
+
         return methodName;
     }
 
