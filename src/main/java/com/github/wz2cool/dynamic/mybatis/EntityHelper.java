@@ -69,7 +69,7 @@ class EntityHelper {
         Column column = getColumnByProperty(propertyName, properties);
         if (column == null) {
             // default insert property.
-            return true;
+            return false;
         }
         return column.insertIfNull();
     }

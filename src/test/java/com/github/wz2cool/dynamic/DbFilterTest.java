@@ -6,6 +6,8 @@ import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product2;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product3;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.model.Student;
 import org.junit.Before;
@@ -18,7 +20,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.beans.Expression;
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -285,8 +289,8 @@ public class DbFilterTest {
     @Test
     public void testInsert() throws Exception {
         Product newProduct = new Product();
-        Random random = new Random(10000L);
-        Integer id = random.nextInt();
+        Integer id = ThreadLocalRandom.current().nextInt(1, 99999 + 1);
+        newProduct.setPrice(BigDecimal.valueOf(20));
         newProduct.setProductID(id);
         newProduct.setCategoryID(1);
         String productName = "Product" + id;
@@ -303,17 +307,66 @@ public class DbFilterTest {
     }
 
     @Test
+    public void testInsertSelective() throws Exception {
+        Product2 newProduct = new Product2();
+        newProduct.setCategoryID(1);
+        newProduct.setPrice(BigDecimal.valueOf(20));
+        String productName = "Product";
+        newProduct.setProductName(productName);
+
+        // insert.
+        ParamExpression paramExpression = mybatisQueryProvider.getInsertExpression(newProduct);
+        Map<String, Object> insertParam = new HashMap<>();
+        insertParam.put("insertExpression", paramExpression.getExpression());
+        insertParam.putAll(paramExpression.getParamMap());
+
+        int result = northwindDao.insert(insertParam);
+        assertEquals(1, result);
+    }
+
+    @Test
     public void testUpdate() throws Exception {
-        // find update row.
+        // 查找ID筛选
+        // 这里我们使用表达式去设置propertyPath.
         FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, "1");
+                new FilterDescriptor(FilterCondition.AND,
+                        Product.class, Product::getProductID,
+                        FilterOperator.EQUAL, 1);
 
         Product newProduct = new Product();
         // only update product name
+        // 这里我们只更新产品名字，所以只设置产品名。
         String productName = "modifiedName";
         newProduct.setProductName(productName);
 
-        ParamExpression paramExpression = mybatisQueryProvider.getUpdateExpression(newProduct, idFilter);
+        ParamExpression paramExpression =
+                mybatisQueryProvider.getUpdateExpression(newProduct, idFilter);
+        Map<String, Object> updateParam = new HashMap<>();
+        updateParam.put("updateExpression", paramExpression.getExpression());
+        updateParam.putAll(paramExpression.getParamMap());
+
+        int result = northwindDao.update(updateParam);
+        assertEquals(1, result);
+    }
+
+
+    @Test
+    public void testUpdateSelective() throws Exception {
+        // 查找ID筛选
+        // 这里我们使用表达式去设置propertyPath.
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        Product.class, Product::getProductID,
+                        FilterOperator.EQUAL, 1);
+
+        Product3 newProduct = new Product3();
+        // only update product name
+        // 这里我们只更新产品名字，所以只设置产品名。
+        String productName = "modifiedName";
+        newProduct.setProductName(productName);
+
+        ParamExpression paramExpression =
+                mybatisQueryProvider.getUpdateExpression(newProduct, idFilter);
         Map<String, Object> updateParam = new HashMap<>();
         updateParam.put("updateExpression", paramExpression.getExpression());
         updateParam.putAll(paramExpression.getParamMap());
