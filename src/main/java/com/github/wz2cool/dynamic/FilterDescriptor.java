@@ -81,6 +81,10 @@ public class FilterDescriptor extends FilterDescriptorBase {
         this.propertyPath = propertyPath;
     }
 
+    public <T> void setPropertyPath(Class<T> entityClass, Function<T, Object> getFieldFunc) {
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+    }
+
     /**
      * Gets value.
      *

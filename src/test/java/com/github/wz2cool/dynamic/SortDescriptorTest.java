@@ -23,4 +23,12 @@ public class SortDescriptorTest {
 
         assertEquals("age", filterDescriptor.getPropertyPath());
     }
+
+
+    @Test
+    public void lambdaSetPropertyTest() {
+        SortDescriptor filterDescriptor = new SortDescriptor();
+        filterDescriptor.setPropertyPath(Student.class, Student::getAge);
+        assertEquals("age", filterDescriptor.getPropertyPath());
+    }
 }

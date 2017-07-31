@@ -24,4 +24,11 @@ public class FilterDescriptorTest {
 
         assertEquals("age", filterDescriptor.getPropertyPath());
     }
+
+    @Test
+    public void lambdaSetPropertyTest() {
+        FilterDescriptor filterDescriptor = new FilterDescriptor();
+        filterDescriptor.setPropertyPath(Student.class, Student::getAge);
+        assertEquals("age", filterDescriptor.getPropertyPath());
+    }
 }
