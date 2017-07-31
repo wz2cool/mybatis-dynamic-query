@@ -51,9 +51,11 @@ public class MybatisQueryProvider {
         for (ColumnInfo columnInfo : columnInfos) {
             Field propertyField = columnInfo.getField();
             Object value = getFieldValue(tableEntity, propertyField);
-            propValueMap.put(propertyField.getName(), value);
-            columns.add(columnInfo.getColumnName());
-            placeholders.add(toPlaceholder(propertyField.getName()));
+            if (columnInfo.isInsertIfNull() || value != null) {
+                propValueMap.put(propertyField.getName(), value);
+                columns.add(columnInfo.getColumnName());
+                placeholders.add(toPlaceholder(propertyField.getName()));
+            }
         }
 
         String tableName = EntityHelper.getTableName(tableClass);

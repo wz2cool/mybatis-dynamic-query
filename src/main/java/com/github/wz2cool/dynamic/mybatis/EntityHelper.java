@@ -59,9 +59,19 @@ class EntityHelper {
     static boolean isPropertyUpdateIfNull(final String propertyName, final Field[] properties) {
         Column column = getColumnByProperty(propertyName, properties);
         if (column == null) {
+            // default don't update property.
             return false;
         }
         return column.updateIfNull();
+    }
+
+    static boolean isPropertyInsertIfNull(final String propertyName, final Field[] properties) {
+        Column column = getColumnByProperty(propertyName, properties);
+        if (column == null) {
+            // default insert property.
+            return true;
+        }
+        return column.insertIfNull();
     }
 
     static Column getColumnByProperty(final String propertyName, final Field[] properties) {

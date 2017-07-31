@@ -11,6 +11,7 @@ class ColumnInfo {
     private String columnName;
     private String tableOrAlias;
     private boolean updateIfNull;
+    private boolean insertIfNull;
     private Field field;
 
     public Field getField() {
@@ -51,5 +52,13 @@ class ColumnInfo {
         } else {
             return this.columnName;
         }
+    }
+
+    public boolean isInsertIfNull() {
+        return insertIfNull;
+    }
+
+    public void setInsertIfNull(boolean insertIfNull) {
+        this.insertIfNull = insertIfNull;
     }
 }

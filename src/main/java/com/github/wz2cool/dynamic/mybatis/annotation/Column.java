@@ -13,5 +13,7 @@ public @interface Column {
 
     boolean updateIfNull() default false;
 
+    boolean insertIfNull() default true;
+
     String tableOrAlias() default "";
 }

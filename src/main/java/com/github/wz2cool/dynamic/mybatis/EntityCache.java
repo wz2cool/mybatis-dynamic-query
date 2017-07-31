@@ -97,8 +97,10 @@ class EntityCache {
                 columnInfo.setField(field);
                 String pName = field.getName();
                 boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
+                boolean insertIfNull = EntityHelper.isPropertyInsertIfNull(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
                 columnInfo.setUpdateIfNull(updateIfNull);
+                columnInfo.setInsertIfNull(insertIfNull);
                 columnInfo.setColumnName(columnName);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
