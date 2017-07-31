@@ -8,13 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class EntityCache {
     private static EntityCache instance = new EntityCache();
-    private final Map<Class, String[]> propertyNameCacheMap = new HashMap<>();
-    private final Map<Class, Map<String, ColumnInfo>> columnInfoCacheMap = new HashMap<>();
+    private final Map<Class, String[]> propertyNameCacheMap = new ConcurrentHashMap<>();
+    private final Map<Class, Map<String, ColumnInfo>> columnInfoCacheMap = new ConcurrentHashMap<>();
     private static final String ENTITY_CLASS = "entityClass";
 
     // region implement singleton.
@@ -27,7 +27,7 @@ class EntityCache {
 
     // endregion
 
-    synchronized String[] getPropertyNames(final Class entityClass) {
+    String[] getPropertyNames(final Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }
@@ -46,7 +46,7 @@ class EntityCache {
         }
     }
 
-    synchronized boolean hasProperty(final Class entityClass, final String propertyName) {
+    boolean hasProperty(final Class entityClass, final String propertyName) {
         if (StringUtils.isBlank(propertyName)) {
             return false;
         }
@@ -61,7 +61,7 @@ class EntityCache {
         return false;
     }
 
-    synchronized ColumnInfo getColumnInfo(Class entityClass, String propertyName) {
+    ColumnInfo getColumnInfo(Class entityClass, String propertyName) {
         if (propertyName == null) {
             throw new NullPointerException("propertyName");
         }
@@ -74,13 +74,13 @@ class EntityCache {
         return propertyDbColumnMap.get(propertyName);
     }
 
-    synchronized ColumnInfo[] getColumnInfos(Class entityClass) {
+    ColumnInfo[] getColumnInfos(Class entityClass) {
         Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
         Collection<ColumnInfo> columnInfoCollection = propertyDbColumnMap.values();
         return columnInfoCollection.toArray(new ColumnInfo[columnInfoCollection.size()]);
     }
 
-    private synchronized Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
+    private Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }
@@ -89,7 +89,7 @@ class EntityCache {
         if (columnInfoCacheMap.containsKey(entityClass)) {
             propertyDbColumnMap = columnInfoCacheMap.get(entityClass);
         } else {
-            Map<String, ColumnInfo> map = new HashMap<>();
+            Map<String, ColumnInfo> map = new ConcurrentHashMap<>();
             Field[] properties = ReflectHelper.getProperties(entityClass);
             for (Field field : properties) {
                 field.setAccessible(true);
