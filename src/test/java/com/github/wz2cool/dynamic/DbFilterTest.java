@@ -334,4 +334,72 @@ public class DbFilterTest {
         int result = northwindDao.update(updateParam);
         assertEquals(1, result);
     }
+
+    @Test
+    public void testGroupFilter() throws Exception {
+        FilterGroupDescriptor groupIdFilter = new FilterGroupDescriptor();
+        FilterDescriptor idFilter1 =
+                new FilterDescriptor(FilterCondition.AND,
+                        "productID", FilterOperator.GREATER_THAN, "1");
+        FilterDescriptor idFilter2 =
+                new FilterDescriptor(FilterCondition.AND,
+                        "productID", FilterOperator.LESS_THAN, "4");
+        // 把两个 id 筛选当成一个放到同一个组
+        groupIdFilter.addFilters(idFilter1, idFilter2);
+        // 单独一个简单筛选。
+        FilterDescriptor priceFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        "price", FilterOperator.GREATER_THAN, 10);
+
+        Map<String, Object> queryParams =
+                mybatisQueryProvider.getWhereQueryParamMap(
+                        Product.class, "whereExpression", groupIdFilter, priceFilter);
+
+        northwindDao.getProductByDynamic(queryParams);
+    }
+
+    @Test
+    public void testSort() throws Exception {
+        SortDescriptor priceSort =
+                new SortDescriptor("price", SortDirection.DESC);
+
+        Map<String, Object> queryParams =
+                mybatisQueryProvider.getSortQueryParamMap(
+                        Product.class, "orderExpression", priceSort);
+        northwindDao.getProductByDynamic(queryParams);
+    }
+
+    @Test
+    public void testMultiSort() throws Exception {
+        SortDescriptor priceSort =
+                new SortDescriptor("price", SortDirection.DESC);
+        SortDescriptor idSort =
+                new SortDescriptor("productID", SortDirection.DESC);
+
+        Map<String, Object> queryParams =
+                mybatisQueryProvider.getSortQueryParamMap(
+                        Product.class, "orderExpression", priceSort, idSort);
+        northwindDao.getProductByDynamic(queryParams);
+    }
+
+    @Test
+    public void testFilterSort() throws Exception {
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        "productID", FilterOperator.NOT_EQUAL, 4);
+        SortDescriptor priceSort =
+                new SortDescriptor("price", SortDirection.ASC);
+
+        Map<String, Object> filterParams = mybatisQueryProvider.getWhereQueryParamMap(
+                Product.class, "whereExpression", idFilter);
+        Map<String, Object> sortParams =
+                mybatisQueryProvider.getSortQueryParamMap(
+                        Product.class, "orderExpression", priceSort);
+
+        Map<String, Object> queryParams = new HashMap<>();
+        // 放入到同一个map中去。
+        queryParams.putAll(filterParams);
+        queryParams.putAll(sortParams);
+        northwindDao.getProductByDynamic(queryParams);
+    }
 }
