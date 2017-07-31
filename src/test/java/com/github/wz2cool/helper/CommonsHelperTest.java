@@ -127,7 +127,7 @@ public class CommonsHelperTest {
     @Test
     public void testObtainGetMethodName() {
         int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        Arrays.stream(servers).parallel().forEach((a)->{
+        Arrays.stream(servers).parallel().forEach((a) -> {
             String result = CommonsHelper.obtainGetMethodName(Student.class, Student::getAge);
             assertEquals("getAge", result);
 
@@ -143,5 +143,8 @@ public class CommonsHelperTest {
     public void testGetPropertyName() {
         String result = CommonsHelper.getPropertyName(Student.class, Student::getAge);
         assertEquals("age", result);
+
+        result = CommonsHelper.getPropertyName(Student.class, Student::toString);
+        assertEquals("toString", result);
     }
 }
