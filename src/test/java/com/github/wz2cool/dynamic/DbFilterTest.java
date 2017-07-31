@@ -9,7 +9,6 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product2;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product3;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.model.Student;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.beans.Expression;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -287,13 +288,10 @@ public class DbFilterTest {
     }
 
     @Test
-    public void testInsert() throws Exception {
-        Product newProduct = new Product();
-        Integer id = ThreadLocalRandom.current().nextInt(1, 99999 + 1);
-        newProduct.setPrice(BigDecimal.valueOf(20));
-        newProduct.setProductID(id);
+    public void testInsertNull() throws Exception {
+        Product2 newProduct = new Product2();
         newProduct.setCategoryID(1);
-        String productName = "Product" + id;
+        String productName = "Product";
         newProduct.setProductName(productName);
 
         // insert.
@@ -308,9 +306,8 @@ public class DbFilterTest {
 
     @Test
     public void testInsertSelective() throws Exception {
-        Product2 newProduct = new Product2();
+        Product newProduct = new Product();
         newProduct.setCategoryID(1);
-        newProduct.setPrice(BigDecimal.valueOf(20));
         String productName = "Product";
         newProduct.setProductName(productName);
 
@@ -351,7 +348,7 @@ public class DbFilterTest {
 
 
     @Test
-    public void testUpdateSelective() throws Exception {
+    public void testUpdateNull() throws Exception {
         // 查找ID筛选
         // 这里我们使用表达式去设置propertyPath.
         FilterDescriptor idFilter =
