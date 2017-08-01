@@ -5,6 +5,7 @@ import com.github.wz2cool.exception.InternalRuntimeException;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.Student;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -171,5 +172,25 @@ public class MybatisQueryProviderTest {
         nameFilter.setValue("frank");
 
         mybatisQueryProvider.getWhereQueryParamMap(Student.class, "", nameFilter);
+    }
+
+    @Test
+    public void testGetDeleteExpression() throws Exception {
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        Student.class, Student::getAge, FilterOperator.EQUAL, 20);
+
+        ParamExpression result = mybatisQueryProvider.getDeleteExpression(Student.class, idFilter);
+        String pattern = "^DELETE FROM student WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
+        assertEquals(true, Pattern.matches(pattern, result.getExpression()));
+        assertEquals("20", result.getParamMap().values().iterator().next());
+
+        result = mybatisQueryProvider.getDeleteExpression(Student.class);
+        assertEquals("DELETE FROM student", result.getExpression());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetDeleteExpressionThrowNull() throws Exception {
+        mybatisQueryProvider.getDeleteExpression(null);
     }
 }

@@ -121,6 +121,30 @@ public class MybatisQueryProvider {
         return result;
     }
 
+    public ParamExpression getDeleteExpression(final Class tableClass, final FilterDescriptorBase... filters)
+            throws PropertyNotFoundException {
+        if (tableClass == null) {
+            throw new NullPointerException("tableClass");
+        }
+
+        String tableName = EntityHelper.getTableName(tableClass);
+        String deleteExpression = String.format("DELETE FROM %s", tableName);
+
+        Map<String, Object> allParamMap = new LinkedHashMap<>();
+        String expression;
+        if (filters == null || filters.length == 0) {
+            expression = deleteExpression;
+        } else {
+            ParamExpression whereParamExpression = queryHelper.toWhereExpression(tableClass, filters);
+            expression = String.format("%s WHERE %s", deleteExpression, whereParamExpression.getExpression());
+            allParamMap.putAll(whereParamExpression.getParamMap());
+        }
+
+        ParamExpression result = new ParamExpression();
+        result.setExpression(expression);
+        result.getParamMap().putAll(allParamMap);
+        return result;
+    }
 
     /**
      * Gets where query param map.

@@ -371,4 +371,22 @@ public class DbFilterTest {
         int result = northwindDao.update(updateParam);
         assertEquals(1, result);
     }
+
+    @Test
+    public void testDelete() throws Exception {
+        // 删除掉id 为1的产品。
+        FilterDescriptor idFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        Product.class, Product::getProductID,
+                        FilterOperator.EQUAL, 1);
+
+        ParamExpression paramExpression =
+                mybatisQueryProvider.getDeleteExpression(Product.class, idFilter);
+        Map<String, Object> updateParam = new HashMap<>();
+        updateParam.put("deleteExpression", paramExpression.getExpression());
+        updateParam.putAll(paramExpression.getParamMap());
+
+        int result = northwindDao.delete(updateParam);
+        assertEquals(1, result);
+    }
 }
