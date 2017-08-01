@@ -99,9 +99,12 @@ class EntityCache {
                 boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
                 boolean insertIfNull = EntityHelper.isPropertyInsertIfNull(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
+                JdbcType jdbcType = EntityHelper.getJdbcTypeByProperty(pName, properties);
+
                 columnInfo.setUpdateIfNull(updateIfNull);
                 columnInfo.setInsertIfNull(insertIfNull);
                 columnInfo.setColumnName(columnName);
+                columnInfo.setJdbcType(jdbcType);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
                 String tableOrAlias = column == null ? "" : column.tableOrAlias();

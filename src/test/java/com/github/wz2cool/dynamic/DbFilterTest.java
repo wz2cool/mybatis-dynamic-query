@@ -328,7 +328,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND,
                         Product.class, Product::getProductID,
-                        FilterOperator.EQUAL, 1);
+                        FilterOperator.EQUAL, 2);
 
         Product newProduct = new Product();
         // only update product name

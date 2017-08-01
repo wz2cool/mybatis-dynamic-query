@@ -62,8 +62,14 @@ public class MybatisQueryProviderTest {
 
     @Test
     public void TestToPlaceholder() {
-        String result = mybatisQueryProvider.toPlaceholder("test");
+        String result = mybatisQueryProvider.toPlaceholder("test", JdbcType.NONE);
         assertEquals("#{test}", result);
+
+        result = mybatisQueryProvider.toPlaceholder("test", null);
+        assertEquals("#{test}", result);
+
+        result = mybatisQueryProvider.toPlaceholder("test", JdbcType.INTEGER);
+        assertEquals("#{test,jdbcType=INTEGER}", result);
     }
 
     @Test

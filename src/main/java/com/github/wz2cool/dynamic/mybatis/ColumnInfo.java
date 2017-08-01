@@ -12,6 +12,7 @@ class ColumnInfo {
     private String tableOrAlias;
     private boolean updateIfNull;
     private boolean insertIfNull;
+    private JdbcType jdbcType;
     private Field field;
 
     public Field getField() {
@@ -60,5 +61,13 @@ class ColumnInfo {
 
     public void setInsertIfNull(boolean insertIfNull) {
         this.insertIfNull = insertIfNull;
+    }
+
+    public JdbcType getJdbcType() {
+        return jdbcType;
+    }
+
+    public void setJdbcType(JdbcType jdbcType) {
+        this.jdbcType = jdbcType;
     }
 }

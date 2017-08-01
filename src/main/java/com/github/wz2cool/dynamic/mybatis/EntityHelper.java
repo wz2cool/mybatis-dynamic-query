@@ -56,6 +56,14 @@ class EntityHelper {
         return camelCaseToDashCase(usePropertyName);
     }
 
+    static JdbcType getJdbcTypeByProperty(final String propertyName, final Field[] properties) {
+        Column column = getColumnByProperty(propertyName, properties);
+        if (column == null) {
+            return null;
+        }
+        return column.jdbcType();
+    }
+
     static boolean isPropertyUpdateIfNull(final String propertyName, final Field[] properties) {
         Column column = getColumnByProperty(propertyName, properties);
         if (column == null) {

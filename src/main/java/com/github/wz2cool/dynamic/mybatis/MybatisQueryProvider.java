@@ -54,7 +54,7 @@ public class MybatisQueryProvider {
             if (columnInfo.isInsertIfNull() || value != null) {
                 propValueMap.put(propertyField.getName(), value);
                 columns.add(columnInfo.getColumnName());
-                placeholders.add(toPlaceholder(propertyField.getName()));
+                placeholders.add(toPlaceholder(propertyField.getName(), columnInfo.getJdbcType()));
             }
         }
 
@@ -95,7 +95,8 @@ public class MybatisQueryProvider {
             if (columnInfo.isUpdateIfNull() || value != null) {
                 propValueMap.put(field.getName(), value);
                 String setValueString =
-                        String.format("`%s`=%s", columnInfo.getColumnName(), toPlaceholder(field.getName()));
+                        String.format("`%s`=%s", columnInfo.getColumnName(),
+                                toPlaceholder(field.getName(), columnInfo.getJdbcType()));
                 setValueStrings.add(setValueString);
             }
         }
@@ -229,8 +230,12 @@ public class MybatisQueryProvider {
      * @param propertyName the property name
      * @return the string
      */
-    String toPlaceholder(String propertyName) {
-        return String.format("#{%s}", propertyName);
+    String toPlaceholder(String propertyName, JdbcType jdbcType) {
+        if (jdbcType == null || JdbcType.NONE.equals(jdbcType)) {
+            return String.format("#{%s}", propertyName);
+        } else {
+            return String.format("#{%s,jdbcType=%s}", propertyName, jdbcType);
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.annotation;
 
+import com.github.wz2cool.dynamic.mybatis.JdbcType;
+
 import java.lang.annotation.*;
 
 /**
@@ -16,4 +18,6 @@ public @interface Column {
     boolean insertIfNull() default false;
 
     String tableOrAlias() default "";
+
+    JdbcType jdbcType() default JdbcType.NONE;
 }
