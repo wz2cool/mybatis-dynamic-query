@@ -10,12 +10,12 @@ import java.math.BigDecimal;
  * Created by Frank on 2017/7/15.
  */
 @Table(name = "product")
-public class Product {
-    @Column(name = "product_id", insertIgnore = true, jdbcType = JdbcType.INTEGER)
+public class Product2 {
+    @Column(name = "product_id", jdbcType = JdbcType.INTEGER)
     private Integer productID;
     @Column(jdbcType = JdbcType.VARCHAR)
     private String productName;
-    @Column(jdbcType = JdbcType.NUMERIC)
+    @Column(insertIfNull = true, jdbcType = JdbcType.NUMERIC)
     private BigDecimal price;
     @Column(jdbcType = JdbcType.INTEGER)
     private Integer categoryID;

@@ -1,6 +1,10 @@
 package com.github.wz2cool.dynamic;
 
 
+import com.github.wz2cool.helper.CommonsHelper;
+
+import java.util.function.Function;
+
 /**
  * The type Sort descriptor.
  */
@@ -26,6 +30,11 @@ public class SortDescriptor {
         this.sortDirection = sortDirection;
     }
 
+    public <T> SortDescriptor(Class<T> entityClass, Function<T, Object> getFieldFunc, SortDirection sortDirection) {
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.sortDirection = sortDirection;
+    }
+
     /**
      * Gets property path.
      *
@@ -42,6 +51,10 @@ public class SortDescriptor {
      */
     public void setPropertyPath(String propertyPath) {
         this.propertyPath = propertyPath;
+    }
+
+    public <T> void setPropertyPath(Class<T> entityClass, Function<T, Object> getFieldFunc) {
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
     }
 
     /**

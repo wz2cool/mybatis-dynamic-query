@@ -7,26 +7,25 @@ import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 import java.math.BigDecimal;
 
 /**
- * Created by Frank on 2017/7/15.
+ * \* Created with IntelliJ IDEA.
+ * \* User: Frank
+ * \* Date: 7/31/2017
+ * \* Time: 3:42 PM
+ * \* To change this template use File | Settings | File Templates.
+ * \* Description:
+ * \
  */
 @Table(name = "product")
-public class Product {
-    @Column(name = "product_id", insertIgnore = true, jdbcType = JdbcType.INTEGER)
+public class Product3 {
+    // id 为null 的时候不插入
+    @Column(name = "product_id", jdbcType = JdbcType.INTEGER)
     private Integer productID;
     @Column(jdbcType = JdbcType.VARCHAR)
     private String productName;
-    @Column(jdbcType = JdbcType.NUMERIC)
+    @Column(updateIfNull = true, jdbcType = JdbcType.NUMERIC)
     private BigDecimal price;
     @Column(jdbcType = JdbcType.INTEGER)
     private Integer categoryID;
-
-    public Integer getCategoryID() {
-        return categoryID;
-    }
-
-    public void setCategoryID(Integer categoryID) {
-        this.categoryID = categoryID;
-    }
 
     public Integer getProductID() {
         return productID;
@@ -50,5 +49,13 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Integer getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(Integer categoryID) {
+        this.categoryID = categoryID;
     }
 }

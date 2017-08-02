@@ -4,6 +4,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.ibatis.annotations.Mapper;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.util.List;
 import java.util.Map;
@@ -24,4 +25,6 @@ public interface NorthwindDao {
     int insert(Map<String, Object> params);
 
     int update(Map<String, Object> params);
+
+    int delete(Map<String, Object> params);
 }

@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -121,5 +122,29 @@ public class CommonsHelperTest {
 
         result = CommonsHelper.isNumeric(Student.class);
         assertEquals(false, result);
+    }
+
+    @Test
+    public void testObtainGetMethodName() {
+        int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        Arrays.stream(servers).parallel().forEach((a) -> {
+            String result = CommonsHelper.obtainGetMethodName(Student.class, Student::getAge);
+            assertEquals("getAge", result);
+
+            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getName());
+            assertEquals("getName", result);
+
+            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getNote());
+            assertEquals("getNote", result);
+        });
+    }
+
+    @Test
+    public void testGetPropertyName() {
+        String result = CommonsHelper.getPropertyName(Student.class, Student::getAge);
+        assertEquals("age", result);
+
+        result = CommonsHelper.getPropertyName(Student.class, Student::toString);
+        assertEquals("toString", result);
     }
 }

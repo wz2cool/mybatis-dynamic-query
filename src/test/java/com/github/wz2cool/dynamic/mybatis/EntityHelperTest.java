@@ -76,7 +76,7 @@ public class EntityHelperTest {
         assertEquals(true, result != null);
 
         result = EntityHelper.getColumnByProperty("name", properties);
-        assertEquals(false, result != null);
+        assertEquals(true, result != null);
 
 
     }

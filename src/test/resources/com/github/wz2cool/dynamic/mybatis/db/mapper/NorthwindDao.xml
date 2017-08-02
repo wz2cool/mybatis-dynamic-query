@@ -11,13 +11,6 @@
         SELECT * FROM product
     </select>
 
-    <select id="getProductByDynamic" parameterType="java.util.Map"
-            resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product">
-        SELECT * FROM product
-        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
-        <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
-    </select>
-
     <select id="getProductViewsByDynamic" parameterType="java.util.Map"
             resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
         SELECT * FROM product LEFT JOIN category ON product.category_id = category.category_id
@@ -25,11 +18,26 @@
         <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
     </select>
 
+    <!-- 增加 -->
     <insert id="insert" parameterType="java.util.Map">
         ${insertExpression}
     </insert>
 
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.Map">
+        ${deleteExpression}
+    </delete>
+
+    <!-- 修改 -->
     <update id="update" parameterType="java.util.Map">
         ${updateExpression}
     </update>
+
+    <!-- 查询 -->
+    <select id="getProductByDynamic" parameterType="java.util.Map"
+            resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product">
+        SELECT * FROM product
+        <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
+        <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
+    </select>
 </mapper>

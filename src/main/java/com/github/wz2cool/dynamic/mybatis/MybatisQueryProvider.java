@@ -9,10 +9,7 @@ import com.github.wz2cool.exception.PropertyNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -49,11 +46,17 @@ public class MybatisQueryProvider {
         Collection<String> placeholders = new ArrayList<>();
 
         for (ColumnInfo columnInfo : columnInfos) {
+            if (columnInfo.isInsertIgnore()) {
+                continue;
+            }
+
             Field propertyField = columnInfo.getField();
             Object value = getFieldValue(tableEntity, propertyField);
-            propValueMap.put(propertyField.getName(), value);
-            columns.add(columnInfo.getColumnName());
-            placeholders.add(toPlaceholder(propertyField.getName()));
+            if (columnInfo.isInsertIfNull() || value != null) {
+                propValueMap.put(propertyField.getName(), value);
+                columns.add(columnInfo.getColumnName());
+                placeholders.add(toPlaceholder(propertyField.getName(), columnInfo.getJdbcType()));
+            }
         }
 
         String tableName = EntityHelper.getTableName(tableClass);
@@ -64,6 +67,55 @@ public class MybatisQueryProvider {
         insertExpression.setExpression(expression);
         insertExpression.getParamMap().putAll(propValueMap);
         return insertExpression;
+    }
+
+    public <TEntity> ParamExpression getBulkInsertExpression(final TEntity[] entities) {
+        if (entities == null) {
+            throw new NullPointerException("entities");
+        }
+
+        if (entities.length == 0) {
+            // nothing insert.
+            return new ParamExpression();
+        }
+        Class tableClass = entities[0].getClass();
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(tableClass);
+        Map<String, Object> propValueMap = new LinkedHashMap<>();
+        Collection<String> columns = new ArrayList<>();
+        Collection<String> insertValues = new ArrayList<>();
+
+        for (int i = 0; i < entities.length; i++) {
+            Collection<String> placeholders = new ArrayList<>();
+            for (ColumnInfo columnInfo : columnInfos) {
+                if (columnInfo.isInsertIgnore()) {
+                    continue;
+                }
+
+                Field propertyField = columnInfo.getField();
+                if (i == 0) {
+                    columns.add(columnInfo.getColumnName());
+                }
+
+                Object tableEntity = entities[i];
+                Object value = getFieldValue(tableEntity, propertyField);
+                String valuePlaceHolder = String.format("%s_%s", propertyField.getName(), i);
+                propValueMap.put(valuePlaceHolder, value);
+                placeholders.add(toPlaceholder(valuePlaceHolder, columnInfo.getJdbcType()));
+            }
+            String placeholderStr = String.format("(%s)", String.join(", ", placeholders));
+            insertValues.add(placeholderStr);
+        }
+
+
+        String tableName = EntityHelper.getTableName(tableClass);
+        String columnStr = String.join(", ", columns);
+        String expression = String.format("INSERT INTO %s (%s) VALUES %s",
+                tableName, columnStr, String.join(",", insertValues));
+        ParamExpression insertExpression = new ParamExpression();
+        insertExpression.setExpression(expression);
+        insertExpression.getParamMap().putAll(propValueMap);
+        return insertExpression;
+
     }
 
     /**
@@ -93,7 +145,8 @@ public class MybatisQueryProvider {
             if (columnInfo.isUpdateIfNull() || value != null) {
                 propValueMap.put(field.getName(), value);
                 String setValueString =
-                        String.format("`%s`=%s", columnInfo.getColumnName(), toPlaceholder(field.getName()));
+                        String.format("%s=%s", columnInfo.getColumnName(),
+                                toPlaceholder(field.getName(), columnInfo.getJdbcType()));
                 setValueStrings.add(setValueString);
             }
         }
@@ -119,6 +172,30 @@ public class MybatisQueryProvider {
         return result;
     }
 
+    public ParamExpression getDeleteExpression(final Class tableClass, final FilterDescriptorBase... filters)
+            throws PropertyNotFoundException {
+        if (tableClass == null) {
+            throw new NullPointerException("tableClass");
+        }
+
+        String tableName = EntityHelper.getTableName(tableClass);
+        String deleteExpression = String.format("DELETE FROM %s", tableName);
+
+        Map<String, Object> allParamMap = new LinkedHashMap<>();
+        String expression;
+        if (filters == null || filters.length == 0) {
+            expression = deleteExpression;
+        } else {
+            ParamExpression whereParamExpression = queryHelper.toWhereExpression(tableClass, filters);
+            expression = String.format("%s WHERE %s", deleteExpression, whereParamExpression.getExpression());
+            allParamMap.putAll(whereParamExpression.getParamMap());
+        }
+
+        ParamExpression result = new ParamExpression();
+        result.setExpression(expression);
+        result.getParamMap().putAll(allParamMap);
+        return result;
+    }
 
     /**
      * Gets where query param map.
@@ -203,8 +280,12 @@ public class MybatisQueryProvider {
      * @param propertyName the property name
      * @return the string
      */
-    String toPlaceholder(String propertyName) {
-        return String.format("#{%s}", propertyName);
+    String toPlaceholder(String propertyName, JdbcType jdbcType) {
+        if (jdbcType == null || JdbcType.NONE.equals(jdbcType)) {
+            return String.format("#{%s}", propertyName);
+        } else {
+            return String.format("#{%s,jdbcType=%s}", propertyName, jdbcType);
+        }
     }
 
     /**

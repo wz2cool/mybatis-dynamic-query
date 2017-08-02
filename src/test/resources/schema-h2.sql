@@ -14,7 +14,7 @@ CREATE TABLE category (
 
 DROP TABLE IF EXISTS product;
 CREATE TABLE product (
-  product_id    INT PRIMARY KEY,
+  product_id    INT PRIMARY KEY auto_increment,
   category_id   INT NOT NULL,
   product_name  VARCHAR (50) NOT NULL,
   price         DECIMAL
