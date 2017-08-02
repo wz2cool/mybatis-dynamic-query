@@ -203,6 +203,28 @@ public class MybatisQueryProviderTest {
     public void testGetBulkInsertExpression() throws Exception {
         ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(new Student[0]);
         assertEquals("", result.getExpression());
+
+
+        Student student1 = new Student();
+        student1.setName("frank");
+        student1.setAge(20);
+        student1.setNote("first record");
+
+        Student student2 = new Student();
+        student2.setName("Marry");
+        student2.setAge(20);
+        student2.setNote("second record");
+
+        Student[] students = new Student[]{student1, student2};
+        result = mybatisQueryProvider.getBulkInsertExpression(students);
+
+        assertEquals("INSERT INTO student (note, name, age) VALUES " +
+                        "(#{note_0,jdbcType=VARCHAR}, #{name_0,jdbcType=VARCHAR}, #{age_0,jdbcType=INTEGER})," +
+                        "(#{note_1,jdbcType=VARCHAR}, #{name_1,jdbcType=VARCHAR}, #{age_1,jdbcType=INTEGER})",
+                result.getExpression());
+
+        assertEquals("frank", result.getParamMap().get("name_0"));
+        assertEquals("Marry", result.getParamMap().get("name_1"));
     }
 
     @Test(expected = NullPointerException.class)
