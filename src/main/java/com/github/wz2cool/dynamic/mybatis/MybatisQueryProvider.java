@@ -95,7 +95,7 @@ public class MybatisQueryProvider {
             if (columnInfo.isUpdateIfNull() || value != null) {
                 propValueMap.put(field.getName(), value);
                 String setValueString =
-                        String.format("`%s`=%s", columnInfo.getColumnName(),
+                        String.format("%s=%s", columnInfo.getColumnName(),
                                 toPlaceholder(field.getName(), columnInfo.getJdbcType()));
                 setValueStrings.add(setValueString);
             }

@@ -42,12 +42,12 @@ public class MybatisQueryProviderTest {
         newStudent.setAge(30);
         newStudent.setNote("this is a test");
         ParamExpression result = mybatisQueryProvider.getUpdateExpression(newStudent);
-        assertEquals("UPDATE student SET `note`=#{note,jdbcType=VARCHAR}, `name`=#{name,jdbcType=VARCHAR}, `age`=#{age,jdbcType=INTEGER}", result.getExpression());
+        assertEquals("UPDATE student SET note=#{note,jdbcType=VARCHAR}, name=#{name,jdbcType=VARCHAR}, age=#{age,jdbcType=INTEGER}", result.getExpression());
 
         FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
         result = mybatisQueryProvider.getUpdateExpression(newStudent, filterDescriptor);
 
-        String pattern = "^UPDATE student SET `note`=#\\{note,jdbcType=VARCHAR\\}, `name`=#\\{name,jdbcType=VARCHAR\\}, `age`=#\\{age,jdbcType=INTEGER\\} WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
+        String pattern = "^UPDATE student SET note=#\\{note,jdbcType=VARCHAR\\}, name=#\\{name,jdbcType=VARCHAR\\}, age=#\\{age,jdbcType=INTEGER\\} WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
         assertEquals(true, Pattern.matches(pattern, result.getExpression()));
         assertEquals("frank", result.getParamMap().get("name"));
         assertEquals(30, result.getParamMap().get("age"));

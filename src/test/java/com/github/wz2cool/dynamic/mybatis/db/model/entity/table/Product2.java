@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
+import com.github.wz2cool.dynamic.mybatis.JdbcType;
 import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 
@@ -10,11 +11,13 @@ import java.math.BigDecimal;
  */
 @Table(name = "product")
 public class Product2 {
-    @Column(name = "product_id")
+    @Column(name = "product_id", jdbcType = JdbcType.INTEGER)
     private Integer productID;
+    @Column(jdbcType = JdbcType.VARCHAR)
     private String productName;
-    @Column(insertIfNull = true)
+    @Column(insertIfNull = true, jdbcType = JdbcType.NUMERIC)
     private BigDecimal price;
+    @Column(jdbcType = JdbcType.INTEGER)
     private Integer categoryID;
 
     public Integer getCategoryID() {
