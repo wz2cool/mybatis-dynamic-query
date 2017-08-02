@@ -27,6 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by Frank on 2017/7/15.
@@ -216,8 +217,11 @@ public class DbFilterTest {
                 mybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", idFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
-        assertEquals(Long.valueOf(1), productViews.get(0).getProductID());
-        assertEquals(Long.valueOf(3), productViews.get(1).getProductID());
+
+        for (ProductView productView : productViews) {
+            assertNotEquals(Long.valueOf(2), productView.getProductID());
+            assertNotEquals(Long.valueOf(4), productView.getProductID());
+        }
     }
 
     @Test
@@ -388,5 +392,28 @@ public class DbFilterTest {
 
         int result = northwindDao.delete(updateParam);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testBulkInsert() throws Exception {
+        Product product1 = new Product();
+        product1.setProductName("product1");
+        product1.setPrice(BigDecimal.valueOf(500));
+        product1.setCategoryID(2);
+
+        Product product2 = new Product();
+        product2.setProductName("product2");
+        product2.setPrice(BigDecimal.valueOf(10000));
+        product2.setCategoryID(1);
+
+        Product[] products = new Product[]{product1, product2};
+
+        ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(products);
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("insertExpression", result.getExpression());
+        queryParams.putAll(result.getParamMap());
+
+        int rows = northwindDao.insert(queryParams);
+        assertEquals(2, rows);
     }
 }

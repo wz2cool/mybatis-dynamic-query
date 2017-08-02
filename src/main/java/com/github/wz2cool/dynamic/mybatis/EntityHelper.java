@@ -82,6 +82,14 @@ class EntityHelper {
         return column.insertIfNull();
     }
 
+    static boolean isPropertyInsertIgnore(final String propertyName, final Field[] properties) {
+        Column column = getColumnByProperty(propertyName, properties);
+        if (column == null) {
+            return false;
+        }
+        return column.insertIgnore();
+    }
+
     static Column getColumnByProperty(final String propertyName, final Field[] properties) {
         Field matchProperty = getPropertyField(propertyName, properties);
         Annotation[] annotations = matchProperty.getAnnotations();

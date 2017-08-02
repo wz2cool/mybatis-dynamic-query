@@ -98,11 +98,13 @@ class EntityCache {
                 String pName = field.getName();
                 boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
                 boolean insertIfNull = EntityHelper.isPropertyInsertIfNull(pName, properties);
+                boolean insertIgnore = EntityHelper.isPropertyInsertIgnore(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
                 JdbcType jdbcType = EntityHelper.getJdbcTypeByProperty(pName, properties);
 
                 columnInfo.setUpdateIfNull(updateIfNull);
                 columnInfo.setInsertIfNull(insertIfNull);
+                columnInfo.setInsertIgnore(insertIgnore);
                 columnInfo.setColumnName(columnName);
                 columnInfo.setJdbcType(jdbcType);
 

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  */
 @Table(name = "product")
 public class Product {
-    @Column(name = "product_id", jdbcType = JdbcType.INTEGER)
+    @Column(name = "product_id", insertIgnore = true, jdbcType = JdbcType.INTEGER)
     private Integer productID;
     @Column(jdbcType = JdbcType.VARCHAR)
     private String productName;

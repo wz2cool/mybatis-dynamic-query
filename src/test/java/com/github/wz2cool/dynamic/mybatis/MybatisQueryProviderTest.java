@@ -198,4 +198,16 @@ public class MybatisQueryProviderTest {
     public void testGetDeleteExpressionThrowNull() throws Exception {
         mybatisQueryProvider.getDeleteExpression(null);
     }
+
+    @Test
+    public void testGetBulkInsertExpression() throws Exception {
+        ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(new Student[0]);
+        assertEquals("", result.getExpression());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetBulkInsertExpressionThrowNull() throws Exception {
+        ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(null);
+        assertEquals("", result.getExpression());
+    }
 }

@@ -13,6 +13,8 @@ import java.lang.annotation.*;
 public @interface Column {
     String name() default "";
 
+    boolean insertIgnore() default false;
+
     boolean updateIfNull() default false;
 
     boolean insertIfNull() default false;

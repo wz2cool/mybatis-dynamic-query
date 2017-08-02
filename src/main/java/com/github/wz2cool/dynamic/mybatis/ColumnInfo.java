@@ -12,6 +12,7 @@ class ColumnInfo {
     private String tableOrAlias;
     private boolean updateIfNull;
     private boolean insertIfNull;
+    private boolean insertIgnore;
     private JdbcType jdbcType;
     private Field field;
 
@@ -69,5 +70,13 @@ class ColumnInfo {
 
     public void setJdbcType(JdbcType jdbcType) {
         this.jdbcType = jdbcType;
+    }
+
+    public boolean isInsertIgnore() {
+        return insertIgnore;
+    }
+
+    public void setInsertIgnore(boolean insertIgnore) {
+        this.insertIgnore = insertIgnore;
     }
 }
