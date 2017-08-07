@@ -74,12 +74,6 @@ class EntityCache {
         return propertyDbColumnMap.get(propertyName);
     }
 
-    ColumnInfo[] getColumnInfos(Class entityClass) {
-        Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
-        Collection<ColumnInfo> columnInfoCollection = propertyDbColumnMap.values();
-        return columnInfoCollection.toArray(new ColumnInfo[columnInfoCollection.size()]);
-    }
-
     private Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
@@ -96,12 +90,7 @@ class EntityCache {
                 ColumnInfo columnInfo = new ColumnInfo();
                 columnInfo.setField(field);
                 String pName = field.getName();
-                boolean updatable = EntityHelper.isPropertyUpdatable(pName, properties);
-                boolean insertable = EntityHelper.isPropertyInsertable(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
-
-                columnInfo.setUpdatable(updatable);
-                columnInfo.setInsertable(insertable);
                 columnInfo.setColumnName(columnName);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);

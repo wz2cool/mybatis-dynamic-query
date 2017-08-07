@@ -10,8 +10,6 @@ import java.lang.reflect.Field;
 class ColumnInfo {
     private String columnName;
     private String tableOrAlias;
-    private boolean updatable;
-    private boolean insertable;
     private Field field;
 
     public Field getField() {
@@ -30,14 +28,6 @@ class ColumnInfo {
         this.columnName = columnName;
     }
 
-    public boolean isUpdatable() {
-        return updatable;
-    }
-
-    public void setUpdatable(boolean updatable) {
-        this.updatable = updatable;
-    }
-
     public String getTableOrAlias() {
         return tableOrAlias;
     }
@@ -52,13 +42,5 @@ class ColumnInfo {
         } else {
             return this.columnName;
         }
-    }
-
-    public boolean isInsertable() {
-        return insertable;
-    }
-
-    public void setInsertable(boolean insertable) {
-        this.insertable = insertable;
     }
 }
