@@ -24,7 +24,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(SqlHelper.selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
-
+        sql.append(DynamicQuerySqlHelper.dynamicWhereClause());
         return sql.toString();
     }
 }

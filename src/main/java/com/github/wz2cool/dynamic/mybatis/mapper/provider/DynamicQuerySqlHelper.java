@@ -11,7 +11,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
  */
 public class DynamicQuerySqlHelper {
     public static String dynamicWhereClause() {
-        return "<if test=\"whereExpression != null and whereExpression != ''\">WHERE ${whereExpression}</if>\n" +
-                "<if test=\"orderExpression != null and orderExpression != ''\">ORDER BY ${orderExpression}</if>";
+        return "<if test=\"whereExpression != null and whereExpression != ''\">WHERE ${whereExpression}</if>";
     }
 }
