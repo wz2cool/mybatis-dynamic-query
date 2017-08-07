@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**

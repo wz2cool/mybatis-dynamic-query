@@ -4,8 +4,10 @@ import com.github.wz2cool.dynamic.mybatis.DatabaseType;
 import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +39,10 @@ public class DbFilterTest {
 
     @Autowired
     private NorthwindDao northwindDao;
+
+    @Autowired
+    private UserDao userDao;
+
     MybatisQueryProvider mybatisQueryProvider;
 
     @Before
@@ -362,5 +368,15 @@ public class DbFilterTest {
         queryParams.putAll(filterParams);
         queryParams.putAll(sortParams);
         northwindDao.getProductByDynamic(queryParams);
+    }
+
+    @Test
+    public void testUserInsert() throws Exception {
+        User user = new User();
+        user.setId(200);
+        user.setUsername("frank");
+        user.setPassword("pwd");
+        int result = userDao.insert(user);
+        assertEquals(1, result);
     }
 }
