@@ -1,10 +1,10 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -56,38 +56,21 @@ class EntityHelper {
         return camelCaseToDashCase(usePropertyName);
     }
 
-    static JdbcType getJdbcTypeByProperty(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            return null;
-        }
-        return column.jdbcType();
-    }
-
-    static boolean isPropertyUpdateIfNull(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            // default don't update property.
-            return false;
-        }
-        return column.updateIfNull();
-    }
-
-    static boolean isPropertyInsertIfNull(final String propertyName, final Field[] properties) {
+    static boolean isPropertyUpdatable(final String propertyName, final Field[] properties) {
         Column column = getColumnByProperty(propertyName, properties);
         if (column == null) {
             // default insert property.
             return false;
         }
-        return column.insertIfNull();
+        return column.updatable();
     }
 
-    static boolean isPropertyInsertIgnore(final String propertyName, final Field[] properties) {
+    static boolean isPropertyInsertable(final String propertyName, final Field[] properties) {
         Column column = getColumnByProperty(propertyName, properties);
         if (column == null) {
             return false;
         }
-        return column.insertIgnore();
+        return column.insertable();
     }
 
     static Column getColumnByProperty(final String propertyName, final Field[] properties) {

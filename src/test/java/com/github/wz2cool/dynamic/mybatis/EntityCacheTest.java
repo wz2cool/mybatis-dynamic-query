@@ -40,11 +40,11 @@ public class EntityCacheTest {
     public void TestGetDbColumnInfo() {
         ColumnInfo result = EntityCache.getInstance().getColumnInfo(Student.class, "name");
         assertEquals("name", result.getColumnName());
-        assertEquals(false, result.isUpdateIfNull());
+        assertEquals(false, result.isUpdatable());
 
         result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
         assertEquals("note", result.getColumnName());
-        assertEquals(true, result.isUpdateIfNull());
+        assertEquals(true, result.isUpdatable());
     }
 
     @Test(expected = NullPointerException.class)

@@ -1,10 +1,10 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -96,20 +96,16 @@ class EntityCache {
                 ColumnInfo columnInfo = new ColumnInfo();
                 columnInfo.setField(field);
                 String pName = field.getName();
-                boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
-                boolean insertIfNull = EntityHelper.isPropertyInsertIfNull(pName, properties);
-                boolean insertIgnore = EntityHelper.isPropertyInsertIgnore(pName, properties);
+                boolean updatable = EntityHelper.isPropertyUpdatable(pName, properties);
+                boolean insertable = EntityHelper.isPropertyInsertable(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
-                JdbcType jdbcType = EntityHelper.getJdbcTypeByProperty(pName, properties);
 
-                columnInfo.setUpdateIfNull(updateIfNull);
-                columnInfo.setInsertIfNull(insertIfNull);
-                columnInfo.setInsertIgnore(insertIgnore);
+                columnInfo.setUpdatable(updatable);
+                columnInfo.setInsertable(insertable);
                 columnInfo.setColumnName(columnName);
-                columnInfo.setJdbcType(jdbcType);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
-                String tableOrAlias = column == null ? "" : column.tableOrAlias();
+                String tableOrAlias = column == null ? "" : column.table();
                 columnInfo.setTableOrAlias(tableOrAlias);
                 map.put(pName, columnInfo);
             }

@@ -17,61 +17,6 @@ public class MybatisQueryProviderTest {
     MybatisQueryProvider mybatisQueryProvider = new MybatisQueryProvider(DatabaseType.MYSQL);
 
     @Test
-    public void TestGetInsertExpression() throws Exception {
-        Student newStudent = new Student();
-        newStudent.setName("frank");
-        newStudent.setAge(30);
-        newStudent.setNote("this is a test");
-
-        ParamExpression result = mybatisQueryProvider.getInsertExpression(newStudent);
-        assertEquals("INSERT INTO student (note, name, age) VALUES (#{note,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER})", result.getExpression());
-        assertEquals("frank", result.getParamMap().get("name"));
-        assertEquals(30, result.getParamMap().get("age"));
-        assertEquals("this is a test", result.getParamMap().get("note"));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void TestGEtInsertExpressionNullPointer() throws Exception {
-        mybatisQueryProvider.getInsertExpression(null);
-    }
-
-    @Test
-    public void TestUpdateExpression() throws Exception {
-        Student newStudent = new Student();
-        newStudent.setName("frank");
-        newStudent.setAge(30);
-        newStudent.setNote("this is a test");
-        ParamExpression result = mybatisQueryProvider.getUpdateExpression(newStudent);
-        assertEquals("UPDATE student SET note=#{note,jdbcType=VARCHAR}, name=#{name,jdbcType=VARCHAR}, age=#{age,jdbcType=INTEGER}", result.getExpression());
-
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
-        result = mybatisQueryProvider.getUpdateExpression(newStudent, filterDescriptor);
-
-        String pattern = "^UPDATE student SET note=#\\{note,jdbcType=VARCHAR\\}, name=#\\{name,jdbcType=VARCHAR\\}, age=#\\{age,jdbcType=INTEGER\\} WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
-        assertEquals(true, Pattern.matches(pattern, result.getExpression()));
-        assertEquals("frank", result.getParamMap().get("name"));
-        assertEquals(30, result.getParamMap().get("age"));
-        assertEquals("this is a test", result.getParamMap().get("note"));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void TestUpdateExpressionNullPointer() throws Exception {
-        mybatisQueryProvider.getUpdateExpression(null);
-    }
-
-    @Test
-    public void TestToPlaceholder() {
-        String result = mybatisQueryProvider.toPlaceholder("test", JdbcType.NONE);
-        assertEquals("#{test}", result);
-
-        result = mybatisQueryProvider.toPlaceholder("test", null);
-        assertEquals("#{test}", result);
-
-        result = mybatisQueryProvider.toPlaceholder("test", JdbcType.INTEGER);
-        assertEquals("#{test,jdbcType=INTEGER}", result);
-    }
-
-    @Test
     public void TestGetWhereExpression() throws Exception {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 30);
@@ -179,57 +124,5 @@ public class MybatisQueryProviderTest {
         mybatisQueryProvider.getWhereQueryParamMap(Student.class, "", nameFilter);
     }
 
-    @Test
-    public void testGetDeleteExpression() throws Exception {
-        FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND,
-                        Student.class, Student::getAge, FilterOperator.EQUAL, 20);
 
-        ParamExpression result = mybatisQueryProvider.getDeleteExpression(Student.class, idFilter);
-        String pattern = "^DELETE FROM student WHERE \\(age = #\\{param_age_EQUAL_\\w+}\\)$";
-        assertEquals(true, Pattern.matches(pattern, result.getExpression()));
-        assertEquals("20", result.getParamMap().values().iterator().next());
-
-        result = mybatisQueryProvider.getDeleteExpression(Student.class);
-        assertEquals("DELETE FROM student", result.getExpression());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetDeleteExpressionThrowNull() throws Exception {
-        mybatisQueryProvider.getDeleteExpression(null);
-    }
-
-    @Test
-    public void testGetBulkInsertExpression() throws Exception {
-        ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(new Student[0]);
-        assertEquals("", result.getExpression());
-
-
-        Student student1 = new Student();
-        student1.setName("frank");
-        student1.setAge(20);
-        student1.setNote("first record");
-
-        Student student2 = new Student();
-        student2.setName("Marry");
-        student2.setAge(20);
-        student2.setNote("second record");
-
-        Student[] students = new Student[]{student1, student2};
-        result = mybatisQueryProvider.getBulkInsertExpression(students);
-
-        assertEquals("INSERT INTO student (note, name, age) VALUES " +
-                        "(#{note_0,jdbcType=VARCHAR}, #{name_0,jdbcType=VARCHAR}, #{age_0,jdbcType=INTEGER})," +
-                        "(#{note_1,jdbcType=VARCHAR}, #{name_1,jdbcType=VARCHAR}, #{age_1,jdbcType=INTEGER})",
-                result.getExpression());
-
-        assertEquals("frank", result.getParamMap().get("name_0"));
-        assertEquals("Marry", result.getParamMap().get("name_1"));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetBulkInsertExpressionThrowNull() throws Exception {
-        ParamExpression result = mybatisQueryProvider.getBulkInsertExpression(null);
-        assertEquals("", result.getExpression());
-    }
 }

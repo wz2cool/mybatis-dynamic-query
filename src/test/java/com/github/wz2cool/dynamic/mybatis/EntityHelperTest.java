@@ -1,6 +1,5 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.ChildClass;
@@ -8,6 +7,7 @@ import com.github.wz2cool.model.HelloWorld;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
+import javax.persistence.Column;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -76,7 +76,7 @@ public class EntityHelperTest {
         assertEquals(true, result != null);
 
         result = EntityHelper.getColumnByProperty("name", properties);
-        assertEquals(true, result != null);
+        assertEquals(true, result == null);
 
 
     }
@@ -90,34 +90,6 @@ public class EntityHelperTest {
                 .toArray(Field[]::new);
         Column result = EntityHelper.getColumnByProperty("noPropertyTest", properties);
         assertEquals(false, result != null);
-    }
-
-
-    @Test
-    public void TestIsPropertyUpdateIfNull() {
-        Field[] fields = Student.class.getDeclaredFields();
-        Method[] methods = Student.class.getMethods();
-        Field[] properties = Arrays.stream(fields)
-                .filter(x -> ReflectHelper.isProperty(x, methods))
-                .toArray(Field[]::new);
-
-        boolean result = EntityHelper.isPropertyUpdateIfNull("note", properties);
-        assertEquals(true, result);
-
-        result = EntityHelper.isPropertyUpdateIfNull("name", properties);
-        assertEquals(false, result);
-    }
-
-    @Test(expected = PropertyNotFoundInternalException.class)
-    public void TestIsPropertyUpdateIfNullNotFound() {
-        Field[] fields = Student.class.getDeclaredFields();
-        Method[] methods = Student.class.getMethods();
-        Field[] properties = Arrays.stream(fields)
-                .filter(x -> ReflectHelper.isProperty(x, methods))
-                .toArray(Field[]::new);
-
-        boolean result = EntityHelper.isPropertyUpdateIfNull("noPropertyTest", properties);
-        assertEquals(false, result);
     }
 
     @Test

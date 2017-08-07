@@ -7,7 +7,6 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.model.Student;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.beans.Expression;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -293,46 +294,6 @@ public class DbFilterTest {
         Product productView =
                 northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
         assertEquals(Integer.valueOf(2), productView.getProductID());
-    }
-
-    @Test
-    public void testInsert() throws Exception {
-        Product newProduct = new Product();
-        Random random = new Random(10000L);
-        Integer id = random.nextInt();
-        newProduct.setProductID(id);
-        newProduct.setCategoryID(1);
-        String productName = "Product" + id;
-        newProduct.setProductName(productName);
-
-        // insert.
-        ParamExpression paramExpression = mybatisQueryProvider.getInsertExpression(newProduct);
-        Map<String, Object> insertParam = new HashMap<>();
-        insertParam.put("insertExpression", paramExpression.getExpression());
-        insertParam.putAll(paramExpression.getParamMap());
-
-        int result = northwindDao.insert(insertParam);
-        assertEquals(1, result);
-    }
-
-    @Test
-    public void testUpdate() throws Exception {
-        // find update row.
-        FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, "1");
-
-        Product newProduct = new Product();
-        // only update product name
-        String productName = "modifiedName";
-        newProduct.setProductName(productName);
-
-        ParamExpression paramExpression = mybatisQueryProvider.getUpdateExpression(newProduct, idFilter);
-        Map<String, Object> updateParam = new HashMap<>();
-        updateParam.put("updateExpression", paramExpression.getExpression());
-        updateParam.putAll(paramExpression.getParamMap());
-
-        int result = northwindDao.update(updateParam);
-        assertEquals(1, result);
     }
 
     @Test
