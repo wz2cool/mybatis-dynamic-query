@@ -24,7 +24,7 @@ public class MybatisQueryProviderTest {
         ParamExpression result = mybatisQueryProvider.getWhereExpression(Student.class, filterDescriptor);
         String pattern = "^\\(age = #\\{param_age_EQUAL_\\w+\\}\\)$";
         assertEquals(true, Pattern.matches(pattern, result.getExpression()));
-        assertEquals("30", result.getParamMap().values().iterator().next());
+        assertEquals(30, result.getParamMap().values().iterator().next());
     }
 
     @Test

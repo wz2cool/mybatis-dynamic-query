@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 public class QueryHelperTest {
 
     QueryHelper queryHelper = new QueryHelper();
+
     @Test
     public void TestToSortExpression() {
         SortDescriptor nameSort = new SortDescriptor("name", SortDirection.DESC);
@@ -36,49 +37,6 @@ public class QueryHelperTest {
         assertEquals("", result);
     }
 
-    @Test
-    public void TestCleanFilterValue() {
-        String result = queryHelper.cleanFilterValue(null);
-        assertEquals("", result);
-
-        result = queryHelper.cleanFilterValue("");
-        assertEquals("", result);
-
-        result = queryHelper.cleanFilterValue("\"hello\"");
-        assertEquals("hello", result);
-
-        result = queryHelper.cleanFilterValue("`hello`");
-        assertEquals("hello", result);
-
-        result = queryHelper.cleanFilterValue("'hello'");
-        assertEquals("hello", result);
-    }
-
-    @Test
-    public void TestCleanFilterValues() {
-        String[] result = queryHelper.cleanFilterValues(null, "hello", 1);
-        assertEquals(3, result.length);
-        assertEquals("", result[0]);
-        assertEquals("hello", result[1]);
-        assertEquals("1", result[2]);
-
-        result = queryHelper.cleanFilterValues();
-        assertEquals(0, result.length);
-    }
-
-    @Test
-    public void TestGetFilterValuesInOperator() {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(
-                FilterCondition.AND,
-                "name",
-                FilterOperator.IN,
-                new String[]{"frank", "Marry"});
-
-        String[] result = queryHelper.getFilterValues(filterDescriptor);
-        assertEquals(2, result.length);
-        assertEquals("frank", result[0]);
-        assertEquals("Marry", result[1]);
-    }
 
     @Test(expected = InvalidParameterException.class)
     public void TestGetFilterValuesInvalidInOperator() {
@@ -88,20 +46,6 @@ public class QueryHelperTest {
                 FilterOperator.IN,
                 "Marry");
         queryHelper.getFilterValues(filterDescriptor);
-    }
-
-    @Test
-    public void TestGetFilterValuesBetweenOperator() {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(
-                FilterCondition.AND,
-                "age",
-                FilterOperator.BETWEEN,
-                new int[]{20, 30});
-
-        String[] result = queryHelper.getFilterValues(filterDescriptor);
-        assertEquals(2, result.length);
-        assertEquals("20", result[0]);
-        assertEquals("30", result[1]);
     }
 
     @Test(expected = InvalidParameterException.class)
@@ -135,25 +79,6 @@ public class QueryHelperTest {
                 new int[]{20, 30, 40, 50});
 
         queryHelper.getFilterValues(filterDescriptor);
-    }
-
-    @Test
-    public void TestGetFilterValuesSingleValue() {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(
-                FilterCondition.AND,
-                "age",
-                FilterOperator.EQUAL,
-                10);
-
-        String[] result = queryHelper.getFilterValues(filterDescriptor);
-        assertEquals(1, result.length);
-        assertEquals("10", result[0]);
-
-
-        filterDescriptor.setValue(null);
-        result = queryHelper.getFilterValues(filterDescriptor);
-        assertEquals(1, result.length);
-        assertEquals(null, result[0]);
     }
 
     @Test
@@ -306,7 +231,7 @@ public class QueryHelperTest {
         ParamExpression result = queryHelper.toWhereExpression(Student.class, filterDescriptor);
         assertEquals(true, result.getExpression().startsWith("age = #{param_age_EQUAL"));
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_EQUAL"));
-        assertEquals("20", result.getParamMap().values().iterator().next());
+        assertEquals(20, result.getParamMap().values().iterator().next());
 
         filterDescriptor.setOperator(FilterOperator.BETWEEN);
         filterDescriptor.setValue(new int[]{20, 30});
@@ -315,8 +240,8 @@ public class QueryHelperTest {
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_BETWEEN"));
         List<Object> values = new ArrayList<>();
         values.addAll(result.getParamMap().values());
-        assertEquals("20", values.get(0));
-        assertEquals("30", values.get(1));
+        assertEquals(20, values.get(0));
+        assertEquals(30, values.get(1));
 
         filterDescriptor.setOperator(FilterOperator.IN);
         filterDescriptor.setValue(new int[]{20, 30, 40, 50});
@@ -325,10 +250,10 @@ public class QueryHelperTest {
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_IN"));
         values = new ArrayList<>();
         values.addAll(result.getParamMap().values());
-        assertEquals("20", values.get(0));
-        assertEquals("30", values.get(1));
-        assertEquals("40", values.get(2));
-        assertEquals("50", values.get(3));
+        assertEquals(20, values.get(0));
+        assertEquals(30, values.get(1));
+        assertEquals(40, values.get(2));
+        assertEquals(50, values.get(3));
 
         result = queryHelper.toWhereExpression(Student.class, (FilterDescriptorBase) null);
         assertEquals("", result.getExpression());

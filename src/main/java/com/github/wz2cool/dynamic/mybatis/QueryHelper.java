@@ -14,9 +14,6 @@ class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
-    public QueryHelper() {
-    }
-
     // region filter
     ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
         if (filters == null || filters.length == 0) {
@@ -60,7 +57,7 @@ class QueryHelper {
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
         String propertyPath = filterDescriptor.getPropertyPath();
         FilterOperator operator = filterDescriptor.getOperator();
-        String[] filterValues = getFilterValues(filterDescriptor);
+        Object[] filterValues = getFilterValues(filterDescriptor);
 
         String expression;
         // keep order.
@@ -77,7 +74,7 @@ class QueryHelper {
             paramMap.put(paramPlaceholder2, filterValues[1]);
         } else if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             List<String> paramPlaceholders = new ArrayList<>();
-            for (String filterValue : filterValues) {
+            for (Object filterValue : filterValues) {
                 String paramPlaceholder =
                         String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
@@ -92,7 +89,7 @@ class QueryHelper {
                     String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
 
-            String filterValue = processSingleFilterValue(operator, filterValues[0]);
+            Object filterValue = processSingleFilterValue(operator, filterValues[0]);
             paramMap.put(paramPlaceholder, filterValue);
         }
 
@@ -102,8 +99,8 @@ class QueryHelper {
         return paramExpression;
     }
 
-    String processSingleFilterValue(final FilterOperator operator, final String filterValue) {
-        String result;
+    Object processSingleFilterValue(final FilterOperator operator, final Object filterValue) {
+        Object result;
         if (operator == FilterOperator.START_WITH) {
             result = (filterValue == null ? "" : filterValue) + "%";
         } else if (operator == FilterOperator.END_WITH) {
@@ -125,12 +122,12 @@ class QueryHelper {
         return expressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
     }
 
-    String[] getFilterValues(final FilterDescriptor filterDescriptor) {
+    Object[] getFilterValues(final FilterDescriptor filterDescriptor) {
         FilterOperator operator = filterDescriptor.getOperator();
         Object filterValue = filterDescriptor.getValue();
         if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
-                return cleanFilterValues(CommonsHelper.getCollectionValues(filterValue));
+                return CommonsHelper.getCollectionValues(filterValue);
             } else {
                 String errMsg = "filter value of \"IN\" or \"NOT_IN\" operator must be array or collection";
                 throw new InvalidParameterException(errMsg);
@@ -139,7 +136,7 @@ class QueryHelper {
 
         if (operator == FilterOperator.BETWEEN) {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
-                String[] filterValues = cleanFilterValues(CommonsHelper.getCollectionValues(filterValue));
+                Object[] filterValues = CommonsHelper.getCollectionValues(filterValue);
                 if (filterValues.length != 2) {
                     String errMsg = "if \"BETWEEN\" operator, the count of filter value must be 2";
                     throw new InvalidParameterException(errMsg);
@@ -157,34 +154,10 @@ class QueryHelper {
         }
 
         if (filterValue == null) {
-            return new String[]{null};
+            return new Object[]{null};
         } else {
-            return cleanFilterValues(filterValue);
+            return new Object[]{filterValue};
         }
-    }
-
-    String[] cleanFilterValues(final Object... filterValues) {
-        if (filterValues == null || filterValues.length == 0) {
-            return new String[0];
-        }
-
-        Collection<String> newFilterValues = new ArrayList<>();
-        for (Object filterValue : filterValues) {
-            String useFilterValue = cleanFilterValue(CommonsHelper.toStringSafe(filterValue));
-            newFilterValues.add(cleanFilterValue(useFilterValue));
-        }
-        return newFilterValues.toArray(new String[newFilterValues.size()]);
-    }
-
-    String cleanFilterValue(String originalFilterValue) {
-        if (StringUtils.isBlank(originalFilterValue)) {
-            return "";
-        }
-        String result = originalFilterValue;
-        result = StringUtils.strip(result, "\"");
-        result = StringUtils.strip(result, "'");
-        result = StringUtils.strip(result, "`");
-        return result;
     }
 
     // endregion
