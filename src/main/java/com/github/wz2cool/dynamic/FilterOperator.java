@@ -52,17 +52,5 @@ public enum FilterOperator {
     /**
      * Between filter operator.
      */
-    BETWEEN,
-    /**
-     * Bitand greater zero filter operator.
-     */
-    BITAND_GREATER_ZERO,
-    /**
-     * Bitand equal zero filter operator.
-     */
-    BITAND_EQUAL_ZERO,
-    /**
-     * Bitand equal input filter operator.
-     */
-    BITAND_EQUAL_INPUT
+    BETWEEN
 }

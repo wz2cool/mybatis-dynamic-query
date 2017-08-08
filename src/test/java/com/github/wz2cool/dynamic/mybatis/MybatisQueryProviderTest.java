@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
 
 public class MybatisQueryProviderTest {
-    MybatisQueryProvider mybatisQueryProvider = new MybatisQueryProvider(DatabaseType.MYSQL);
+    MybatisQueryProvider mybatisQueryProvider = new MybatisQueryProvider();
 
     @Test
     public void TestGetWhereExpression() throws Exception {

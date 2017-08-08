@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class QueryHelperTest {
 
-    QueryHelper queryHelper = new QueryHelper(DatabaseType.MYSQL);
+    QueryHelper queryHelper = new QueryHelper();
     @Test
     public void TestToSortExpression() {
         SortDescriptor nameSort = new SortDescriptor("name", SortDirection.DESC);
@@ -296,36 +296,6 @@ public class QueryHelperTest {
 
         queryHelper.generateFilterExpression(Student.class, filterDescriptor,
                 "placeholder1");
-    }
-
-    @Test
-    public void TestGenerateFilterExpressionBITWISE_GREATER_ZERO() {
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.BITAND_GREATER_ZERO, 2);
-
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
-                "placeholder1");
-        assertEquals("age & #{placeholder1} > 0", result);
-    }
-
-    @Test
-    public void TestGenerateFilterExpressionBITWISE_EQUAL_ZERO() {
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.BITAND_EQUAL_ZERO, 2);
-
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
-                "placeholder1");
-        assertEquals("age & #{placeholder1} = 0", result);
-    }
-
-    @Test
-    public void TestGenerateFilterExpressionBITWISE_EQUAL_INPUT() {
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.BITAND_EQUAL_INPUT, 2);
-
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
-                "placeholder1");
-        assertEquals("age & #{placeholder1} = #{placeholder1}", result);
     }
 
     @Test

@@ -12,10 +12,9 @@ import java.util.*;
  */
 class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
-    private final DbExpressionHelper dbExpressionHelper;
+    private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
-    public QueryHelper(DatabaseType databaseType) {
-        this.dbExpressionHelper = new DbExpressionHelper(databaseType);
+    public QueryHelper() {
     }
 
     // region filter
@@ -123,7 +122,7 @@ class QueryHelper {
         Object value = filterDescriptor.getValue();
         ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, propertyPath);
 
-        return dbExpressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
+        return expressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
     }
 
     String[] getFilterValues(final FilterDescriptor filterDescriptor) {

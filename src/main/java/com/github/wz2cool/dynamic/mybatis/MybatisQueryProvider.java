@@ -17,16 +17,7 @@ import java.util.*;
  */
 public class MybatisQueryProvider {
     private final EntityCache entityCache = EntityCache.getInstance();
-    private final QueryHelper queryHelper;
-
-    /**
-     * Instantiates a new Mybatis query provider.
-     *
-     * @param databaseType the database type
-     */
-    public MybatisQueryProvider(DatabaseType databaseType) {
-        queryHelper = new QueryHelper(databaseType);
-    }
+    private final QueryHelper queryHelper = new QueryHelper();
 
     /**
      * Gets where query param map.

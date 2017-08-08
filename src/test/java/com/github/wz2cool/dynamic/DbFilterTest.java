@@ -1,6 +1,5 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.dynamic.mybatis.DatabaseType;
 import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
@@ -47,17 +46,7 @@ public class DbFilterTest {
 
     @Before
     public void beforeTest() {
-        DatabaseType databaseType;
-        if ("mysql".equalsIgnoreCase(active)) {
-            databaseType = DatabaseType.MYSQL;
-        } else if ("sqlserver".equalsIgnoreCase(active)) {
-            databaseType = DatabaseType.SQLSERVER;
-        } else if ("postresql".equalsIgnoreCase(active)) {
-            databaseType = DatabaseType.POSTRESQL;
-        } else {
-            databaseType = DatabaseType.H2;
-        }
-        mybatisQueryProvider = new MybatisQueryProvider(databaseType);
+        mybatisQueryProvider = new MybatisQueryProvider();
     }
 
     @Test
@@ -237,45 +226,6 @@ public class DbFilterTest {
     }
 
     @Test
-    public void testBITWISE_GREATER_ZERO() throws Exception {
-        FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.BITAND_GREATER_ZERO, 2);
-        Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
-                        ProductView.class, "whereExpression", idFilter);
-        List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams)
-                .stream().sorted(Comparator.comparing(ProductView::getProductID)).collect(Collectors.toList());
-        assertEquals(Long.valueOf(2), productViews.get(0).getProductID());
-        assertEquals(Long.valueOf(3), productViews.get(1).getProductID());
-    }
-
-    @Test
-    public void testBITWISE_EQUAL_ZERO() throws Exception {
-        FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.BITAND_EQUAL_ZERO, 2);
-        Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
-                        ProductView.class, "whereExpression", idFilter);
-        List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams)
-                .stream().sorted(Comparator.comparing(ProductView::getProductID)).collect(Collectors.toList());
-        ;
-        assertEquals(Long.valueOf(1), productViews.get(0).getProductID());
-        assertEquals(Long.valueOf(4), productViews.get(1).getProductID());
-    }
-
-
-    @Test
-    public void testBITWISE_EQUAL_INPUT() throws Exception {
-        FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.BITAND_EQUAL_INPUT, 3);
-        Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
-                        ProductView.class, "whereExpression", idFilter);
-        List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
-        assertEquals(Long.valueOf(3), productViews.get(0).getProductID());
-    }
-
-    @Test
     public void simpleDemo() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
@@ -378,5 +328,6 @@ public class DbFilterTest {
         user.setPassword("pwd");
         int result = userDao.insert(user);
         assertEquals(1, result);
+
     }
 }
