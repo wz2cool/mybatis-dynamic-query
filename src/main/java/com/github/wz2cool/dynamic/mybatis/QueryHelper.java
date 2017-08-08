@@ -49,6 +49,12 @@ class QueryHelper {
         } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
             FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) filterDescriptorBase;
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
+        } else if (filterDescriptorBase instanceof CustomFilterDescriptor) {
+            CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) filterDescriptorBase;
+            ParamExpression paramExpression = new ParamExpression();
+            paramExpression.setExpression(customFilterDescriptor.getExpression());
+            paramExpression.getParamMap().putAll(customFilterDescriptor.getParamMap());
+            return paramExpression;
         } else {
             return new ParamExpression();
         }
