@@ -3,7 +3,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptor;
-import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
@@ -66,6 +65,30 @@ public class DynamicQueryProvider extends MapperTemplate {
         return sql.toString();
     }
 
+    public String selectByDynamicQueryRowBounds(MappedStatement ms) {
+        return selectByDynamicQuery(ms);
+    }
+
+    public String updateSelectiveByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
+        sql.append(SqlHelper.updateSetColumns(entityClass, "record", true, isNotEmpty()));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
+    public String updateByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
+        sql.append(SqlHelper.updateSetColumns(entityClass, "record", false, isNotEmpty()));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
     /// region for xml query.
     // add filterParams prefix
     public static Map<String, Object> getDynamicQueryParamInternal(final DynamicQuery dynamicQuery)
@@ -90,13 +113,6 @@ public class DynamicQueryProvider extends MapperTemplate {
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
         paramMap.put("exists", dynamicQuery.isExists());
         return paramMap;
-    }
-
-    public static Map<String, Object> getSortQueryParamMap(
-            final Class entityClass,
-            final String sortExpressionPlaceholder,
-            final SortDescriptor[] sorts) throws PropertyNotFoundException {
-        return MybatisQueryProvider.getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
     }
     // endregion
 }

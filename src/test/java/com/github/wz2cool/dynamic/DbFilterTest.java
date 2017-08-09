@@ -336,6 +336,10 @@ public class DbFilterTest {
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         dynamicQuery.setDistinct(true);
         dynamicQuery.addFilter(filterDescriptor);
-        userDao.selectByDynamicQuery(dynamicQuery);
+
+        User updateUser = new User();
+        updateUser.setUsername("test");
+        updateUser.setId(10000);
+        userDao.updateByDynamicQuery(updateUser, dynamicQuery);
     }
 }

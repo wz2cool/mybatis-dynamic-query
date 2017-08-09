@@ -15,5 +15,7 @@ public interface DynamicQueryMapper<T> extends
         BaseMapper<T>,
         SelectCountByDynamicQueryMapper<T>,
         DeleteByDynamicQueryMapper<T>,
-        SelectByDynamicQueryMapper<T> {
+        SelectByDynamicQueryMapper<T>,
+        UpdateSelectiveByDynamicQueryMapper<T>,
+        UpdateByDynamicQueryMapper<T> {
 }
