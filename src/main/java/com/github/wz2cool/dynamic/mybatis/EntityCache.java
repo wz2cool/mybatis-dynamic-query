@@ -74,6 +74,12 @@ class EntityCache {
         return propertyDbColumnMap.get(propertyName);
     }
 
+    ColumnInfo[] getColumnInfos(Class entityClass) {
+        Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
+        Collection<ColumnInfo> columnInfos = propertyDbColumnMap.values();
+        return columnInfos.toArray(new ColumnInfo[columnInfos.size()]);
+    }
+
     private Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);

@@ -73,29 +73,6 @@ public class MybatisQueryProviderTest {
         mybatisQueryProvider.validSorts(Student.class, ageSort);
     }
 */
-    @Test
-    public void TestGetFieldValue() {
-        Student student = new Student();
-        student.setName("frank");
-
-        Field nameField =
-                EntityHelper.getPropertyField("name", ReflectHelper.getProperties(student.getClass()));
-        nameField.setAccessible(true);
-        Object result = mybatisQueryProvider.getFieldValue(student, nameField);
-        assertEquals("frank", result);
-    }
-
-    @Test(expected = InternalRuntimeException.class)
-    public void TestGetFieldValueThrowException() {
-        Student student = new Student();
-        student.setName("frank");
-
-        Field nameField =
-                EntityHelper.getPropertyField("name", ReflectHelper.getProperties(student.getClass()));
-
-        Object result = mybatisQueryProvider.getFieldValue(student, nameField);
-        assertEquals("frank", result);
-    }
 
     @Test
     public void testGetSortQueryParamMap() throws Exception {

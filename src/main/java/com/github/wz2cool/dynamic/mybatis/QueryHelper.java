@@ -195,6 +195,18 @@ public class QueryHelper {
     }
     // endregion
 
+    public String toAllColumnsExpression(final Class entityClass) {
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : columnInfos) {
+            String column = String.format("%s AS %s",
+                    columnInfo.getQueryColumn(),
+                    EntityHelper.camelCaseToUnderscore(columnInfo.getField().getName()));
+            columns.add(column);
+        }
+        return String.join(",", columns);
+    }
+
     /**
      * Valid filters.
      *

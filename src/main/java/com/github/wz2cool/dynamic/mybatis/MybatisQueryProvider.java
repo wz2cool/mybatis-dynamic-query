@@ -94,18 +94,7 @@ public class MybatisQueryProvider {
         return queryHelper.toSortExpression(entityClass, sorts);
     }
 
-    /**
-     * Gets field value.
-     *
-     * @param obj   the obj
-     * @param field the field
-     * @return the field value
-     */
-    Object getFieldValue(final Object obj, final Field field) {
-        try {
-            return field.get(obj);
-        } catch (IllegalAccessException ex) {
-            throw new InternalRuntimeException(ex);
-        }
+    public static String getAllColumnsExpression(final Class entityClass) {
+        return queryHelper.toAllColumnsExpression(entityClass);
     }
 }

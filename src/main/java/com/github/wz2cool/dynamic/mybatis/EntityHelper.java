@@ -73,7 +73,7 @@ public class EntityHelper {
         }
     }
 
-    private static String camelCaseToUnderscore(String str) {
+    public static String camelCaseToUnderscore(String str) {
         return str.replaceAll("(.)(\\p{Lu})", "$1_$2").toLowerCase();
     }
 }
