@@ -14,5 +14,5 @@ import tk.mybatis.mapper.common.Mapper;
  * \* Description:
  * \
  */
-public interface UserDao extends ExampleMapper<User> {
+public interface UserDao extends DynamicQueryMapper<User> {
 }

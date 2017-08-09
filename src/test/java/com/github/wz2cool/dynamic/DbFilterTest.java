@@ -321,5 +321,17 @@ public class DbFilterTest {
         northwindDao.getProductByDynamic(queryParams);
     }
 
+    @Test
+    public void testUserInsert() throws Exception {
 
+        User user = new User();
+        user.setId(200);
+        user.setUsername("frank");
+        user.setPassword("pwd");
+        int result = userDao.insert(user);
+        assertEquals(1, result);
+
+
+        userDao.selectCountByDynamicQuery(User.class);
+    }
 }
