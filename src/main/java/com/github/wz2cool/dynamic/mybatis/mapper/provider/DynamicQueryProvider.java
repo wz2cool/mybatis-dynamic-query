@@ -111,7 +111,6 @@ public class DynamicQueryProvider extends MapperTemplate {
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression);
 
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
-        paramMap.put("exists", dynamicQuery.isExists());
         return paramMap;
     }
     // endregion

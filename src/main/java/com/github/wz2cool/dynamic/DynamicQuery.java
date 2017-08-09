@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class DynamicQuery<T> {
     private boolean distinct;
-    private boolean exists;
     private final Class<T> entityClass;
     private final List<FilterDescriptorBase> filters = new ArrayList<>();
     private final List<SortDescriptor> sorts = new ArrayList<>();
@@ -57,13 +56,5 @@ public class DynamicQuery<T> {
 
     public void setDistinct(boolean distinct) {
         this.distinct = distinct;
-    }
-
-    public boolean isExists() {
-        return exists;
-    }
-
-    public void setExists(boolean exists) {
-        this.exists = exists;
     }
 }
