@@ -14,5 +14,6 @@ import tk.mybatis.mapper.common.BaseMapper;
 public interface DynamicQueryMapper<T> extends
         BaseMapper<T>,
         SelectCountByDynamicQueryMapper<T>,
-        DeleteByDynamicQueryMapper<T> {
+        DeleteByDynamicQueryMapper<T>,
+        SelectByDynamicQueryMapper<T> {
 }

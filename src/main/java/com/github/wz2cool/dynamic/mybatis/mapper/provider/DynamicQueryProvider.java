@@ -51,6 +51,20 @@ public class DynamicQueryProvider extends MapperTemplate {
         return sql.toString();
     }
 
+    public String selectByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        setResultType(ms, entityClass);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append("SELECT");
+        sql.append("<if test=\"distinct\">distinct</if>");
+        //支持查询指定列
+        sql.append(SqlHelper.exampleSelectColumns(entityClass));
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
     /// region for xml query.
     // add filterParams prefix
     public static Map<String, Object> getWhereQueryParamInternal(

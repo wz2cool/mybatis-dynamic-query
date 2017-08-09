@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.constant;
 
+import org.apache.ibatis.annotations.Select;
+
 /**
  * \* Created with IntelliJ IDEA.
  * \* User: Frank
@@ -10,6 +12,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper.constant;
  * \
  */
 public class MapperContant {
+    public final static String DISTINCT = "distinct";
     public final static String ENTITY_CLASS = "entityClass";
     public final static String FILTERS = "filters";
     public final static String FILTER_PARAMS = "filterParams";
