@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper;
 
-import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.BaseMapper;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -12,6 +12,6 @@ import tk.mybatis.mapper.common.Mapper;
  * \
  */
 public interface DynamicQueryMapper<T> extends
-        Mapper<T>,
+        BaseMapper<T>,
         SelectCountByDynamicQueryMapper<T> {
 }

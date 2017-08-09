@@ -36,7 +36,7 @@ public class MybatisQueryProviderTest {
         assertEquals("age DESC", result);
     }
 
-    @Test
+   /* @Test
     public void TestValidFilters() throws Exception {
         mybatisQueryProvider.validFilters(Student.class);
 
@@ -72,7 +72,7 @@ public class MybatisQueryProviderTest {
         SortDescriptor ageSort = new SortDescriptor("NotFoundException", SortDirection.DESC);
         mybatisQueryProvider.validSorts(Student.class, ageSort);
     }
-
+*/
     @Test
     public void TestGetFieldValue() {
         Student student = new Student();

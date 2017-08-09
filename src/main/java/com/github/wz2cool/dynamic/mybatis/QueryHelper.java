@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,15 +11,19 @@ import java.util.*;
 /**
  * Created by Frank on 7/12/2017.
  */
-class QueryHelper {
+public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
+    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters)
+            throws PropertyNotFoundException {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
+
+        validFilters(entityClass, filters);
+        validFilters(entityClass, filters);
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
@@ -43,7 +48,8 @@ class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase) {
+    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase)
+            throws PropertyNotFoundException {
         if (filterDescriptorBase instanceof FilterDescriptor) {
             return toWhereExpression(entityClass, (FilterDescriptor) filterDescriptorBase);
         } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
@@ -174,10 +180,13 @@ class QueryHelper {
         return String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
     }
 
-    String toSortExpression(final Class entityClass, final SortDescriptor... sorts) {
+    String toSortExpression(final Class entityClass, final SortDescriptor... sorts)
+            throws PropertyNotFoundException {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return "";
         }
+
+        validSorts(entityClass, sorts);
 
         String[] sortExpressions = Arrays.stream(sorts)
                 .map(x -> toSortExpression(entityClass, x)).toArray(String[]::new);
@@ -185,4 +194,55 @@ class QueryHelper {
         return String.join(", ", sortExpressions);
     }
     // endregion
+
+    /**
+     * Valid filters.
+     *
+     * @param entityClass the entity class
+     * @param filters     the filters
+     * @throws PropertyNotFoundException the property not found exception
+     */
+    void validFilters(final Class entityClass, final FilterDescriptorBase... filters)
+            throws PropertyNotFoundException {
+        if (filters == null || filters.length == 0) {
+            return;
+        }
+
+        for (FilterDescriptorBase filter : filters) {
+            if (filter instanceof FilterDescriptor) {
+                FilterDescriptor useFilter = (FilterDescriptor) filter;
+                String propertyPath = useFilter.getPropertyPath();
+                if (!entityCache.hasProperty(entityClass, propertyPath)) {
+                    String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                    throw new PropertyNotFoundException(errMsg);
+                }
+            } else if (filter instanceof FilterGroupDescriptor) {
+                FilterGroupDescriptor userGroupFilter = (FilterGroupDescriptor) filter;
+                validFilters(entityClass, userGroupFilter.getFilters());
+            }
+        }
+    }
+
+    /**
+     * Valid sorts.
+     *
+     * @param entityClass the entity class
+     * @param sorts       the sorts
+     * @throws PropertyNotFoundException the property not found exception
+     */
+    void validSorts(final Class entityClass, final SortDescriptor... sorts)
+            throws PropertyNotFoundException {
+        if (sorts == null || sorts.length == 0) {
+            return;
+        }
+
+        for (SortDescriptor sort : sorts) {
+            String propertyPath = sort.getPropertyPath();
+            if (!entityCache.hasProperty(entityClass, propertyPath)) {
+                String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                throw new PropertyNotFoundException(errMsg);
+            }
+        }
+    }
+
 }

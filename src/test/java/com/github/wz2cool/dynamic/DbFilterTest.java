@@ -331,7 +331,8 @@ public class DbFilterTest {
         int result = userDao.insert(user);
         assertEquals(1, result);
 
-
-        userDao.selectCountByDynamicQuery(User.class);
+        FilterDescriptor filterDescriptor =
+                new FilterDescriptor(FilterCondition.AND, "username", FilterOperator.EQUAL, "frank");
+        userDao.selectCountByDynamicQuery(User.class, filterDescriptor);
     }
 }

@@ -20,7 +20,7 @@ public class QueryHelperTest {
     QueryHelper queryHelper = new QueryHelper();
 
     @Test
-    public void TestToSortExpression() {
+    public void TestToSortExpression() throws Exception {
         SortDescriptor nameSort = new SortDescriptor("name", SortDirection.DESC);
         SortDescriptor ageSort = new SortDescriptor("age", SortDirection.ASC);
 
@@ -224,7 +224,7 @@ public class QueryHelperTest {
     }
 
     @Test
-    public void TestToWhereExpressionForFilterDescriptor() {
+    public void TestToWhereExpressionForFilterDescriptor() throws Exception {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
 
@@ -263,7 +263,7 @@ public class QueryHelperTest {
     }
 
     @Test
-    public void TestToWhereExpressionForFilterGroupDescriptor() {
+    public void TestToWhereExpressionForFilterGroupDescriptor() throws Exception {
         FilterGroupDescriptor filterGroupDescriptor = new FilterGroupDescriptor();
         FilterDescriptor ageFilter =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
