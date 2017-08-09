@@ -2,15 +2,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperContant;
 
-/**
- * \* Created with IntelliJ IDEA.
- * \* User: Frank
- * \* Date: 8/9/2017
- * \* Time: 11:39 AM
- * \* To change this template use File | Settings | File Templates.
- * \* Description:
- * \
- */
 public class DynamicQuerySqlHelper {
     public static String getBindFilterParams() {
         StringBuilder sql = new StringBuilder();

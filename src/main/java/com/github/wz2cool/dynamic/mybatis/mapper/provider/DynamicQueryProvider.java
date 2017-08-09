@@ -39,11 +39,19 @@ public class DynamicQueryProvider extends MapperTemplate {
         sql.append(SqlHelper.selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
-        String result = sql.toString();
-        return result;
+        return sql.toString();
     }
 
+    public String deleteByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
 
+    /// region for xml query.
     // add filterParams prefix
     public static Map<String, Object> getWhereQueryParamInternal(
             final Class entityClass,
@@ -66,5 +74,5 @@ public class DynamicQueryProvider extends MapperTemplate {
             final SortDescriptor[] sorts) throws PropertyNotFoundException {
         return MybatisQueryProvider.getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
     }
-
+    // endregion
 }

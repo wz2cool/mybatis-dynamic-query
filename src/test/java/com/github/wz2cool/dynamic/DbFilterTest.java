@@ -323,7 +323,6 @@ public class DbFilterTest {
 
     @Test
     public void testUserInsert() throws Exception {
-
         User user = new User();
         user.setId(200);
         user.setUsername("frank");
@@ -333,6 +332,7 @@ public class DbFilterTest {
 
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "username", FilterOperator.EQUAL, "frank");
-        userDao.selectCountByDynamicQuery(User.class, filterDescriptor);
+        result = userDao.deleteByDynamicQuery(User.class, filterDescriptor);
+        assertEquals(1, result);
     }
 }
