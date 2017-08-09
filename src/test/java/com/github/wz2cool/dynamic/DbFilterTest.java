@@ -8,6 +8,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import com.github.wz2cool.model.Student;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
@@ -332,6 +333,9 @@ public class DbFilterTest {
 
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "username", FilterOperator.EQUAL, "frank");
-        userDao.selectCountByDynamicQuery(User.class, filterDescriptor);
+        DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
+        dynamicQuery.setDistinct(true);
+        dynamicQuery.addFilter(filterDescriptor);
+        userDao.selectByDynamicQuery(dynamicQuery);
     }
 }

@@ -12,18 +12,18 @@ import java.util.List;
  * \* Description:
  * \
  */
-public class DynamicQuery {
+public class DynamicQuery<T> {
     private boolean distinct;
     private boolean exists;
-    private final Class<?> entityClass;
+    private final Class<T> entityClass;
     private final List<FilterDescriptorBase> filters = new ArrayList<>();
     private final List<SortDescriptor> sorts = new ArrayList<>();
 
-    public DynamicQuery(Class<?> entityClass) {
+    public DynamicQuery(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
-    public Class<?> getEntityClass() {
+    public Class<T> getEntityClass() {
         return entityClass;
     }
 
@@ -41,6 +41,14 @@ public class DynamicQuery {
 
     public boolean removeFilter(FilterDescriptorBase filter) {
         return this.filters.remove(filter);
+    }
+
+    public boolean addSort(SortDescriptor sort) {
+        return this.sorts.add(sort);
+    }
+
+    public boolean removeSort(SortDescriptor sort) {
+        return this.sorts.remove(sort);
     }
 
     public boolean isDistinct() {

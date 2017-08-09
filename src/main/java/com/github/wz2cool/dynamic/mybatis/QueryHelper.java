@@ -180,7 +180,7 @@ public class QueryHelper {
         return String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
     }
 
-    String toSortExpression(final Class entityClass, final SortDescriptor... sorts)
+    public String toSortExpression(final Class entityClass, final SortDescriptor... sorts)
             throws PropertyNotFoundException {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return "";

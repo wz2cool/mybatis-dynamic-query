@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
+import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptor;
 import com.github.wz2cool.exception.InternalRuntimeException;

@@ -1,11 +1,12 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
+import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptor;
 import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperContant;
+import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -13,7 +14,6 @@ import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,7 +57,8 @@ public class DynamicQueryProvider extends MapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams());
         sql.append("SELECT");
-        sql.append("<if test=\"distinct\">distinct</if>");
+        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
+                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
         sql.append(SqlHelper.exampleSelectColumns(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
@@ -67,18 +68,27 @@ public class DynamicQueryProvider extends MapperTemplate {
 
     /// region for xml query.
     // add filterParams prefix
-    public static Map<String, Object> getWhereQueryParamInternal(
-            final Class entityClass,
-            final FilterDescriptorBase[] filters) throws PropertyNotFoundException {
-        ParamExpression paramExpression = queryHelper.toWhereExpression(entityClass, filters);
-        String expression = paramExpression.getExpression();
-        Map<String, Object> paramMap = paramExpression.getParamMap();
+    public static Map<String, Object> getDynamicQueryParamInternal(final DynamicQuery dynamicQuery)
+            throws PropertyNotFoundException {
+        Class<?> entityClass = dynamicQuery.getEntityClass();
+        FilterDescriptorBase[] filters = dynamicQuery.getFilters();
+        SortDescriptor[] sorts = dynamicQuery.getSorts();
+
+        ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
+        String whereExpression = whereParamExpression.getExpression();
+        Map<String, Object> paramMap = whereParamExpression.getParamMap();
         for (Map.Entry<String, Object> param : paramMap.entrySet()) {
             String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperContant.FILTER_PARAMS, key);
-            expression = expression.replace(key, newKey);
+            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
+            whereExpression = whereExpression.replace(key, newKey);
         }
-        paramMap.put(MapperContant.WHERE_EXPRESSION, expression);
+        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
+
+        String sortExpression = queryHelper.toSortExpression(entityClass, sorts);
+        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression);
+
+        paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
+        paramMap.put("exists", dynamicQuery.isExists());
         return paramMap;
     }
 
