@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 /**
  * Created by Frank on 7/10/2017.
  */
-class EntityHelper {
+public class EntityHelper {
     private EntityHelper() {
         throw new UnsupportedOperationException();
     }

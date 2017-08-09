@@ -8,6 +8,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -320,14 +321,5 @@ public class DbFilterTest {
         northwindDao.getProductByDynamic(queryParams);
     }
 
-    @Test
-    public void testUserInsert() throws Exception {
-        User user = new User();
-        user.setId(200);
-        user.setUsername("frank");
-        user.setPassword("pwd");
-        int result = userDao.insert(user);
-        assertEquals(1, result);
 
-    }
 }

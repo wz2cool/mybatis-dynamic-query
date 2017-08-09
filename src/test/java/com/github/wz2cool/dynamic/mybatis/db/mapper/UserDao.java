@@ -1,6 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis.db.mapper;
 
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
+import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
+import tk.mybatis.mapper.common.ExampleMapper;
 import tk.mybatis.mapper.common.Mapper;
 
 /**
@@ -12,5 +14,5 @@ import tk.mybatis.mapper.common.Mapper;
  * \* Description:
  * \
  */
-public interface UserDao extends Mapper<User> {
+public interface UserDao extends ExampleMapper<User> {
 }
