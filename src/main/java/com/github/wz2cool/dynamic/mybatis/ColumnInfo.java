@@ -37,8 +37,8 @@ class ColumnInfo {
     }
 
     public String getQueryColumn() {
-        if (StringUtils.isNotBlank(this.tableOrAlias)) {
-            return String.format("%s.%s", this.tableOrAlias, this.columnName);
+        if (StringUtils.isNotBlank(getTableOrAlias())) {
+            return String.format("%s.%s", getTableOrAlias(), getColumnName());
         } else {
             return this.columnName;
         }

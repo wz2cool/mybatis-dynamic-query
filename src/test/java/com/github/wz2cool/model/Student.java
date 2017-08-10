@@ -14,6 +14,16 @@ public class Student {
     @Column(name = "note", table = "queryColumn")
     private String note;
 
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public String getNote() {
         return note;
     }

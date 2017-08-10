@@ -1,6 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
@@ -276,4 +278,47 @@ public class QueryHelperTest {
         boolean test = Pattern.matches(pattern, result.getExpression());
         assertEquals(true, test);
     }
+
+    @Test
+    public void testToAllColumnsExpression() {
+        String result = queryHelper.toAllColumnsExpression(ProductView.class);
+        assertEquals("product.product_id AS product_id, product.price AS price, category.description AS description, category.category_name AS category_name, product.product_name AS product_name, category.category_id AS category_id", result);
+    }
+
+    public void TestValidFilters() throws Exception {
+        queryHelper.validFilters(Student.class);
+
+        FilterDescriptor ageFilter =
+                new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
+        queryHelper.validFilters(Student.class, ageFilter);
+
+        FilterGroupDescriptor filterGroupDescriptor = new FilterGroupDescriptor();
+        FilterDescriptor nameFilter =
+                new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.START_WITH, "a");
+        filterGroupDescriptor.addFilters(ageFilter, nameFilter);
+
+        queryHelper.validFilters(Student.class, filterGroupDescriptor);
+    }
+
+    @Test(expected = PropertyNotFoundException.class)
+    public void TestValidFiltersNotFound() throws Exception {
+        FilterDescriptor filterDescriptor =
+                new FilterDescriptor(FilterCondition.AND, "NotFoundException", FilterOperator.EQUAL, 20);
+        queryHelper.validFilters(Student.class, filterDescriptor);
+    }
+
+    @Test
+    public void TestValidSorts() throws Exception {
+        SortDescriptor ageSort = new SortDescriptor("name", SortDirection.DESC);
+        queryHelper.validSorts(Student.class, ageSort);
+
+        queryHelper.validSorts(Student.class);
+    }
+
+    @Test(expected = PropertyNotFoundException.class)
+    public void TestValidSortNotFound() throws Exception {
+        SortDescriptor ageSort = new SortDescriptor("NotFoundException", SortDirection.DESC);
+        queryHelper.validSorts(Student.class, ageSort);
+    }
+
 }

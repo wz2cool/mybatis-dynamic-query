@@ -36,44 +36,6 @@ public class MybatisQueryProviderTest {
         assertEquals("age DESC", result);
     }
 
-   /* @Test
-    public void TestValidFilters() throws Exception {
-        mybatisQueryProvider.validFilters(Student.class);
-
-        FilterDescriptor ageFilter =
-                new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
-        mybatisQueryProvider.validFilters(Student.class, ageFilter);
-
-        FilterGroupDescriptor filterGroupDescriptor = new FilterGroupDescriptor();
-        FilterDescriptor nameFilter =
-                new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.START_WITH, "a");
-        filterGroupDescriptor.addFilters(ageFilter, nameFilter);
-
-        mybatisQueryProvider.validFilters(Student.class, filterGroupDescriptor);
-    }
-
-    @Test(expected = PropertyNotFoundException.class)
-    public void TestValidFiltersNotFound() throws Exception {
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "NotFoundException", FilterOperator.EQUAL, 20);
-        mybatisQueryProvider.validFilters(Student.class, filterDescriptor);
-    }
-
-    @Test
-    public void TestValidSorts() throws Exception {
-        SortDescriptor ageSort = new SortDescriptor("name", SortDirection.DESC);
-        mybatisQueryProvider.validSorts(Student.class, ageSort);
-
-        mybatisQueryProvider.validSorts(Student.class);
-    }
-
-    @Test(expected = PropertyNotFoundException.class)
-    public void TestValidSortNotFound() throws Exception {
-        SortDescriptor ageSort = new SortDescriptor("NotFoundException", SortDirection.DESC);
-        mybatisQueryProvider.validSorts(Student.class, ageSort);
-    }
-*/
-
     @Test
     public void testGetSortQueryParamMap() throws Exception {
         SortDescriptor ageSort = new SortDescriptor();
