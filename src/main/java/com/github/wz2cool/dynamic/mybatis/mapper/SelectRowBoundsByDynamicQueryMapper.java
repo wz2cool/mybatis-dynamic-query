@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
-public interface SelectByDynamicQueryRowBoundsMapper<T> {
+public interface SelectRowBoundsByDynamicQueryMapper<T> {
 
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
-    List<T> selectByDynamicQueryRowBounds(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
+    List<T> selectRowBoundsByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 }

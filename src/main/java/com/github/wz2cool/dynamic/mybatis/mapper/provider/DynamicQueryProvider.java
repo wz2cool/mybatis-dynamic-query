@@ -65,7 +65,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         return sql.toString();
     }
 
-    public String selectByDynamicQueryRowBounds(MappedStatement ms) {
+    public String selectRowBoundsByDynamicQuery(MappedStatement ms) {
         return selectByDynamicQuery(ms);
     }
 
