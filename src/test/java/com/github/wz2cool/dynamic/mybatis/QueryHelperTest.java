@@ -280,11 +280,19 @@ public class QueryHelperTest {
     }
 
     @Test
+    public void testToWhereExpressionForCustomFilterDescriptor() throws Exception {
+        CustomFilterDescriptor customFilterDescriptor = new CustomFilterDescriptor();
+        customFilterDescriptor.setCondition(FilterCondition.AND);
+        customFilterDescriptor.setExpression("age > {0}");
+    }
+
+    @Test
     public void testToAllColumnsExpression() {
         String result = queryHelper.toAllColumnsExpression(ProductView.class);
         assertEquals("product.product_id AS product_id, product.price AS price, category.description AS description, category.category_name AS category_name, product.product_name AS product_name, category.category_id AS category_id", result);
     }
 
+    @Test
     public void TestValidFilters() throws Exception {
         queryHelper.validFilters(Student.class);
 

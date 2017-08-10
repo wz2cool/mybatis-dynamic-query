@@ -29,14 +29,4 @@ public class SerializeTest {
         assertEquals(filterDescriptor.getCondition(), filterDescriptorCopy.getCondition());
         assertEquals(filterDescriptor.getValue(), filterDescriptorCopy.getValue());
     }
-
-    @Test
-    public void testSerializeFilterGroupDescriptor() {
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
-        FilterGroupDescriptor filterGroupDescriptor = new FilterGroupDescriptor();
-        filterGroupDescriptor.addFilters(filterDescriptor);
-        String jsonStr = gson.toJson(filterGroupDescriptor);
-        FilterGroupDescriptor filterGroupDescriptorCopy = gson.fromJson(jsonStr, FilterGroupDescriptor.class);
-    }
 }

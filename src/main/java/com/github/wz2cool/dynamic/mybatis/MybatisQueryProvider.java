@@ -3,11 +3,10 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptor;
-import com.github.wz2cool.exception.InternalRuntimeException;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,6 +16,39 @@ import java.util.Map;
  */
 public class MybatisQueryProvider {
     private final static QueryHelper queryHelper = new QueryHelper();
+
+    public static <T> Map<String, Object> getQueryParamMap(
+            final DynamicQuery<T> dynamicQuery,
+            final String whereExpressionPlaceholder,
+            final String sortExpressionPlaceholder,
+            final String columnsExpressionPlaceHolder) throws PropertyNotFoundException {
+        if (dynamicQuery == null) {
+            throw new NullPointerException("dynamicQuery");
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        Class<T> entityClass = dynamicQuery.getEntityClass();
+        if (StringUtils.isNotBlank(whereExpressionPlaceholder)) {
+            FilterDescriptorBase[] filters = dynamicQuery.getFilters();
+            Map<String, Object> whereQueryParamMap =
+                    getWhereQueryParamMap(entityClass, whereExpressionPlaceholder, filters);
+            result.putAll(whereQueryParamMap);
+        }
+
+        if (StringUtils.isNotBlank(sortExpressionPlaceholder)) {
+            SortDescriptor[] sorts = dynamicQuery.getSorts();
+            Map<String, Object> sortQueryParamMap =
+                    getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
+            result.putAll(sortQueryParamMap);
+        }
+
+        if (StringUtils.isNotBlank(columnsExpressionPlaceHolder)) {
+            String allColumnExpression = getAllColumnsExpression(entityClass);
+            result.put(columnsExpressionPlaceHolder, allColumnExpression);
+        }
+
+        return result;
+    }
 
     /**
      * Gets where query param map.
