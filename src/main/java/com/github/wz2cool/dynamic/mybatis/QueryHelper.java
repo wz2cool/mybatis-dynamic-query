@@ -4,9 +4,12 @@ import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Frank on 7/12/2017.
@@ -64,6 +67,18 @@ public class QueryHelper {
         } else {
             return new ParamExpression();
         }
+    }
+
+    ParamExpression toWhereExpression(final Class entityClass, final CustomFilterDescriptor customFilterDescriptor) {
+        String pattern = "\\{\\d+\\}";
+        String expression = customFilterDescriptor.getExpression();
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(expression);
+        if (m.find()) {
+
+        }
+
+        return null;
     }
 
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {

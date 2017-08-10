@@ -1,8 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -15,16 +13,7 @@ import java.util.Map;
  */
 public class CustomFilterDescriptor extends FilterDescriptorBase {
     private String expression;
-    private Map<String, Object> paramMap = new HashMap<>();
-
-    public CustomFilterDescriptor() {
-    }
-
-    public CustomFilterDescriptor(FilterCondition condition, String expression, Map<String, Object> paramMap) {
-        this.setCondition(condition);
-        this.expression = expression;
-        this.paramMap = paramMap;
-    }
+    private List<Object> params = new ArrayList<>();
 
     public String getExpression() {
         return expression;
@@ -34,11 +23,15 @@ public class CustomFilterDescriptor extends FilterDescriptorBase {
         this.expression = expression;
     }
 
-    public Map<String, Object> getParamMap() {
-        return paramMap;
+    public Object[] getParams() {
+        return params.toArray();
     }
 
-    public void setParamMap(Map<String, Object> paramMap) {
-        this.paramMap = paramMap;
+    public boolean addParam(Object param) {
+        return params.add(param);
+    }
+
+    public boolean removeParam(Object param) {
+        return params.remove(param);
     }
 }
