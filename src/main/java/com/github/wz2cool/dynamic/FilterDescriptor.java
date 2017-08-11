@@ -34,6 +34,15 @@ public class FilterDescriptor extends FilterDescriptorBase {
         this.value = value;
     }
 
+    public <T> FilterDescriptor(Class<T> entityClass,
+                                Function<T, Object> getFieldFunc,
+                                FilterOperator operator,
+                                Object value) {
+        this.operator = operator;
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.value = value;
+    }
+
     public <T> FilterDescriptor(FilterCondition condition,
                                 Class<T> entityClass,
                                 Function<T, Object> getFieldFunc,

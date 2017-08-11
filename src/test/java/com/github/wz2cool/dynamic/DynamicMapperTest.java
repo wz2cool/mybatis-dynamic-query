@@ -2,7 +2,6 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
-import com.sun.javafx.tk.TKPulseListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class DynamicMapperTest {
         int result = userDao.insert(user);
         assertEquals(1, result);
 
-        result = userDao.deleteByPrimaryKey(1);
+        result = userDao.deleteByPrimaryKey(12);
         assertEquals(1, result);
     }
 
@@ -206,7 +205,7 @@ public class DynamicMapperTest {
     }
 
     @Test
-    public void testSelect() {
+    public void testSelectCount() {
         User user = new User();
         user.setId(19);
         user.setUsername("frank19");
@@ -219,5 +218,10 @@ public class DynamicMapperTest {
         user.setId(19);
         result = userDao.selectCount(findUser);
         assertEquals(true, result > 0);
+    }
+
+    @Test
+    public void testSelectCountByDynamicQuery() {
+
     }
 }
