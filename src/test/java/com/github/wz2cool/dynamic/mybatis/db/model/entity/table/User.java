@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -13,6 +14,7 @@ import javax.persistence.Table;
  */
 @Table(name = "users")
 public class User {
+    @Id
     private Integer id;
     private String username;
     private String password;
