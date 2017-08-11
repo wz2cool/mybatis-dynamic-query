@@ -24,4 +24,10 @@ public class DynamicQuerySqlHelper {
         return String.format("<if test=\"%s != null and %s != ''\">WHERE ${%s}</if>",
                 newExpression, newExpression, newExpression);
     }
+
+    public static String getSortClause() {
+        String newExpression = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SORT_EXPRESSION);
+        return String.format("<if test=\"%s != null and %s != ''\">ORDER BY ${%s}</if>",
+                newExpression, newExpression, newExpression);
+    }
 }

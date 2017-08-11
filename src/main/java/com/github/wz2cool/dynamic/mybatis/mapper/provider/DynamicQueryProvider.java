@@ -62,6 +62,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         sql.append(SqlHelper.exampleSelectColumns(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getSortClause());
         return sql.toString();
     }
 

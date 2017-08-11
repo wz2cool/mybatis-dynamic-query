@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.pagehelper.PageRowBounds;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import org.junit.Test;
@@ -221,7 +222,18 @@ public class DynamicMapperTest {
     }
 
     @Test
-    public void testSelectCountByDynamicQuery() {
+    public void testSelectRowBoundsByDynamicQuery() {
+        DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
+        FilterDescriptor idFilter =
+                new FilterDescriptor(User.class, User::getId, FilterOperator.LESS_THAN, 100);
+        dynamicQuery.addFilter(idFilter);
 
+        SortDescriptor idSort =
+                new SortDescriptor(User.class, User::getId, SortDirection.DESC);
+        dynamicQuery.addSort(idSort);
+
+        PageRowBounds pageRowBounds = new PageRowBounds(1, 2);
+        List<User> users = userDao.selectRowBoundsByDynamicQuery(dynamicQuery, pageRowBounds);
+        assertEquals(true, users.size() > 0);
     }
 }

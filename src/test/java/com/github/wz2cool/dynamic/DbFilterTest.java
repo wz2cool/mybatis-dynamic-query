@@ -248,10 +248,10 @@ public class DbFilterTest {
         FilterGroupDescriptor groupIdFilter = new FilterGroupDescriptor();
         FilterDescriptor idFilter1 =
                 new FilterDescriptor(FilterCondition.AND,
-                        "productID", FilterOperator.GREATER_THAN, "1");
+                        "productID", FilterOperator.GREATER_THAN, 1);
         FilterDescriptor idFilter2 =
                 new FilterDescriptor(FilterCondition.AND,
-                        "productID", FilterOperator.LESS_THAN, "4");
+                        "productID", FilterOperator.LESS_THAN, 4);
         // 把两个 id 筛选当成一个放到同一个组
         groupIdFilter.addFilters(idFilter1, idFilter2);
         // 单独一个简单筛选。
