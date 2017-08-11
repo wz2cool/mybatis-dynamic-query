@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -18,6 +19,9 @@ public class User {
     private Integer id;
     private String username;
     private String password;
+
+    @Transient
+    private String uselessProperty;
 
     public Integer getId() {
         return id;
@@ -41,5 +45,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUselessProperty() {
+        return uselessProperty;
+    }
+
+    public void setUselessProperty(String uselessProperty) {
+        this.uselessProperty = uselessProperty;
     }
 }
