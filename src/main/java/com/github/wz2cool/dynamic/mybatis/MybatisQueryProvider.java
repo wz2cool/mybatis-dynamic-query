@@ -17,6 +17,9 @@ import java.util.Map;
 public class MybatisQueryProvider {
     private final static QueryHelper queryHelper = new QueryHelper();
 
+    private MybatisQueryProvider() {
+    }
+
     public static <T> Map<String, Object> getQueryParamMap(
             final DynamicQuery<T> dynamicQuery,
             final String whereExpressionPlaceholder,

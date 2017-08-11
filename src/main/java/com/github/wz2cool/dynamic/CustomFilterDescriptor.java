@@ -1,7 +1,5 @@
 package com.github.wz2cool.dynamic;
 
-import java.util.*;
-
 /**
  * \* Created with IntelliJ IDEA.
  * \* User: Frank
@@ -13,7 +11,7 @@ import java.util.*;
  */
 public class CustomFilterDescriptor extends FilterDescriptorBase {
     private String expression;
-    private List<Object> params = new ArrayList<>();
+    private Object[] params;
 
     public String getExpression() {
         return expression;
@@ -24,14 +22,20 @@ public class CustomFilterDescriptor extends FilterDescriptorBase {
     }
 
     public Object[] getParams() {
-        return params.toArray();
+        return params;
     }
 
-    public boolean addParam(Object param) {
-        return params.add(param);
+    public void setParams(Object... params) {
+        this.params = params;
     }
 
-    public boolean removeParam(Object param) {
-        return params.remove(param);
+    public CustomFilterDescriptor() {
+        // create empty constructor
+    }
+
+    public CustomFilterDescriptor(FilterCondition condition, String expression, Object... params) {
+        this.setCondition(condition);
+        this.setExpression(expression);
+        this.setParams(params);
     }
 }

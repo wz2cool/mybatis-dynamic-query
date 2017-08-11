@@ -283,7 +283,12 @@ public class QueryHelperTest {
     public void testToWhereExpressionForCustomFilterDescriptor() throws Exception {
         CustomFilterDescriptor customFilterDescriptor = new CustomFilterDescriptor();
         customFilterDescriptor.setCondition(FilterCondition.AND);
-        customFilterDescriptor.setExpression("age > {0}");
+        customFilterDescriptor.setExpression("age > {0} AND age <= {1}");
+        customFilterDescriptor.setParams(20, 30);
+
+        ParamExpression result = queryHelper.toWhereExpression(Student.class, customFilterDescriptor);
+        assertEquals(20, result.getParamMap().values().toArray()[0]);
+        assertEquals(30, result.getParamMap().values().toArray()[1]);
     }
 
     @Test
@@ -327,6 +332,12 @@ public class QueryHelperTest {
     public void TestValidSortNotFound() throws Exception {
         SortDescriptor ageSort = new SortDescriptor("NotFoundException", SortDirection.DESC);
         queryHelper.validSorts(Student.class, ageSort);
+    }
+
+    @Test
+    public void testProcessSingleFilterValue() {
+        Object result = queryHelper.processSingleFilterValue(FilterOperator.CONTAINS, "frank");
+        assertEquals("%frank%", result);
     }
 
 }

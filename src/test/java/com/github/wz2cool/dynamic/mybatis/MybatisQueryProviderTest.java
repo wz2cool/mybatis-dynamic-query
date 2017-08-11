@@ -1,27 +1,21 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
-import com.github.wz2cool.exception.InternalRuntimeException;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 
 public class MybatisQueryProviderTest {
-    MybatisQueryProvider mybatisQueryProvider = new MybatisQueryProvider();
-
     @Test
     public void TestGetWhereExpression() throws Exception {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 30);
 
-        ParamExpression result = mybatisQueryProvider.getWhereExpression(Student.class, filterDescriptor);
+        ParamExpression result = MybatisQueryProvider.getWhereExpression(Student.class, filterDescriptor);
         String pattern = "^\\(age = #\\{param_age_EQUAL_\\w+\\}\\)$";
         assertEquals(true, Pattern.matches(pattern, result.getExpression()));
         assertEquals(30, result.getParamMap().values().iterator().next());
@@ -32,7 +26,7 @@ public class MybatisQueryProviderTest {
         SortDescriptor sortDescriptor =
                 new SortDescriptor("age", SortDirection.DESC);
 
-        String result = mybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
+        String result = MybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
         assertEquals("age DESC", result);
     }
 
@@ -41,7 +35,7 @@ public class MybatisQueryProviderTest {
         SortDescriptor ageSort = new SortDescriptor();
         ageSort.setPropertyPath("age");
         ageSort.setSortDirection(SortDirection.DESC);
-        Map<String, Object> result = mybatisQueryProvider.getSortQueryParamMap(Student.class, "sortExpression", ageSort);
+        Map<String, Object> result = MybatisQueryProvider.getSortQueryParamMap(Student.class, "sortExpression", ageSort);
         assertEquals("age DESC", result.get("sortExpression"));
     }
 
@@ -50,7 +44,7 @@ public class MybatisQueryProviderTest {
         SortDescriptor ageSort = new SortDescriptor();
         ageSort.setPropertyPath("age");
         ageSort.setSortDirection(SortDirection.DESC);
-        mybatisQueryProvider.getSortQueryParamMap(Student.class, "", ageSort);
+        MybatisQueryProvider.getSortQueryParamMap(Student.class, "", ageSort);
     }
 
     @Test(expected = NullPointerException.class)
@@ -60,8 +54,34 @@ public class MybatisQueryProviderTest {
         nameFilter.setOperator(FilterOperator.EQUAL);
         nameFilter.setValue("frank");
 
-        mybatisQueryProvider.getWhereQueryParamMap(Student.class, "", nameFilter);
+        MybatisQueryProvider.getWhereQueryParamMap(Student.class, "", nameFilter);
     }
 
+    @Test
+    public void testGetQueryParamMap() throws Exception {
+        DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
+        FilterDescriptor nameFilter =
+                new FilterDescriptor(FilterCondition.AND,
+                        Student.class, Student::getName, FilterOperator.EQUAL, "frank");
+        SortDescriptor ageSort =
+                new SortDescriptor(Student.class, Student::getAge, SortDirection.DESC);
+        dynamicQuery.addFilter(nameFilter);
+        dynamicQuery.addSort(ageSort);
+
+        Map<String, Object> result = MybatisQueryProvider.getQueryParamMap(
+                dynamicQuery,
+                "wherePlaceholder",
+                "sortPlaceholder",
+                "columnsPlaceholder");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetQueryParamMapThrowNull() throws Exception {
+        Map<String, Object> result = MybatisQueryProvider.getQueryParamMap(
+                null,
+                "wherePlaceholder",
+                "sortPlaceholder",
+                "columnsPlaceholder");
+    }
 
 }

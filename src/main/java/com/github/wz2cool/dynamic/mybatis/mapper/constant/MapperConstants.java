@@ -1,6 +1,9 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.constant;
 
 public class MapperConstants {
+    private MapperConstants() {
+    }
+
     public final static String DISTINCT = "distinct";
     public final static String DYNAMIC_QUERY = "dynamicQuery";
     public final static String DYNAMIC_QUERY_PARAMS = "dynamicQueryParams";

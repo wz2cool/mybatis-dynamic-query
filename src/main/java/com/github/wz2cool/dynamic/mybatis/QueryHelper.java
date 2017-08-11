@@ -60,25 +60,26 @@ public class QueryHelper {
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
         } else if (filterDescriptorBase instanceof CustomFilterDescriptor) {
             CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) filterDescriptorBase;
-            ParamExpression paramExpression = new ParamExpression();
-            paramExpression.setExpression(customFilterDescriptor.getExpression());
-            paramExpression.getParamMap().putAll(customFilterDescriptor.getParamMap());
-            return paramExpression;
+            return toWhereExpression(customFilterDescriptor);
         } else {
             return new ParamExpression();
         }
     }
 
-    ParamExpression toWhereExpression(final Class entityClass, final CustomFilterDescriptor customFilterDescriptor) {
-        String pattern = "\\{\\d+\\}";
+    ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor) {
+        Map<String, Object> paramMap = new HashMap<>();
+        Object[] params = customFilterDescriptor.getParams();
         String expression = customFilterDescriptor.getExpression();
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(expression);
-        if (m.find()) {
-
+        for (int i = 0; i < params.length; i++) {
+            String genParamName = String.format("param_custom_%s", UUID.randomUUID().toString().replace("-", ""));
+            expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
+            paramMap.put(genParamName, params[i]);
         }
 
-        return null;
+        ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpression(expression);
+        paramExpression.getParamMap().putAll(paramMap);
+        return paramExpression;
     }
 
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {

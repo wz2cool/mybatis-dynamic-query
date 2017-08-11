@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface DeleteByDynamicQueryMapper<T> {
     @DeleteProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
-    int deleteByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery dynamicQuery);
+    int deleteByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 }

@@ -8,8 +8,6 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.model.Student;
-import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,13 +42,6 @@ public class DbFilterTest {
     @Autowired
     private UserDao userDao;
 
-    MybatisQueryProvider mybatisQueryProvider;
-
-    @Before
-    public void beforeTest() {
-        mybatisQueryProvider = new MybatisQueryProvider();
-    }
-
     @Test
     public void testDbInit() throws Exception {
         List<Category> categories = northwindDao.getCategories();
@@ -64,7 +55,7 @@ public class DbFilterTest {
     public void testLessThan() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.LESS_THAN, 3);
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -76,7 +67,7 @@ public class DbFilterTest {
     public void testLessThanOrEqual() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.LESS_THAN_OR_EQUAL, 3);
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -89,7 +80,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
 
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -104,7 +95,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, null);
 
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -119,7 +110,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.NOT_EQUAL, 2);
 
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -133,7 +124,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.NOT_EQUAL, null);
 
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -147,7 +138,7 @@ public class DbFilterTest {
     public void testGreaterThanOrEqual() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -159,7 +150,7 @@ public class DbFilterTest {
     public void testGreaterThan() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN, 2);
-        ParamExpression paramExpression = mybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
+        ParamExpression paramExpression = MybatisQueryProvider.getWhereExpression(ProductView.class, idFilter);
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.putAll(paramExpression.getParamMap());
         queryParams.put("whereExpression", paramExpression.getExpression());
@@ -172,7 +163,7 @@ public class DbFilterTest {
         FilterDescriptor nameFilter =
                 new FilterDescriptor(FilterCondition.AND, "categoryName", FilterOperator.START_WITH, "Be");
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", nameFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
         assertEquals("Beverages", productViews.get(0).getCategoryName());
@@ -183,7 +174,7 @@ public class DbFilterTest {
         FilterDescriptor nameFilter =
                 new FilterDescriptor(FilterCondition.AND, "categoryName", FilterOperator.END_WITH, "l");
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", nameFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
         assertEquals("Oil", productViews.get(0).getCategoryName());
@@ -194,7 +185,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.IN, new int[]{2, 4});
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", idFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
         assertEquals(Long.valueOf(2), productViews.get(0).getProductID());
@@ -206,7 +197,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.NOT_IN, new int[]{2, 4});
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", idFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams);
         assertEquals(Long.valueOf(1), productViews.get(0).getProductID());
@@ -218,7 +209,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.BETWEEN, new int[]{2, 4});
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         ProductView.class, "whereExpression", idFilter);
         List<ProductView> productViews = northwindDao.getProductViewsByDynamic(queryParams)
                 .stream().sorted(Comparator.comparing(ProductView::getProductID)).collect(Collectors.toList());
@@ -232,7 +223,7 @@ public class DbFilterTest {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", idFilter);
         northwindDao.getProductByDynamic(queryParams);
     }
@@ -247,7 +238,7 @@ public class DbFilterTest {
                         "price", FilterOperator.LESS_THAN, 15);
 
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", idFilter, priceFilter);
         Product productView =
                 northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
@@ -271,7 +262,7 @@ public class DbFilterTest {
                         "price", FilterOperator.GREATER_THAN, 10);
 
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getWhereQueryParamMap(
+                MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", groupIdFilter, priceFilter);
 
         northwindDao.getProductByDynamic(queryParams);
@@ -283,7 +274,7 @@ public class DbFilterTest {
                 new SortDescriptor("price", SortDirection.DESC);
 
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getSortQueryParamMap(
+                MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort);
         northwindDao.getProductByDynamic(queryParams);
     }
@@ -296,7 +287,7 @@ public class DbFilterTest {
                 new SortDescriptor("productID", SortDirection.DESC);
 
         Map<String, Object> queryParams =
-                mybatisQueryProvider.getSortQueryParamMap(
+                MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort, idSort);
         northwindDao.getProductByDynamic(queryParams);
     }
@@ -309,10 +300,10 @@ public class DbFilterTest {
         SortDescriptor priceSort =
                 new SortDescriptor("price", SortDirection.ASC);
 
-        Map<String, Object> filterParams = mybatisQueryProvider.getWhereQueryParamMap(
+        Map<String, Object> filterParams = MybatisQueryProvider.getWhereQueryParamMap(
                 Product.class, "whereExpression", idFilter);
         Map<String, Object> sortParams =
-                mybatisQueryProvider.getSortQueryParamMap(
+                MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort);
 
         Map<String, Object> queryParams = new HashMap<>();
