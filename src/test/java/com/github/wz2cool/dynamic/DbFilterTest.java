@@ -314,23 +314,12 @@ public class DbFilterTest {
     }
 
     @Test
-    public void testUserInsert() throws Exception {
-        User user = new User();
-        user.setId(200);
-        user.setUsername("frank");
-        user.setPassword("pwd");
-        int result = userDao.insert(user);
-        assertEquals(1, result);
-
-        FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND, "username", FilterOperator.EQUAL, "frank");
-        DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
-        dynamicQuery.setDistinct(true);
-        dynamicQuery.addFilter(filterDescriptor);
-
-        User updateUser = new User();
-        updateUser.setUsername("test");
-        updateUser.setId(10000);
-        userDao.updateByDynamicQuery(updateUser, dynamicQuery);
+    public void testAgeCustomFilter() throws Exception {
+        CustomFilterDescriptor ageFilter =
+                new CustomFilterDescriptor(FilterCondition.AND,
+                        "price > {0} AND price < {1}", 7, 17);
+        Map<String, Object> filterParams = MybatisQueryProvider.getWhereQueryParamMap(
+                Product.class, "whereExpression", ageFilter);
+        northwindDao.getProductByDynamic(filterParams);
     }
 }
