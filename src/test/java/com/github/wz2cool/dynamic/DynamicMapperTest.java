@@ -2,12 +2,15 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
+import com.sun.javafx.tk.TKPulseListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -80,7 +83,7 @@ public class DynamicMapperTest {
     public void testDeleteByDynamicQuery() {
         User user = new User();
         user.setId(14);
-        user.setUsername("frank");
+        user.setUsername("frank14");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -90,7 +93,7 @@ public class DynamicMapperTest {
         FilterDescriptor nameFilter = new FilterDescriptor(
                 FilterCondition.AND,
                 User.class, User::getUsername,
-                FilterOperator.CONTAINS, "fra");
+                FilterOperator.CONTAINS, "14");
         dynamicQuery.addFilter(nameFilter);
 
         result = userDao.deleteByDynamicQuery(dynamicQuery);
@@ -133,7 +136,7 @@ public class DynamicMapperTest {
     public void testUpdateByDynamicQuery() {
         User user = new User();
         user.setId(17);
-        user.setUsername("frank");
+        user.setUsername("frank17");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -147,7 +150,7 @@ public class DynamicMapperTest {
         FilterDescriptor nameFilter = new FilterDescriptor(
                 FilterCondition.AND,
                 User.class, User::getUsername,
-                FilterOperator.CONTAINS, "fra");
+                FilterOperator.CONTAINS, "17");
         dynamicQuery.addFilter(nameFilter);
 
         result = userDao.updateByDynamicQuery(updateUser, dynamicQuery);
@@ -158,7 +161,7 @@ public class DynamicMapperTest {
     public void testUpdate() {
         User user = new User();
         user.setId(18);
-        user.setUsername("frank");
+        user.setUsername("frank18");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -171,10 +174,50 @@ public class DynamicMapperTest {
         FilterDescriptor nameFilter = new FilterDescriptor(
                 FilterCondition.AND,
                 User.class, User::getUsername,
-                FilterOperator.CONTAINS, "fra");
+                FilterOperator.CONTAINS, "18");
         dynamicQuery.addFilter(nameFilter);
 
         result = userDao.updateSelectiveByDynamicQuery(updateUser, dynamicQuery);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testSelectAll() {
+        List<User> users = userDao.selectAll();
+        assertEquals(true, users.size() > 0);
+    }
+
+    @Test
+    public void testSelectByT() {
+        User user = new User();
+        user.setId(1);
+
+        List<User> users = userDao.select(user);
+        assertEquals(1, users.size());
+    }
+
+    @Test
+    public void testSelectOne() {
+        User user = new User();
+        user.setId(1);
+
+        User matchedUser = userDao.selectOne(user);
+        assertEquals(Integer.valueOf(1), matchedUser.getId());
+    }
+
+    @Test
+    public void testSelect() {
+        User user = new User();
+        user.setId(19);
+        user.setUsername("frank19");
+        user.setPassword("frank");
+
+        int result = userDao.insert(user);
+        assertEquals(1, result);
+
+        User findUser = new User();
+        user.setId(19);
+        result = userDao.selectCount(findUser);
+        assertEquals(true, result > 0);
     }
 }
