@@ -224,6 +224,7 @@ public class DynamicMapperTest {
     @Test
     public void testSelectRowBoundsByDynamicQuery() {
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
+        dynamicQuery.setDistinct(true);
         FilterDescriptor idFilter =
                 new FilterDescriptor(User.class, User::getId, FilterOperator.LESS_THAN, 100);
         dynamicQuery.addFilter(idFilter);
