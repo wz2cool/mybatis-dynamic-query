@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper.constant;
 
 public class MapperConstants {
     private MapperConstants() {
+        throw new UnsupportedOperationException();
     }
 
     public final static String DISTINCT = "distinct";

@@ -18,6 +18,7 @@ public class MybatisQueryProvider {
     private final static QueryHelper queryHelper = new QueryHelper();
 
     private MybatisQueryProvider() {
+        throw new UnsupportedOperationException();
     }
 
     public static <T> Map<String, Object> getQueryParamMap(

@@ -4,6 +4,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 
 public class DynamicQuerySqlHelper {
     private DynamicQuerySqlHelper() {
+        throw new UnsupportedOperationException();
     }
 
     public static String getBindFilterParams() {

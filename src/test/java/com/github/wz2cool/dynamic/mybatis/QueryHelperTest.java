@@ -287,8 +287,8 @@ public class QueryHelperTest {
         customFilterDescriptor.setParams(20, 30);
 
         ParamExpression result = queryHelper.toWhereExpression(Student.class, customFilterDescriptor);
-        assertEquals(20, result.getParamMap().values().toArray()[0]);
-        assertEquals(30, result.getParamMap().values().toArray()[1]);
+        assertEquals(true, result.getParamMap().values().contains(20));
+        assertEquals(true, result.getParamMap().values().contains(30));
     }
 
     @Test

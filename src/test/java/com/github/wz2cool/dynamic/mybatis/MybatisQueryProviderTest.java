@@ -1,15 +1,26 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 
 public class MybatisQueryProviderTest {
+
+    @Test(expected = InvocationTargetException.class)
+    public void TestMybatisQueryProvider() throws Exception {
+        Constructor<MybatisQueryProvider> c = MybatisQueryProvider.class.getDeclaredConstructor();
+        c.setAccessible(true);
+        c.newInstance();
+    }
+
     @Test
     public void TestGetWhereExpression() throws Exception {
         FilterDescriptor filterDescriptor =
