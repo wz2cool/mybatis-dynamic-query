@@ -5,6 +5,7 @@ import com.github.wz2cool.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,8 +92,14 @@ class EntityCache {
         } else {
             Map<String, ColumnInfo> map = new ConcurrentHashMap<>();
             Field[] properties = ReflectHelper.getProperties(entityClass);
+
             for (Field field : properties) {
                 field.setAccessible(true);
+                // filter Transient
+                if (field.isAnnotationPresent(Transient.class)) {
+                    continue;
+                }
+
                 ColumnInfo columnInfo = new ColumnInfo();
                 columnInfo.setField(field);
                 String pName = field.getName();
