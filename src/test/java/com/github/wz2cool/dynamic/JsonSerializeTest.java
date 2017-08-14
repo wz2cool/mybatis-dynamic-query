@@ -64,4 +64,27 @@ public class JsonSerializeTest {
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
         assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
     }
+
+
+    @Test
+    public void testSerializeCustomFilterDescriptor() throws Exception {
+        CustomFilterDescriptor ageFilter = new CustomFilterDescriptor();
+        ageFilter.setExpression("age > {1} and age < {2}");
+        ageFilter.setParams(20, 30);
+
+        String jsonStr = mapper.writeValueAsString(ageFilter);
+        CustomFilterDescriptor ageFilterCopy = mapper.readValue(jsonStr, CustomFilterDescriptor.class);
+        assertEquals(ageFilter.getExpression(), ageFilterCopy.getExpression());
+        assertEquals(ageFilter.getParams()[0], ageFilterCopy.getParams()[0]);
+        assertEquals(ageFilter.getParams()[1], ageFilterCopy.getParams()[1]);
+
+        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{ageFilter};
+        String arrayFiltersJson = mapper.writeValueAsString(filters);
+        FilterDescriptorBase[] filtersCopy = mapper.readValue(arrayFiltersJson, FilterDescriptorBase[].class);
+
+        ageFilterCopy = (CustomFilterDescriptor) filtersCopy[0];
+        assertEquals(ageFilter.getExpression(), ageFilterCopy.getExpression());
+        assertEquals(ageFilter.getParams()[0], ageFilterCopy.getParams()[0]);
+        assertEquals(ageFilter.getParams()[1], ageFilterCopy.getParams()[1]);
+    }
 }
