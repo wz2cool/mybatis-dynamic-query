@@ -28,6 +28,11 @@ public class CustomFilterDescriptor extends FilterDescriptorBase implements Seri
         // create empty constructor
     }
 
+    public CustomFilterDescriptor(String expression, Object... params) {
+        this.setExpression(expression);
+        this.setParams(params);
+    }
+
     public CustomFilterDescriptor(FilterCondition condition, String expression, Object... params) {
         this.setCondition(condition);
         this.setExpression(expression);
