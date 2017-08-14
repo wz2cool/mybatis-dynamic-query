@@ -1,9 +1,12 @@
 package com.github.wz2cool.dynamic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicQuery<T> {
+public class DynamicQuery<T> implements Serializable {
+    private static final long serialVersionUID = -4044703018297658438L;
+
     private boolean distinct;
     private final Class<T> entityClass;
     private final List<FilterDescriptorBase> filters = new ArrayList<>();

@@ -3,12 +3,15 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.helper.CommonsHelper;
 
+import java.io.Serializable;
 import java.util.function.Function;
 
 /**
  * The type Sort descriptor.
  */
-public class SortDescriptor {
+public class SortDescriptor implements Serializable {
+    private static final long serialVersionUID = 819843464658066502L;
+
     private String propertyPath;
     private SortDirection sortDirection = SortDirection.ASC;
 

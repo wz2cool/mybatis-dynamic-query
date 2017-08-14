@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.List;
 /**
  * The type Filter group descriptor.
  */
-public class FilterGroupDescriptor extends FilterDescriptorBase {
+public class FilterGroupDescriptor extends FilterDescriptorBase implements Serializable {
+
+    private static final long serialVersionUID = 503860190426402699L;
 
     private final List<FilterDescriptorBase> filters = new ArrayList<>();
 

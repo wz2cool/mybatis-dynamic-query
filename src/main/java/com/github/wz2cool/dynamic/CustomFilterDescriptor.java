@@ -1,15 +1,10 @@
 package com.github.wz2cool.dynamic;
 
-/**
- * \* Created with IntelliJ IDEA.
- * \* User: Frank
- * \* Date: 8/8/2017
- * \* Time: 1:49 PM
- * \* To change this template use File | Settings | File Templates.
- * \* Description:
- * \
- */
-public class CustomFilterDescriptor extends FilterDescriptorBase {
+import java.io.Serializable;
+
+public class CustomFilterDescriptor extends FilterDescriptorBase implements Serializable {
+    private static final long serialVersionUID = 7448086874396793224L;
+
     private String expression;
     private Object[] params;
 
