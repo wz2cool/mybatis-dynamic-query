@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +11,7 @@ import java.util.List;
 /**
  * The type Filter group descriptor.
  */
+@JsonTypeName("filterGroupDescriptor")
 public class FilterGroupDescriptor extends FilterDescriptorBase implements Serializable {
 
     private static final long serialVersionUID = 503860190426402699L;

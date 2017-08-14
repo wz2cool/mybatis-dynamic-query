@@ -1,7 +1,10 @@
 package com.github.wz2cool.dynamic;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.Serializable;
 
+@JsonTypeName("customFilterDescriptor")
 public class CustomFilterDescriptor extends FilterDescriptorBase implements Serializable {
     private static final long serialVersionUID = 7448086874396793224L;
 

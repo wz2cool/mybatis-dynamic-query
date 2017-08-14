@@ -11,15 +11,15 @@ import static org.junit.Assert.assertEquals;
 public class JsonSerializeTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
-    static {
-        SimpleModule module = new SimpleModule();
-        module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterGroupDescriptor.class);
-        module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterDescriptor.class);
+    /* static {
+         SimpleModule module = new SimpleModule();
+         module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterGroupDescriptor.class);
+         module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterDescriptor.class);
 
-         /* module.addAbstractTypeMapping(FilterDescriptorBase.class, CustomFilterDescriptor.class);*/
+        module.addAbstractTypeMapping(FilterDescriptorBase.class, CustomFilterDescriptor.class);*//*
         mapper.registerModule(module);
     }
-
+*/
     @Test
     public void testSerializeFilterDescriptor() throws Exception {
         FilterDescriptor ageFilter =
@@ -52,12 +52,16 @@ public class JsonSerializeTest {
         FilterGroupDescriptor ageGroupFilterCopy = mapper.readValue(jsonStr, FilterGroupDescriptor.class);
         FilterDescriptor ageFilterCopy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[0];
         FilterDescriptor ageFilter2Copy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[1];
-
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
         assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
 
         FilterDescriptorBase[] filters = new FilterDescriptorBase[]{ageGroupFilter};
         String arrayFiltersJson = mapper.writeValueAsString(filters);
         FilterDescriptorBase[] filtersCopy = mapper.readValue(arrayFiltersJson, FilterDescriptorBase[].class);
+        ageGroupFilterCopy = (FilterGroupDescriptor) filtersCopy[0];
+        ageFilterCopy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[0];
+        ageFilter2Copy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[1];
+        assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
+        assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
     }
 }
