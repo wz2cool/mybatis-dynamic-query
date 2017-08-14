@@ -18,7 +18,7 @@ public class CustomFilterDescritptorTest {
     @Test
     public void testDefaultConstructor() {
         CustomFilterDescriptor customFilterDescriptor =
-                new CustomFilterDescriptor(FilterCondition.AND, "age > {0}", 1);
+                new CustomFilterDescriptor("age > {0}", 1);
 
         assertEquals("age > {0}", customFilterDescriptor.getExpression());
         assertEquals(1, customFilterDescriptor.getParams()[0]);
