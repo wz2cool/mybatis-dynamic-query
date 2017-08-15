@@ -1,47 +1,35 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.annotation.Annotation;
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.lang.reflect.Field;
 
 /**
  * Created by Frank on 7/10/2017.
  */
-class EntityHelper {
+public class EntityHelper {
     private EntityHelper() {
         throw new UnsupportedOperationException();
     }
 
-    static String getTableName(final Class tableClass) {
+    static String getTableName(final Class<?> tableClass) {
         if (tableClass == null) {
             throw new NullPointerException("tableClass");
         }
 
-        Annotation[] annotations = tableClass.getAnnotations();
-        if (annotations != null && annotations.length > 0) {
-            Annotation dbTableAnnotation = null;
-            for (Annotation annotation : annotations) {
-                if (annotation != null && annotation instanceof Table) {
-                    dbTableAnnotation = annotation;
-                    break;
-                }
-            }
-
-            if (dbTableAnnotation != null) {
-                Table table = (Table) dbTableAnnotation;
-                String dbTableName = table.name();
-                if (StringUtils.isNotBlank(dbTableName)) {
-                    return dbTableName;
-                }
+        if (tableClass.isAnnotationPresent(Table.class)) {
+            Table table = tableClass.getAnnotation(Table.class);
+            String dbTableName = table.name();
+            if (StringUtils.isNotBlank(dbTableName)) {
+                return dbTableName;
             }
         }
 
         String useTableName = tableClass.getSimpleName();
-        return camelCaseToDashCase(useTableName);
+        return camelCaseToUnderscore(useTableName);
     }
 
     static String getColumnNameByProperty(final String propertyName, final Field[] properties) {
@@ -53,56 +41,13 @@ class EntityHelper {
 
 
         String usePropertyName = matchProperty.getName();
-        return camelCaseToDashCase(usePropertyName);
-    }
-
-    static JdbcType getJdbcTypeByProperty(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            return null;
-        }
-        return column.jdbcType();
-    }
-
-    static boolean isPropertyUpdateIfNull(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            // default don't update property.
-            return false;
-        }
-        return column.updateIfNull();
-    }
-
-    static boolean isPropertyInsertIfNull(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            // default insert property.
-            return false;
-        }
-        return column.insertIfNull();
-    }
-
-    static boolean isPropertyInsertIgnore(final String propertyName, final Field[] properties) {
-        Column column = getColumnByProperty(propertyName, properties);
-        if (column == null) {
-            return false;
-        }
-        return column.insertIgnore();
+        return camelCaseToUnderscore(usePropertyName);
     }
 
     static Column getColumnByProperty(final String propertyName, final Field[] properties) {
         Field matchProperty = getPropertyField(propertyName, properties);
-        Annotation[] annotations = matchProperty.getAnnotations();
-        if (annotations != null && annotations.length > 0) {
-            Annotation dbColumnAnnotation = null;
-            for (Annotation annotation : annotations) {
-                if (annotation != null && annotation instanceof Column) {
-                    dbColumnAnnotation = annotation;
-                    break;
-                }
-            }
-
-            return (Column) dbColumnAnnotation;
+        if (matchProperty.isAnnotationPresent(Column.class)) {
+            return matchProperty.getAnnotation(Column.class);
         }
 
         return null;
@@ -128,7 +73,7 @@ class EntityHelper {
         }
     }
 
-    private static String camelCaseToDashCase(String str) {
+    public static String camelCaseToUnderscore(String str) {
         return str.replaceAll("(.)(\\p{Lu})", "$1_$2").toLowerCase();
     }
 }

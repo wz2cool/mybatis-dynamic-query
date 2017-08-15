@@ -10,10 +10,6 @@ import java.lang.reflect.Field;
 class ColumnInfo {
     private String columnName;
     private String tableOrAlias;
-    private boolean updateIfNull;
-    private boolean insertIfNull;
-    private boolean insertIgnore;
-    private JdbcType jdbcType;
     private Field field;
 
     public Field getField() {
@@ -32,14 +28,6 @@ class ColumnInfo {
         this.columnName = columnName;
     }
 
-    public boolean isUpdateIfNull() {
-        return updateIfNull;
-    }
-
-    public void setUpdateIfNull(boolean updateIfNull) {
-        this.updateIfNull = updateIfNull;
-    }
-
     public String getTableOrAlias() {
         return tableOrAlias;
     }
@@ -49,34 +37,10 @@ class ColumnInfo {
     }
 
     public String getQueryColumn() {
-        if (StringUtils.isNotBlank(this.tableOrAlias)) {
-            return String.format("%s.%s", this.tableOrAlias, this.columnName);
+        if (StringUtils.isNotBlank(getTableOrAlias())) {
+            return String.format("%s.%s", getTableOrAlias(), getColumnName());
         } else {
             return this.columnName;
         }
-    }
-
-    public boolean isInsertIfNull() {
-        return insertIfNull;
-    }
-
-    public void setInsertIfNull(boolean insertIfNull) {
-        this.insertIfNull = insertIfNull;
-    }
-
-    public JdbcType getJdbcType() {
-        return jdbcType;
-    }
-
-    public void setJdbcType(JdbcType jdbcType) {
-        this.jdbcType = jdbcType;
-    }
-
-    public boolean isInsertIgnore() {
-        return insertIgnore;
-    }
-
-    public void setInsertIgnore(boolean insertIgnore) {
-        this.insertIgnore = insertIgnore;
     }
 }

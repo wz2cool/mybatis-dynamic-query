@@ -16,3 +16,11 @@
 
 **Bug fix**
 - [sql server] update will throw exception bug
+
+## [v2.0.0](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.0) (2017-08-14)
+**Feature**
+- integrate tk.mybatis.mapper
+- add DynamicQueryMapper
+- remove generating insert/delete method since we can use DynamicQueryMapper.
+- add CustomFilterDescriptor
+- support serialize FilterDescriptor/FilterGroupDescriptor/CustomFilterDescriptor to json

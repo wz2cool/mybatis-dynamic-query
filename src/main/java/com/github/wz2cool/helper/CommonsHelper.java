@@ -73,6 +73,8 @@ public class CommonsHelper {
         String methodName = obtainGetMethodName(target, getMethodFunc);
         if (methodName.startsWith("get")) {
             return java.beans.Introspector.decapitalize(methodName.substring(3, methodName.length()));
+        } else if (methodName.startsWith("is")) {
+            return java.beans.Introspector.decapitalize(methodName.substring(2, methodName.length()));
         }
 
         return methodName;

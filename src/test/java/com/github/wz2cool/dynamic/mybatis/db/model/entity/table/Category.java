@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-import com.github.wz2cool.dynamic.mybatis.annotation.Table;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * Created by Frank on 2017/7/15.

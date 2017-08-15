@@ -1,10 +1,11 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,8 +77,8 @@ class EntityCache {
 
     ColumnInfo[] getColumnInfos(Class entityClass) {
         Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
-        Collection<ColumnInfo> columnInfoCollection = propertyDbColumnMap.values();
-        return columnInfoCollection.toArray(new ColumnInfo[columnInfoCollection.size()]);
+        Collection<ColumnInfo> columnInfos = propertyDbColumnMap.values();
+        return columnInfos.toArray(new ColumnInfo[columnInfos.size()]);
     }
 
     private Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
@@ -91,25 +92,22 @@ class EntityCache {
         } else {
             Map<String, ColumnInfo> map = new ConcurrentHashMap<>();
             Field[] properties = ReflectHelper.getProperties(entityClass);
+
             for (Field field : properties) {
                 field.setAccessible(true);
+                // filter Transient
+                if (field.isAnnotationPresent(Transient.class)) {
+                    continue;
+                }
+
                 ColumnInfo columnInfo = new ColumnInfo();
                 columnInfo.setField(field);
                 String pName = field.getName();
-                boolean updateIfNull = EntityHelper.isPropertyUpdateIfNull(pName, properties);
-                boolean insertIfNull = EntityHelper.isPropertyInsertIfNull(pName, properties);
-                boolean insertIgnore = EntityHelper.isPropertyInsertIgnore(pName, properties);
                 String columnName = EntityHelper.getColumnNameByProperty(pName, properties);
-                JdbcType jdbcType = EntityHelper.getJdbcTypeByProperty(pName, properties);
-
-                columnInfo.setUpdateIfNull(updateIfNull);
-                columnInfo.setInsertIfNull(insertIfNull);
-                columnInfo.setInsertIgnore(insertIgnore);
                 columnInfo.setColumnName(columnName);
-                columnInfo.setJdbcType(jdbcType);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
-                String tableOrAlias = column == null ? "" : column.tableOrAlias();
+                String tableOrAlias = column == null ? "" : column.table();
                 columnInfo.setTableOrAlias(tableOrAlias);
                 map.put(pName, columnInfo);
             }

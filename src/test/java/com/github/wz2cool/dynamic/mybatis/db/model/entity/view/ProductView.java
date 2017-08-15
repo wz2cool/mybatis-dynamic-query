@@ -1,25 +1,24 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.view;
 
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-
+import javax.persistence.Column;
 import java.math.BigDecimal;
 
 /**
  * Created by Frank on 2017/7/15.
  */
 public class ProductView {
-    @Column(name = "product_id", tableOrAlias = "product")
+    @Column(name = "product_id", table = "product")
     private Long productID;
-    @Column(name = "product_name", tableOrAlias = "product")
+    @Column(name = "product_name", table = "product")
     private String productName;
-    @Column(name = "price", tableOrAlias = "product")
+    @Column(name = "price", table = "product")
     private BigDecimal price;
 
-    @Column(name = "category_id", tableOrAlias = "category")
+    @Column(name = "category_id", table = "category")
     private Long categoryID;
-    @Column(name = "category_name", tableOrAlias = "category")
+    @Column(name = "category_name", table = "category")
     private String categoryName;
-    @Column(name = "description", tableOrAlias = "category")
+    @Column(name = "description", table = "category")
     private String description;
 
     public Long getProductID() {

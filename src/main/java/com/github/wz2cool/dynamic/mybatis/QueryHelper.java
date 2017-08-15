@@ -1,28 +1,32 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Frank on 7/12/2017.
  */
-class QueryHelper {
+public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
-    private final DbExpressionHelper dbExpressionHelper;
-
-    public QueryHelper(DatabaseType databaseType) {
-        this.dbExpressionHelper = new DbExpressionHelper(databaseType);
-    }
+    private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
+    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters)
+            throws PropertyNotFoundException {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
+
+        validFilters(entityClass, filters);
+        validFilters(entityClass, filters);
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
@@ -47,21 +51,41 @@ class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase) {
+    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase)
+            throws PropertyNotFoundException {
         if (filterDescriptorBase instanceof FilterDescriptor) {
             return toWhereExpression(entityClass, (FilterDescriptor) filterDescriptorBase);
         } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
             FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) filterDescriptorBase;
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
+        } else if (filterDescriptorBase instanceof CustomFilterDescriptor) {
+            CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) filterDescriptorBase;
+            return toWhereExpression(customFilterDescriptor);
         } else {
             return new ParamExpression();
         }
     }
 
+    ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor) {
+        Map<String, Object> paramMap = new HashMap<>();
+        Object[] params = customFilterDescriptor.getParams();
+        String expression = customFilterDescriptor.getExpression();
+        for (int i = 0; i < params.length; i++) {
+            String genParamName = String.format("param_custom_%s", UUID.randomUUID().toString().replace("-", ""));
+            expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
+            paramMap.put(genParamName, params[i]);
+        }
+
+        ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpression(expression);
+        paramExpression.getParamMap().putAll(paramMap);
+        return paramExpression;
+    }
+
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
         String propertyPath = filterDescriptor.getPropertyPath();
         FilterOperator operator = filterDescriptor.getOperator();
-        String[] filterValues = getFilterValues(filterDescriptor);
+        Object[] filterValues = getFilterValues(filterDescriptor);
 
         String expression;
         // keep order.
@@ -78,7 +102,7 @@ class QueryHelper {
             paramMap.put(paramPlaceholder2, filterValues[1]);
         } else if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             List<String> paramPlaceholders = new ArrayList<>();
-            for (String filterValue : filterValues) {
+            for (Object filterValue : filterValues) {
                 String paramPlaceholder =
                         String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
@@ -93,7 +117,7 @@ class QueryHelper {
                     String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
 
-            String filterValue = processSingleFilterValue(operator, filterValues[0]);
+            Object filterValue = processSingleFilterValue(operator, filterValues[0]);
             paramMap.put(paramPlaceholder, filterValue);
         }
 
@@ -103,8 +127,8 @@ class QueryHelper {
         return paramExpression;
     }
 
-    String processSingleFilterValue(final FilterOperator operator, final String filterValue) {
-        String result;
+    Object processSingleFilterValue(final FilterOperator operator, final Object filterValue) {
+        Object result;
         if (operator == FilterOperator.START_WITH) {
             result = (filterValue == null ? "" : filterValue) + "%";
         } else if (operator == FilterOperator.END_WITH) {
@@ -123,15 +147,15 @@ class QueryHelper {
         Object value = filterDescriptor.getValue();
         ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, propertyPath);
 
-        return dbExpressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
+        return expressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
     }
 
-    String[] getFilterValues(final FilterDescriptor filterDescriptor) {
+    Object[] getFilterValues(final FilterDescriptor filterDescriptor) {
         FilterOperator operator = filterDescriptor.getOperator();
         Object filterValue = filterDescriptor.getValue();
         if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
-                return cleanFilterValues(CommonsHelper.getCollectionValues(filterValue));
+                return CommonsHelper.getCollectionValues(filterValue);
             } else {
                 String errMsg = "filter value of \"IN\" or \"NOT_IN\" operator must be array or collection";
                 throw new InvalidParameterException(errMsg);
@@ -140,7 +164,7 @@ class QueryHelper {
 
         if (operator == FilterOperator.BETWEEN) {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
-                String[] filterValues = cleanFilterValues(CommonsHelper.getCollectionValues(filterValue));
+                Object[] filterValues = CommonsHelper.getCollectionValues(filterValue);
                 if (filterValues.length != 2) {
                     String errMsg = "if \"BETWEEN\" operator, the count of filter value must be 2";
                     throw new InvalidParameterException(errMsg);
@@ -158,34 +182,10 @@ class QueryHelper {
         }
 
         if (filterValue == null) {
-            return new String[]{null};
+            return new Object[]{null};
         } else {
-            return cleanFilterValues(filterValue);
+            return new Object[]{filterValue};
         }
-    }
-
-    String[] cleanFilterValues(final Object... filterValues) {
-        if (filterValues == null || filterValues.length == 0) {
-            return new String[0];
-        }
-
-        Collection<String> newFilterValues = new ArrayList<>();
-        for (Object filterValue : filterValues) {
-            String useFilterValue = cleanFilterValue(CommonsHelper.toStringSafe(filterValue));
-            newFilterValues.add(cleanFilterValue(useFilterValue));
-        }
-        return newFilterValues.toArray(new String[newFilterValues.size()]);
-    }
-
-    String cleanFilterValue(String originalFilterValue) {
-        if (StringUtils.isBlank(originalFilterValue)) {
-            return "";
-        }
-        String result = originalFilterValue;
-        result = StringUtils.strip(result, "\"");
-        result = StringUtils.strip(result, "'");
-        result = StringUtils.strip(result, "`");
-        return result;
     }
 
     // endregion
@@ -196,10 +196,13 @@ class QueryHelper {
         return String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
     }
 
-    String toSortExpression(final Class entityClass, final SortDescriptor... sorts) {
+    public String toSortExpression(final Class entityClass, final SortDescriptor... sorts)
+            throws PropertyNotFoundException {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return "";
         }
+
+        validSorts(entityClass, sorts);
 
         String[] sortExpressions = Arrays.stream(sorts)
                 .map(x -> toSortExpression(entityClass, x)).toArray(String[]::new);
@@ -207,4 +210,67 @@ class QueryHelper {
         return String.join(", ", sortExpressions);
     }
     // endregion
+
+    String toAllColumnsExpression(final Class entityClass) {
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : columnInfos) {
+            String column = String.format("%s AS %s",
+                    columnInfo.getQueryColumn(),
+                    EntityHelper.camelCaseToUnderscore(columnInfo.getField().getName()));
+            columns.add(column);
+        }
+        return String.join(", ", columns);
+    }
+
+    /**
+     * Valid filters.
+     *
+     * @param entityClass the entity class
+     * @param filters     the filters
+     * @throws PropertyNotFoundException the property not found exception
+     */
+    void validFilters(final Class entityClass, final FilterDescriptorBase... filters)
+            throws PropertyNotFoundException {
+        if (filters == null || filters.length == 0) {
+            return;
+        }
+
+        for (FilterDescriptorBase filter : filters) {
+            if (filter instanceof FilterDescriptor) {
+                FilterDescriptor useFilter = (FilterDescriptor) filter;
+                String propertyPath = useFilter.getPropertyPath();
+                if (!entityCache.hasProperty(entityClass, propertyPath)) {
+                    String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                    throw new PropertyNotFoundException(errMsg);
+                }
+            } else if (filter instanceof FilterGroupDescriptor) {
+                FilterGroupDescriptor userGroupFilter = (FilterGroupDescriptor) filter;
+                validFilters(entityClass, userGroupFilter.getFilters());
+            }
+        }
+    }
+
+    /**
+     * Valid sorts.
+     *
+     * @param entityClass the entity class
+     * @param sorts       the sorts
+     * @throws PropertyNotFoundException the property not found exception
+     */
+    void validSorts(final Class entityClass, final SortDescriptor... sorts)
+            throws PropertyNotFoundException {
+        if (sorts == null || sorts.length == 0) {
+            return;
+        }
+
+        for (SortDescriptor sort : sorts) {
+            String propertyPath = sort.getPropertyPath();
+            if (!entityCache.hasProperty(entityClass, propertyPath)) {
+                String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                throw new PropertyNotFoundException(errMsg);
+            }
+        }
+    }
+
 }

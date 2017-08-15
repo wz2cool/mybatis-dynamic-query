@@ -36,17 +36,6 @@ public class EntityCacheTest {
         EntityCache.getInstance().getColumnInfo(Student.class, "notFoundProperty");
     }
 
-    @Test
-    public void TestGetDbColumnInfo() {
-        ColumnInfo result = EntityCache.getInstance().getColumnInfo(Student.class, "name");
-        assertEquals("name", result.getColumnName());
-        assertEquals(false, result.isUpdateIfNull());
-
-        result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
-        assertEquals("note", result.getColumnName());
-        assertEquals(true, result.isUpdateIfNull());
-    }
-
     @Test(expected = NullPointerException.class)
     public void TestGetDbColumnInfoEntityClassNull() {
         EntityCache.getInstance().getColumnInfo(null, "name");

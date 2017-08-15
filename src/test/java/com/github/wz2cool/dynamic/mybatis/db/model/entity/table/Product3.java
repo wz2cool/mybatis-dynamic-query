@@ -1,9 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
-import com.github.wz2cool.dynamic.mybatis.JdbcType;
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-import com.github.wz2cool.dynamic.mybatis.annotation.Table;
-
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
@@ -18,13 +16,10 @@ import java.math.BigDecimal;
 @Table(name = "product")
 public class Product3 {
     // id 为null 的时候不插入
-    @Column(name = "product_id", jdbcType = JdbcType.INTEGER)
+    @Column(name = "product_id")
     private Integer productID;
-    @Column(jdbcType = JdbcType.VARCHAR)
     private String productName;
-    @Column(updateIfNull = true, jdbcType = JdbcType.NUMERIC)
     private BigDecimal price;
-    @Column(jdbcType = JdbcType.INTEGER)
     private Integer categoryID;
 
     public Integer getProductID() {

@@ -146,5 +146,17 @@ public class CommonsHelperTest {
 
         result = CommonsHelper.getPropertyName(Student.class, Student::toString);
         assertEquals("toString", result);
+
+        result = CommonsHelper.getPropertyName(Student.class, Student::isDeleted);
+        assertEquals("deleted", result);
+    }
+
+    @Test
+    public void testToStringSafe() {
+        String result = CommonsHelper.toStringSafe(null);
+        assertEquals("", result);
+
+        result = CommonsHelper.toStringSafe(1);
+        assertEquals("1", result);
     }
 }

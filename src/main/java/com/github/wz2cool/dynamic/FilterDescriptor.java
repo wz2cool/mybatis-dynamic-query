@@ -1,13 +1,18 @@
 package com.github.wz2cool.dynamic;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.wz2cool.helper.CommonsHelper;
 
+import java.io.Serializable;
 import java.util.function.Function;
 
 /**
  * The type Filter descriptor.
  */
-public class FilterDescriptor extends FilterDescriptorBase {
+@JsonTypeName("filterDescriptor")
+public class FilterDescriptor extends FilterDescriptorBase implements Serializable {
+    private static final long serialVersionUID = -5311044437700352259L;
+
     private FilterOperator operator = FilterOperator.EQUAL;
     private String propertyPath;
     private Object value;
@@ -31,6 +36,15 @@ public class FilterDescriptor extends FilterDescriptorBase {
         this.setCondition(condition);
         this.operator = operator;
         this.propertyPath = propertyPath;
+        this.value = value;
+    }
+
+    public <T> FilterDescriptor(Class<T> entityClass,
+                                Function<T, Object> getFieldFunc,
+                                FilterOperator operator,
+                                Object value) {
+        this.operator = operator;
+        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
         this.value = value;
     }
 

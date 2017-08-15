@@ -105,6 +105,7 @@ public class ReflectHelper {
 
         String name = field.getName();
         String getMethodName = String.format("get%s", name);
+        String isMethodName = String.format("is%s", name);
         String setMethodName = String.format("set%s", name);
 
         boolean hasGetMethod = false;
@@ -114,7 +115,8 @@ public class ReflectHelper {
                 break;
             }
 
-            if (getMethodName.equalsIgnoreCase(method.getName())) {
+            if (getMethodName.equalsIgnoreCase(method.getName())
+                    || isMethodName.equalsIgnoreCase(method.getName())) {
                 hasGetMethod = true;
             }
 

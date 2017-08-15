@@ -1,8 +1,7 @@
 package com.github.wz2cool.model;
 
-import com.github.wz2cool.dynamic.mybatis.JdbcType;
-import com.github.wz2cool.dynamic.mybatis.annotation.Column;
-import com.github.wz2cool.dynamic.mybatis.annotation.Table;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * Created by Frank on 7/10/2017.
@@ -10,12 +9,20 @@ import com.github.wz2cool.dynamic.mybatis.annotation.Table;
 @Table(name = "student")
 public class Student {
     private long serialId = 123456;
-    @Column(jdbcType = JdbcType.VARCHAR)
     private String name;
-    @Column(jdbcType = JdbcType.INTEGER)
     private Integer age;
-    @Column(name = "note", tableOrAlias = "queryColumn", updateIfNull = true, jdbcType = JdbcType.VARCHAR)
+    @Column(name = "note", table = "queryColumn")
     private String note;
+
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public String getNote() {
         return note;
