@@ -341,4 +341,30 @@ public class DbFilterTest {
             assertEquals(true, products.size() > 0);
         }
     }
+
+    @Test
+    public void testMultiTablesFilter() throws Exception {
+        FilterDescriptor priceFilter1 =
+                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                        FilterOperator.GREATER_THAN_OR_EQUAL, 6);
+        FilterDescriptor priceFilter2 =
+                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                        FilterOperator.LESS_THAN, 10);
+        FilterDescriptor categoryNameFilter =
+                new FilterDescriptor(ProductView.class, ProductView::getCategoryName,
+                        FilterOperator.START_WITH, "Co");
+
+        DynamicQuery<ProductView> dynamicQuery = new DynamicQuery<>(ProductView.class);
+        dynamicQuery.addFilter(priceFilter1);
+        dynamicQuery.addFilter(priceFilter2);
+        dynamicQuery.addFilter(categoryNameFilter);
+
+        Map<String, Object> params = MybatisQueryProvider.getQueryParamMap(dynamicQuery,
+                "whereExpression",
+                "sortExpression",
+                "columnsExpression");
+
+        List<ProductView> result = northwindDao.getProductViewsByDynamic(params);
+        assertEquals(true, result.size() > 0);
+    }
 }

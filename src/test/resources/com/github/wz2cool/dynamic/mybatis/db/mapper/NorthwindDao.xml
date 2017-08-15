@@ -13,7 +13,16 @@
 
     <select id="getProductViewsByDynamic" parameterType="java.util.Map"
             resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
-        SELECT * FROM product LEFT JOIN category ON product.category_id = category.category_id
+        SELECT
+        <choose>
+            <when test="columnsExpression != null and columnsExpression !=''">
+                ${columnsExpression}
+            </when>
+            <otherwise>
+                *
+            </otherwise>
+        </choose>
+        FROM product LEFT JOIN category ON product.category_id = category.category_id
         <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
         <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
     </select>

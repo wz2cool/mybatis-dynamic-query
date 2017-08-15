@@ -18,7 +18,7 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 - H2
 - MySql
 - SqlServer
-- Postresql (BETA)
+- Postresql
 - Oracle (TODO)
 
 ## Maven
@@ -26,40 +26,63 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 <dependency>
     <groupId>com.github.wz2cool</groupId>
     <artifactId>mybatis-dynamic-query</artifactId>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
 </dependency> 
 ```
 
 ## Example
-- create a table by sql.
+- create two tables by sql.
 ```sql
-CREATE TABLE product (
-  product_id    INT PRIMARY KEY,
-  category_id   INT NOT NULL,
-  product_name  VARCHAR (50) NOT NULL,
-  price         DECIMAL
-);
+DELETE FROM category;
+INSERT INTO category (category_id, category_name, description) VALUES
+  (1, 'Beverages', 'test'),
+  (2, 'Condiments', 'test'),
+  (3, 'Oil', 'test');
+
+DELETE FROM product;
+INSERT INTO product (product_id, category_id, product_name, price) VALUES
+  (1, 1, 'Northwind Traders Chai', 18.0000),
+  (2, 2, 'Northwind Traders Syrup', 7.5000),
+  (3, 2, 'Northwind Traders Cajun Seasoning', 16.5000),
+  (4, 3, 'Northwind Traders Olive Oil', 16.5000);
 ```
 - create a model map to this table.
 ```java
-public class Product {
-    @Column(name = "product_id") // custom column name
-    private Integer productID;
+public class ProductView {
+    @Column(name = "product_id", table = "product")
+    private Long productID;
+    @Column(name = "product_name", table = "product")
     private String productName;
+    @Column(name = "price", table = "product")
     private BigDecimal price;
-    private Integer categoryID;
+
+    @Column(name = "category_id", table = "category")
+    private Long categoryID;
+    @Column(name = "category_name", table = "category")
+    private String categoryName;
+    @Column(name = "description", table = "category")
+    private String description;
 
     // get, set method.
 }
 ```
 - create a dynamic select in mapper interface / xml.
 ```java
-List<Product> getProductByDynamic(Map<String, Object> params);
+List<ProductView> getProductViewsByDynamic(Map<String, Object> params);
 ```
 ```xml
-<select id="getProductByDynamic" parameterType="java.util.Map"
-         resultType="Product">
-    SELECT * FROM product
+<select id="getProductViewsByDynamic" parameterType="java.util.Map"
+        resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
+    SELECT
+    <choose>
+        <when test="columnsExpression != null and columnsExpression !=''">
+            ${columnsExpression}
+        </when>
+        <otherwise>
+            *
+        </otherwise>
+    </choose>
+    FROM product LEFT JOIN category ON product.category_id = category.category_id
     <if test="whereExpression != null and whereExpression != ''">WHERE ${whereExpression}</if>
     <if test="orderExpression != null and orderExpression != ''">ORDER BY ${orderExpression}</if>
 </select>
@@ -67,20 +90,40 @@ List<Product> getProductByDynamic(Map<String, Object> params);
 - generate expression and param map (NOTE: expression string also put into map).
 ```java
 @Test
-public void simpleDemo() throws Exception {
-    // create a filter descriptor.
-    FilterDescriptor idFilter =
-        new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
-    // generater expression and params base on filter descriptor.
-    Map<String, Object> queryParams =
-        mybatisQueryProvider.getWhereQueryParamMap(
-            Product.class, "whereExpression", idFilter);
-    // pass query params.
-    Product productView =
-        northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
-    
-    assertEquals(Integer.valueOf(2), productView.getProductID());
+public void testMultiTablesFilter() throws Exception {
+        FilterDescriptor priceFilter1 =
+                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                        FilterOperator.GREATER_THAN_OR_EQUAL, 6);
+        FilterDescriptor priceFilter2 =
+                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                        FilterOperator.LESS_THAN, 10);
+        FilterDescriptor categoryNameFilter =
+                new FilterDescriptor(ProductView.class, ProductView::getCategoryName,
+                        FilterOperator.START_WITH, "Co");
+
+        DynamicQuery<ProductView> dynamicQuery = new DynamicQuery<>(ProductView.class);
+        dynamicQuery.addFilter(priceFilter1);
+        dynamicQuery.addFilter(priceFilter2);
+        dynamicQuery.addFilter(categoryNameFilter);
+
+        Map<String, Object> params = MybatisQueryProvider.getQueryParamMap(dynamicQuery,
+                "whereExpression",
+                "sortExpression",
+                "columnsExpression");
+
+        List<ProductView> result = northwindDao.getProductViewsByDynamic(params);
+        assertEquals(true, result.size() > 0);
 }
 ```
+output result
+```bash
+==>  Preparing: SELECT product.product_id AS product_id, product.price AS price, category.description AS description, category.category_name AS category_name, product.product_name AS product_name, category.category_id AS category_id FROM product LEFT JOIN category ON product.category_id = category.category_id 
+WHERE (product.price >= ? AND product.price < ? AND category.category_name LIKE ?) 
+==> Parameters: 6(Integer), 10(Integer), Co%(String)
+<==    Columns: PRODUCT_ID, PRICE, DESCRIPTION, CATEGORY_NAME, PRODUCT_NAME, CATEGORY_ID
+<==        Row: 2, 7.5000, test, Condiments, Northwind Traders Syrup, 2
+<==      Total: 1
+```
+
 ## Docs
-[中文文档](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
+[中文文档1.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
