@@ -30,7 +30,7 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 </dependency> 
 ```
 
-## Example
+## Dynamic Query example
 - create two tables by sql.
 ```sql
 DELETE FROM category;
@@ -117,13 +117,84 @@ public void testMultiTablesFilter() throws Exception {
 ```
 output result
 ```bash
-==>  Preparing: SELECT product.product_id AS product_id, product.price AS price, category.description AS description, category.category_name AS category_name, product.product_name AS product_name, category.category_id AS category_id FROM product LEFT JOIN category ON product.category_id = category.category_id 
-WHERE (product.price >= ? AND product.price < ? AND category.category_name LIKE ?) 
+==>  Preparing: SELECT product.product_id AS product_id, product.price AS price, category.description AS description, category.category_name AS category_name, product.product_name AS product_name, category.category_id AS category_id 
+FROM product LEFT JOIN category ON product.category_id = category.category_id WHERE (product.price >= ? AND product.price < ? AND category.category_name LIKE ?) 
 ==> Parameters: 6(Integer), 10(Integer), Co%(String)
 <==    Columns: PRODUCT_ID, PRICE, DESCRIPTION, CATEGORY_NAME, PRODUCT_NAME, CATEGORY_ID
 <==        Row: 2, 7.5000, test, Condiments, Northwind Traders Syrup, 2
 <==      Total: 1
 ```
+
+## Dynamic Query Mapper
+DynamicQueryMapper is based on tk.mybatis.mapper.
+### spring boot configuration
+1. add dependency
+```xml
+<!-- base -->
+<dependency>
+    <groupId>com.github.wz2cool</groupId>
+    <artifactId>mybatis-dynamic-query</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<!-- register mapper -->
+<dependency>
+    <groupId>tk.mybatis</groupId>
+    <artifactId>mapper-spring-boot-starter</artifactId>
+    <version>1.1.3</version>
+</dependency>
+<!-- mybatis -->
+<dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis</artifactId>
+    <version>3.4.4</version>
+</dependency>
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- spring boot web already has jackson-->
+<!--  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.9.0</version>
+</dependency>-->
+<!-- spring boot -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>1.2.0</version>
+</dependency>
+```
+2. register DynamicQueryMapper in `application.properties` file.
+```bash
+mapper.mappers[0]=com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper
+```
+3. scan mappers.
+```java
+@SpringBootApplication
+@MapperScan(basePackages = "com.github.wz2cool.mdqtest.mapper")
+@EnableSwagger2
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+### create mapper 
+```java
+public interface ProductDao extends DynamicQueryMapper<Product> {
+}
+```
+![](https://raw.githubusercontent.com/wz2cool/markdownPhotos/master/res/20170815143538.png?_=7365737)
 
 ## Docs
 [中文文档1.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
