@@ -198,3 +198,4 @@ public interface ProductDao extends DynamicQueryMapper<Product> {
 
 ## Docs
 [中文文档1.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
+[中文文档2.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-2-0-zh-cn/content/)
