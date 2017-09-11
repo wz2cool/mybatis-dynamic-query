@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("squid:S1948")
 public class DynamicQuery<T> implements Serializable {
     private static final long serialVersionUID = -4044703018297658438L;
 

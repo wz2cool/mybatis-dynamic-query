@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * The type Filter group descriptor.
  */
+@SuppressWarnings("squid:S1948")
 @JsonTypeName("filterGroupDescriptor")
 public class FilterGroupDescriptor extends FilterDescriptorBase implements Serializable {
 

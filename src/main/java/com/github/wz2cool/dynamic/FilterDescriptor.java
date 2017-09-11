@@ -9,6 +9,7 @@ import java.util.function.Function;
 /**
  * The type Filter descriptor.
  */
+@SuppressWarnings("squid:S1948")
 @JsonTypeName("filterDescriptor")
 public class FilterDescriptor extends FilterDescriptorBase implements Serializable {
     private static final long serialVersionUID = -5311044437700352259L;
