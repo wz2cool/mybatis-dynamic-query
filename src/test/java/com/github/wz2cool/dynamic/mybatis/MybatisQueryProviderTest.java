@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
-import com.github.wz2cool.helper.ReflectHelper;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -76,8 +75,8 @@ public class MybatisQueryProviderTest {
                         Student.class, Student::getName, FilterOperator.EQUAL, "frank");
         SortDescriptor ageSort =
                 new SortDescriptor(Student.class, Student::getAge, SortDirection.DESC);
-        dynamicQuery.addFilter(nameFilter);
-        dynamicQuery.addSort(ageSort);
+        dynamicQuery.addFilters(nameFilter);
+        dynamicQuery.addSorts(ageSort);
 
         Map<String, Object> result = MybatisQueryProvider.getQueryParamMap(
                 dynamicQuery,

@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * The type Filter group descriptor.
  */
+@SuppressWarnings("squid:S1948")
 @JsonTypeName("filterGroupDescriptor")
 public class FilterGroupDescriptor extends FilterDescriptorBase implements Serializable {
 
@@ -25,25 +26,26 @@ public class FilterGroupDescriptor extends FilterDescriptorBase implements Seria
         this.filters = filters;
     }
 
+    @SuppressWarnings("Duplicates")
     public boolean addFilters(FilterDescriptorBase... newFilters) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         List<FilterDescriptorBase> newFilterList = Arrays.asList(newFilters);
         boolean result = filtersCopy.addAll(newFilterList);
-        this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+        if (result) {
+            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+        }
         return result;
     }
 
+    @SuppressWarnings("Duplicates")
     public boolean removeFilter(FilterDescriptorBase removeFilter) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         boolean result = filtersCopy.remove(removeFilter);
-        this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+        if (result) {
+            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+        }
         return result;
     }
 }

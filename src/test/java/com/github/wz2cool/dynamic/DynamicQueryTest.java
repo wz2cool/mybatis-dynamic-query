@@ -22,7 +22,7 @@ public class DynamicQueryTest {
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
 
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
-        dynamicQuery.addFilter(filterDescriptor);
+        dynamicQuery.addFilters(filterDescriptor);
         assertEquals(1, dynamicQuery.getFilters().length);
     }
 
@@ -32,7 +32,7 @@ public class DynamicQueryTest {
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
 
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
-        dynamicQuery.addFilter(filterDescriptor);
+        dynamicQuery.addFilters(filterDescriptor);
         assertEquals(1, dynamicQuery.getFilters().length);
 
         dynamicQuery.removeFilter(filterDescriptor);
@@ -44,7 +44,7 @@ public class DynamicQueryTest {
         SortDescriptor sort = new SortDescriptor("name", SortDirection.DESC);
 
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
-        dynamicQuery.addSort(sort);
+        dynamicQuery.addSorts(sort);
 
         assertEquals(1, dynamicQuery.getSorts().length);
     }
@@ -54,7 +54,7 @@ public class DynamicQueryTest {
         SortDescriptor sort = new SortDescriptor("name", SortDirection.DESC);
 
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
-        dynamicQuery.addSort(sort);
+        dynamicQuery.addSorts(sort);
 
         assertEquals(1, dynamicQuery.getSorts().length);
 

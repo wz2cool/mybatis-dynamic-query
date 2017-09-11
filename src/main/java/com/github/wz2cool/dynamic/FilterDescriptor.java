@@ -9,6 +9,7 @@ import java.util.function.Function;
 /**
  * The type Filter descriptor.
  */
+@SuppressWarnings("squid:S1948")
 @JsonTypeName("filterDescriptor")
 public class FilterDescriptor extends FilterDescriptorBase implements Serializable {
     private static final long serialVersionUID = -5311044437700352259L;
@@ -34,6 +35,12 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
      */
     public FilterDescriptor(FilterCondition condition, String propertyPath, FilterOperator operator, Object value) {
         this.setCondition(condition);
+        this.operator = operator;
+        this.propertyPath = propertyPath;
+        this.value = value;
+    }
+
+    public FilterDescriptor(String propertyPath, FilterOperator operator, Object value) {
         this.operator = operator;
         this.propertyPath = propertyPath;
         this.value = value;

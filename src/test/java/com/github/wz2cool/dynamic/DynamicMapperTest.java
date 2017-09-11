@@ -94,7 +94,7 @@ public class DynamicMapperTest {
                 FilterCondition.AND,
                 User.class, User::getUsername,
                 FilterOperator.CONTAINS, "14");
-        dynamicQuery.addFilter(nameFilter);
+        dynamicQuery.addFilters(nameFilter);
 
         result = userDao.deleteByDynamicQuery(dynamicQuery);
         assertEquals(1, result);
@@ -227,11 +227,11 @@ public class DynamicMapperTest {
         dynamicQuery.setDistinct(true);
         FilterDescriptor idFilter =
                 new FilterDescriptor(User.class, User::getId, FilterOperator.LESS_THAN, 100);
-        dynamicQuery.addFilter(idFilter);
+        dynamicQuery.addFilters(idFilter);
 
         SortDescriptor idSort =
                 new SortDescriptor(User.class, User::getId, SortDirection.DESC);
-        dynamicQuery.addSort(idSort);
+        dynamicQuery.addSorts(idSort);
 
         PageRowBounds pageRowBounds = new PageRowBounds(1, 2);
         List<User> users = userDao.selectRowBoundsByDynamicQuery(dynamicQuery, pageRowBounds);
