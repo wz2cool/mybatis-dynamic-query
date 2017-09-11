@@ -28,11 +28,8 @@ public class FilterGroupDescriptor extends FilterDescriptorBase implements Seria
 
     @SuppressWarnings("Duplicates")
     public boolean addFilters(FilterDescriptorBase... newFilters) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         List<FilterDescriptorBase> newFilterList = Arrays.asList(newFilters);
         boolean result = filtersCopy.addAll(newFilterList);
         if (result) {
@@ -43,10 +40,8 @@ public class FilterGroupDescriptor extends FilterDescriptorBase implements Seria
 
     @SuppressWarnings("Duplicates")
     public boolean removeFilter(FilterDescriptorBase removeFilter) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         boolean result = filtersCopy.remove(removeFilter);
         if (result) {
             this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));

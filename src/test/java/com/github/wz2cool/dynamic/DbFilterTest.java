@@ -229,10 +229,10 @@ public class DbFilterTest {
     @Test
     public void multiFilterDemo() throws Exception {
         FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND,
+                new FilterDescriptor(
                         "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
         FilterDescriptor priceFilter =
-                new FilterDescriptor(FilterCondition.AND,
+                new FilterDescriptor(
                         "price", FilterOperator.LESS_THAN, 15);
 
         Map<String, Object> queryParams =

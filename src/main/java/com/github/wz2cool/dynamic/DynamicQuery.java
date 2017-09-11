@@ -60,11 +60,8 @@ public class DynamicQuery<T> implements Serializable {
 
     @SuppressWarnings("Duplicates")
     public boolean addFilters(FilterDescriptorBase... newFilters) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         List<FilterDescriptorBase> newFilterList = Arrays.asList(newFilters);
         boolean result = filtersCopy.addAll(newFilterList);
         this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
@@ -73,10 +70,8 @@ public class DynamicQuery<T> implements Serializable {
 
     @SuppressWarnings("Duplicates")
     public boolean removeFilter(FilterDescriptorBase removeFilter) {
-        if (filters == null) {
-            filters = new FilterDescriptorBase[]{};
-        }
-        List<FilterDescriptorBase> filtersCopy = new ArrayList<>(Arrays.asList(filters));
+        List<FilterDescriptorBase> filtersCopy =
+                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         boolean result = filtersCopy.remove(removeFilter);
         this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
         return result;
@@ -84,11 +79,8 @@ public class DynamicQuery<T> implements Serializable {
 
 
     public boolean addSorts(SortDescriptor... newFilters) {
-        if (sorts == null) {
-            sorts = new SortDescriptor[]{};
-        }
-
-        List<SortDescriptor> sortsCopy = new ArrayList<>(Arrays.asList(sorts));
+        List<SortDescriptor> sortsCopy =
+                sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
         List<SortDescriptor> newSortLists = Arrays.asList(newFilters);
         boolean result = sortsCopy.addAll(newSortLists);
         if (result) {
@@ -98,11 +90,8 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public boolean removeSort(SortDescriptor sort) {
-        if (sorts == null) {
-            sorts = new SortDescriptor[]{};
-        }
-
-        List<SortDescriptor> sortsCopy = new ArrayList<>(Arrays.asList(sorts));
+        List<SortDescriptor> sortsCopy =
+                sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
         boolean result = sortsCopy.remove(sort);
         if (result) {
             this.setSorts(sortsCopy.toArray(new SortDescriptor[sortsCopy.size()]));
