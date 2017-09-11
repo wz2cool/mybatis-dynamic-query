@@ -87,4 +87,23 @@ public class JsonSerializeTest {
         assertEquals(ageFilter.getParams()[0], ageFilterCopy.getParams()[0]);
         assertEquals(ageFilter.getParams()[1], ageFilterCopy.getParams()[1]);
     }
+
+    @Test
+    public void testSerializeDynamicQuery() throws Exception {
+        DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
+        FilterDescriptor nameFilter =
+                new FilterDescriptor(Student.class, Student::getName, FilterOperator.EQUAL, "frank");
+        dynamicQuery.addFilters(nameFilter);
+
+        SortDescriptor ageSort =
+                new SortDescriptor(Student.class, Student::getAge, SortDirection.ASC);
+        dynamicQuery.addSorts(ageSort);
+
+        String jsonStr = mapper.writeValueAsString(dynamicQuery);
+        DynamicQuery dynamicQueryCopy = mapper.readValue(jsonStr, DynamicQuery.class);
+
+        assertEquals(dynamicQuery.getEntityClass(), dynamicQueryCopy.getEntityClass());
+        assertEquals(dynamicQuery.getFilters().length, dynamicQueryCopy.getFilters().length);
+        assertEquals(dynamicQuery.getSorts().length, dynamicQueryCopy.getSorts().length);
+    }
 }

@@ -39,6 +39,12 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
         this.value = value;
     }
 
+    public FilterDescriptor(String propertyPath, FilterOperator operator, Object value) {
+        this.operator = operator;
+        this.propertyPath = propertyPath;
+        this.value = value;
+    }
+
     public <T> FilterDescriptor(Class<T> entityClass,
                                 Function<T, Object> getFieldFunc,
                                 FilterOperator operator,
