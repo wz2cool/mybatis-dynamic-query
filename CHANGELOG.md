@@ -24,3 +24,7 @@
 - remove generating insert/delete method since we can use DynamicQueryMapper.
 - add CustomFilterDescriptor
 - support serialize FilterDescriptor/FilterGroupDescriptor/CustomFilterDescriptor to json
+
+## [v2.0.1](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.1) (2017-09-11)
+**Feature**
+- support serialize DynamicQuery to json
