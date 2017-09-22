@@ -14,6 +14,11 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 - hot update "where" and "order" expression. 
 - save filter or sort descriptor and re-use them.
 
+## Docs
+[中文文档1.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
+|
+[中文文档2.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-2-0-zh-cn/content/)
+
 ## Database support
 - H2
 - MySql
@@ -195,8 +200,3 @@ public interface ProductDao extends DynamicQueryMapper<Product> {
 }
 ```
 ![](https://raw.githubusercontent.com/wz2cool/markdownPhotos/master/res/20170815143538.png?_=7365737)
-
-## Docs
-[中文文档1.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-zh-cn/content/)
-|
-[中文文档2.x](https://wz2cool.gitbooks.io/mybatis-dynamic-query-2-0-zh-cn/content/)
