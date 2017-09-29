@@ -106,4 +106,26 @@ public class JsonSerializeTest {
         assertEquals(dynamicQuery.getFilters().length, dynamicQueryCopy.getFilters().length);
         assertEquals(dynamicQuery.getSorts().length, dynamicQueryCopy.getSorts().length);
     }
+
+    @Test
+    public void testSerializeCustomSortDescriptor() throws Exception {
+        CustomSortDescriptor ageSort = new CustomSortDescriptor();
+        ageSort.setExpression("{0} DESC, {1} ASC");
+        ageSort.setParams("age", "name");
+
+        String jsonStr = mapper.writeValueAsString(ageSort);
+        CustomSortDescriptor ageSortCopy = mapper.readValue(jsonStr, CustomSortDescriptor.class);
+        assertEquals(ageSort.getExpression(), ageSortCopy.getExpression());
+        assertEquals(ageSort.getParams()[0], ageSortCopy.getParams()[0]);
+        assertEquals(ageSort.getParams()[1], ageSortCopy.getParams()[1]);
+
+        SortDescriptorBase[] sorts = new SortDescriptorBase[]{ageSort};
+        String arrayFiltersJson = mapper.writeValueAsString(sorts);
+        SortDescriptorBase[] sortCopy = mapper.readValue(arrayFiltersJson, SortDescriptorBase[].class);
+
+        ageSortCopy = (CustomSortDescriptor) sortCopy[0];
+        assertEquals(ageSort.getExpression(), ageSortCopy.getExpression());
+        assertEquals(ageSort.getParams()[0], ageSortCopy.getParams()[0]);
+        assertEquals(ageSort.getParams()[1], ageSortCopy.getParams()[1]);
+    }
 }

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  * \* Description:
  * \
  */
-public class CustomFilterDescritptorTest {
+public class CustomFilterDescriptorTest {
 
     @Test
     public void testDefaultConstructor() {
