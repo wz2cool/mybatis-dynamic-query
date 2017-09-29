@@ -36,8 +36,8 @@ public class MybatisQueryProviderTest {
         SortDescriptor sortDescriptor =
                 new SortDescriptor("age", SortDirection.DESC);
 
-        String result = MybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
-        assertEquals("age DESC", result);
+        ParamExpression result = MybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
+        assertEquals("age DESC", result.getExpression());
     }
 
     @Test

@@ -108,8 +108,8 @@ public class DynamicQueryProvider extends MapperTemplate {
         }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        String sortExpression = queryHelper.toSortExpression(entityClass, sorts);
-        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression);
+        ParamExpression sortExpression = queryHelper.toSortExpression(entityClass, sorts);
+        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
 
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
         return paramMap;

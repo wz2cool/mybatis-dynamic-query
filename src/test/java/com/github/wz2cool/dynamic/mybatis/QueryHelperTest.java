@@ -26,17 +26,17 @@ public class QueryHelperTest {
         SortDescriptor nameSort = new SortDescriptor("name", SortDirection.DESC);
         SortDescriptor ageSort = new SortDescriptor("age", SortDirection.ASC);
 
-        String result = queryHelper.toSortExpression(Student.class, nameSort);
-        assertEquals("name DESC", result);
+        ParamExpression result = queryHelper.toSortExpression(Student.class, nameSort);
+        assertEquals("name DESC", result.getExpression());
 
         result = queryHelper.toSortExpression(Student.class, nameSort, ageSort);
-        assertEquals("name DESC, age ASC", result);
+        assertEquals("name DESC, age ASC", result.getExpression());
 
         result = queryHelper.toSortExpression(Student.class);
-        assertEquals("", result);
+        assertEquals("", result.getExpression());
 
         result = queryHelper.toSortExpression(null);
-        assertEquals("", result);
+        assertEquals("", result.getExpression());
     }
 
 

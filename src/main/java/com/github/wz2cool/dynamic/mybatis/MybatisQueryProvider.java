@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptor;
+import com.github.wz2cool.dynamic.SortDescriptorBase;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -106,14 +107,15 @@ public class MybatisQueryProvider {
     public static Map<String, Object> getSortQueryParamMap(
             final Class entityClass,
             final String sortExpressionPlaceholder,
-            final SortDescriptor... sorts) throws PropertyNotFoundException {
+            final SortDescriptorBase... sorts) throws PropertyNotFoundException {
         if (StringUtils.isBlank(sortExpressionPlaceholder)) {
             throw new NullPointerException("sortExpressionPlaceholder");
         }
 
-        String sortExpression = getSortExpression(entityClass, sorts);
+        ParamExpression sortExpression = getSortExpression(entityClass, sorts);
         Map<String, Object> queryParams = new LinkedHashMap<>();
-        queryParams.put(sortExpressionPlaceholder, sortExpression);
+        queryParams.put(sortExpressionPlaceholder, sortExpression.getExpression());
+        queryParams.putAll(sortExpression.getParamMap());
         return queryParams;
     }
 
@@ -125,7 +127,7 @@ public class MybatisQueryProvider {
      * @return the sort expression
      * @throws PropertyNotFoundException the property not found exception
      */
-    public static String getSortExpression(final Class entityClass, final SortDescriptor... sorts)
+    public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
             throws PropertyNotFoundException {
         return queryHelper.toSortExpression(entityClass, sorts);
     }
