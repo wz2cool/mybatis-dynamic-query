@@ -12,7 +12,7 @@ public class DynamicQuery<T> implements Serializable {
     private boolean distinct;
     private Class<T> entityClass;
     private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
-    private SortDescriptor[] sorts = new SortDescriptor[]{};
+    private SortDescriptorBase[] sorts = new SortDescriptor[]{};
 
     public DynamicQuery() {
         // for json
@@ -46,11 +46,11 @@ public class DynamicQuery<T> implements Serializable {
         this.filters = filters;
     }
 
-    public SortDescriptor[] getSorts() {
+    public SortDescriptorBase[] getSorts() {
         return sorts;
     }
 
-    public void setSorts(SortDescriptor[] sorts) {
+    public void setSorts(SortDescriptorBase[] sorts) {
         this.sorts = sorts;
     }
 
@@ -78,10 +78,10 @@ public class DynamicQuery<T> implements Serializable {
     }
 
 
-    public boolean addSorts(SortDescriptor... newFilters) {
-        List<SortDescriptor> sortsCopy =
+    public boolean addSorts(SortDescriptorBase... newFilters) {
+        List<SortDescriptorBase> sortsCopy =
                 sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
-        List<SortDescriptor> newSortLists = Arrays.asList(newFilters);
+        List<SortDescriptorBase> newSortLists = Arrays.asList(newFilters);
         boolean result = sortsCopy.addAll(newSortLists);
         if (result) {
             this.setSorts(sortsCopy.toArray(new SortDescriptor[sortsCopy.size()]));
@@ -89,8 +89,8 @@ public class DynamicQuery<T> implements Serializable {
         return result;
     }
 
-    public boolean removeSort(SortDescriptor sort) {
-        List<SortDescriptor> sortsCopy =
+    public boolean removeSort(SortDescriptorBase sort) {
+        List<SortDescriptorBase> sortsCopy =
                 sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
         boolean result = sortsCopy.remove(sort);
         if (result) {

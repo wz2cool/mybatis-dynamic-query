@@ -15,13 +15,58 @@ import java.util.Map;
 /**
  * The type Mybatis query provider.
  */
-public class MybatisQueryProvider {
+public class MybatisQueryProvider<T> {
     private final static QueryHelper queryHelper = new QueryHelper();
+    final DynamicQuery<T> dynamicQuery;
+    String whereExpressionPlaceholder;
+    String sortExpressionPlaceholder;
+    String columnsExpressionPlaceHolder;
 
     private MybatisQueryProvider() {
-        throw new UnsupportedOperationException();
+        dynamicQuery = new DynamicQuery<>();
     }
 
+    public static <T> MybatisQueryProvider<T> createInstance(final Class<T> entityClass) {
+        MybatisQueryProvider<T> mybatisQueryProvider = new MybatisQueryProvider<>();
+        mybatisQueryProvider.dynamicQuery.setEntityClass(entityClass);
+        return mybatisQueryProvider;
+    }
+
+    public static <T> MybatisQueryProvider<T> createInstance(
+            final Class<T> entityClass,
+            String columnsExpressionPlaceHolder) {
+        MybatisQueryProvider<T> mybatisQueryProvider = new MybatisQueryProvider<>();
+        mybatisQueryProvider.dynamicQuery.setEntityClass(entityClass);
+        mybatisQueryProvider.columnsExpressionPlaceHolder = columnsExpressionPlaceHolder;
+        return mybatisQueryProvider;
+    }
+
+    public MybatisQueryProvider<T> addFilters(
+            final String whereExpressionPlaceholder,
+            final FilterDescriptorBase... filters) {
+        this.whereExpressionPlaceholder = whereExpressionPlaceholder;
+        this.dynamicQuery.setFilters(filters);
+        return this;
+    }
+
+    public MybatisQueryProvider<T> addSorts(
+            final String sortExpressionPlaceholder,
+            final SortDescriptorBase... sorts) {
+        this.sortExpressionPlaceholder = sortExpressionPlaceholder;
+        this.dynamicQuery.setSorts(sorts);
+        return this;
+    }
+
+    public Map<String, Object> toQueryParam()
+            throws PropertyNotFoundException {
+        return MybatisQueryProvider.getQueryParamMap(
+                this.dynamicQuery,
+                this.whereExpressionPlaceholder,
+                this.sortExpressionPlaceholder,
+                this.columnsExpressionPlaceHolder);
+    }
+
+    /// region static method
     public static <T> Map<String, Object> getQueryParamMap(
             final DynamicQuery<T> dynamicQuery,
             final String whereExpressionPlaceholder,
@@ -41,7 +86,7 @@ public class MybatisQueryProvider {
         }
 
         if (StringUtils.isNotBlank(sortExpressionPlaceholder)) {
-            SortDescriptor[] sorts = dynamicQuery.getSorts();
+            SortDescriptorBase[] sorts = dynamicQuery.getSorts();
             Map<String, Object> sortQueryParamMap =
                     getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
             result.putAll(sortQueryParamMap);
@@ -135,4 +180,5 @@ public class MybatisQueryProvider {
     public static String getAllColumnsExpression(final Class entityClass) {
         return queryHelper.toAllColumnsExpression(entityClass);
     }
+    /// endregion
 }

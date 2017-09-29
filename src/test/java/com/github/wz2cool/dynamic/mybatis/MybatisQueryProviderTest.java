@@ -13,13 +13,6 @@ import static org.junit.Assert.assertEquals;
 
 public class MybatisQueryProviderTest {
 
-    @Test(expected = InvocationTargetException.class)
-    public void TestMybatisQueryProvider() throws Exception {
-        Constructor<MybatisQueryProvider> c = MybatisQueryProvider.class.getDeclaredConstructor();
-        c.setAccessible(true);
-        c.newInstance();
-    }
-
     @Test
     public void TestGetWhereExpression() throws Exception {
         FilterDescriptor filterDescriptor =
