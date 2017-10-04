@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -87,4 +88,13 @@ public class MybatisQueryProviderTest {
                 "columnsPlaceholder");
     }
 
+    @Test
+    public void testGetQueryColumn() throws Exception {
+        String nameColumn = MybatisQueryProvider.getQueryColumn(Student.class, student -> student.getName());
+        assertEquals("name", nameColumn);
+
+        String productIdColumn = MybatisQueryProvider.getQueryColumn(
+                ProductView.class, productView -> productView.getProductID());
+        assertEquals("product.product_id", productIdColumn);
+    }
 }

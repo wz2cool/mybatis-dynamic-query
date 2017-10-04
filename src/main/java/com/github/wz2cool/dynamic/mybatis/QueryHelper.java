@@ -269,6 +269,10 @@ public class QueryHelper {
         return String.join(", ", columns);
     }
 
+    ColumnInfo getColumnInfo(final Class entityClass, final String propertyName) {
+        return entityCache.getColumnInfo(entityClass, propertyName);
+    }
+
     /**
      * Valid filters.
      *
