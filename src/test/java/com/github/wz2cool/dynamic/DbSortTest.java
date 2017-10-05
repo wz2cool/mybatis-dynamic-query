@@ -4,6 +4,7 @@ import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +51,18 @@ public class DbSortTest {
 
     @Test
     public void testCustomSort() throws Exception {
+        String idQueryColumn = MybatisQueryProvider.getQueryColumn(ProductView.class, product -> product.getProductID());
+        // NOTE: queryColumn cannot be parameter.
+        // 这里注意：列不能当做参数，否则会报错，所以我们字符串拼接出来。
+        String customSortExpression = String.format("CASE %s WHEN {0} THEN {1} ELSE product.product_id END DESC", idQueryColumn);
         CustomSortDescriptor id2TopSort = new CustomSortDescriptor();
-        id2TopSort.setExpression("CASE product.product_id WHEN {0} THEN {1} ELSE product.product_id END DESC");
+        id2TopSort.setExpression(customSortExpression);
         id2TopSort.setParams(2, Integer.MAX_VALUE);
         Map<String, Object> queryParam =
-                MybatisQueryProvider.createInstance(Product.class)
+                MybatisQueryProvider.createInstance(ProductView.class)
                         .addSorts("orderExpression", id2TopSort)
                         .toQueryParam();
-        List<Product> productList = northwindDao.getProductByDynamic(queryParam);
-        assertEquals(Integer.valueOf(2), productList.get(0).getProductID());
+        List<ProductView> productList = northwindDao.getProductViewsByDynamic(queryParam);
+        assertEquals(Long.valueOf(2), productList.get(0).getProductID());
     }
 }
