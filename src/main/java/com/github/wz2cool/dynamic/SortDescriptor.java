@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * The type Sort descriptor.
  */
-public class SortDescriptor implements Serializable {
+public class SortDescriptor extends SortDescriptorBase implements Serializable {
     private static final long serialVersionUID = 819843464658066502L;
 
     private String propertyPath;

@@ -4,12 +4,9 @@ import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Frank on 7/12/2017.
@@ -71,7 +68,7 @@ public class QueryHelper {
         Object[] params = customFilterDescriptor.getParams();
         String expression = customFilterDescriptor.getExpression();
         for (int i = 0; i < params.length; i++) {
-            String genParamName = String.format("param_custom_%s", UUID.randomUUID().toString().replace("-", ""));
+            String genParamName = String.format("param_custom_filter_%s", UUID.randomUUID().toString().replace("-", ""));
             expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
             paramMap.put(genParamName, params[i]);
         }
@@ -191,23 +188,72 @@ public class QueryHelper {
     // endregion
 
     // region sort
-    private String toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
-        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyPath());
-        return String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
-    }
 
-    public String toSortExpression(final Class entityClass, final SortDescriptor... sorts)
+    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
             throws PropertyNotFoundException {
         if (entityClass == null || sorts == null || sorts.length == 0) {
-            return "";
+            return new ParamExpression();
         }
 
         validSorts(entityClass, sorts);
 
-        String[] sortExpressions = Arrays.stream(sorts)
-                .map(x -> toSortExpression(entityClass, x)).toArray(String[]::new);
+        String expression = "";
+        Map<String, Object> paramMap = new LinkedHashMap<>();
+        for (SortDescriptorBase sort : sorts) {
+            ParamExpression paramExpression = toSortExpression(entityClass, sort);
+            if (paramExpression != null) {
+                paramMap.putAll(paramExpression.getParamMap());
 
-        return String.join(", ", sortExpressions);
+                if (StringUtils.isEmpty(expression)) {
+                    expression = paramExpression.getExpression();
+                } else if (StringUtils.isNotBlank(paramExpression.getExpression())) {
+                    expression = String.format("%s, %s", expression, paramExpression.getExpression());
+                }
+            }
+        }
+        ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpression(expression);
+        paramExpression.getParamMap().putAll(paramMap);
+        return paramExpression;
+    }
+
+    ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase sortDescriptorBase) {
+        if (sortDescriptorBase instanceof SortDescriptor) {
+            return toSortExpression(entityClass, (SortDescriptor) sortDescriptorBase);
+        } else if (sortDescriptorBase instanceof CustomSortDescriptor) {
+            return toSortExpression((CustomSortDescriptor) sortDescriptorBase);
+        } else {
+            return new ParamExpression();
+        }
+    }
+
+    ParamExpression toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
+        ParamExpression paramExpression = new ParamExpression();
+        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyPath());
+        String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
+        paramExpression.setExpression(expression);
+        return paramExpression;
+    }
+
+    ParamExpression toSortExpression(final CustomSortDescriptor customSortDescriptor) {
+        if (customSortDescriptor == null) {
+            return new ParamExpression();
+        }
+
+        Map<String, Object> paramMap = new HashMap<>();
+        Object[] params = customSortDescriptor.getParams();
+        String expression = customSortDescriptor.getExpression();
+        for (int i = 0; i < params.length; i++) {
+            String genParamName = String.format("param_custom_sort_%s",
+                    UUID.randomUUID().toString().replace("-", ""));
+            expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
+            paramMap.put(genParamName, params[i]);
+        }
+
+        ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpression(expression);
+        paramExpression.getParamMap().putAll(paramMap);
+        return paramExpression;
     }
     // endregion
 
@@ -221,6 +267,10 @@ public class QueryHelper {
             columns.add(column);
         }
         return String.join(", ", columns);
+    }
+
+    ColumnInfo getColumnInfo(final Class entityClass, final String propertyName) {
+        return entityCache.getColumnInfo(entityClass, propertyName);
     }
 
     /**
@@ -258,19 +308,21 @@ public class QueryHelper {
      * @param sorts       the sorts
      * @throws PropertyNotFoundException the property not found exception
      */
-    void validSorts(final Class entityClass, final SortDescriptor... sorts)
+    void validSorts(final Class entityClass, final SortDescriptorBase... sorts)
             throws PropertyNotFoundException {
         if (sorts == null || sorts.length == 0) {
             return;
         }
 
-        for (SortDescriptor sort : sorts) {
-            String propertyPath = sort.getPropertyPath();
-            if (!entityCache.hasProperty(entityClass, propertyPath)) {
-                String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
-                throw new PropertyNotFoundException(errMsg);
+        for (SortDescriptorBase sort : sorts) {
+            if (sort instanceof SortDescriptor) {
+                SortDescriptor useSort = (SortDescriptor) sort;
+                String propertyPath = useSort.getPropertyPath();
+                if (!entityCache.hasProperty(entityClass, propertyPath)) {
+                    String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                    throw new PropertyNotFoundException(errMsg);
+                }
             }
         }
     }
-
 }

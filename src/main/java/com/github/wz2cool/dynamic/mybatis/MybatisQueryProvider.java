@@ -2,23 +2,78 @@ package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
-import com.github.wz2cool.dynamic.SortDescriptor;
+import com.github.wz2cool.dynamic.SortDescriptorBase;
 import com.github.wz2cool.exception.PropertyNotFoundException;
+import com.github.wz2cool.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 
 /**
  * The type Mybatis query provider.
  */
-public class MybatisQueryProvider {
+public class MybatisQueryProvider<T> {
     private final static QueryHelper queryHelper = new QueryHelper();
+    final DynamicQuery<T> dynamicQuery;
+    String whereExpressionPlaceholder;
+    String sortExpressionPlaceholder;
+    String columnsExpressionPlaceHolder;
 
     private MybatisQueryProvider() {
-        throw new UnsupportedOperationException();
+        dynamicQuery = new DynamicQuery<>();
+    }
+
+    public static <T> MybatisQueryProvider<T> createInstance(final Class<T> entityClass) {
+        MybatisQueryProvider<T> mybatisQueryProvider = new MybatisQueryProvider<>();
+        mybatisQueryProvider.dynamicQuery.setEntityClass(entityClass);
+        return mybatisQueryProvider;
+    }
+
+    public static <T> MybatisQueryProvider<T> createInstance(
+            final Class<T> entityClass,
+            String columnsExpressionPlaceHolder) {
+        MybatisQueryProvider<T> mybatisQueryProvider = new MybatisQueryProvider<>();
+        mybatisQueryProvider.dynamicQuery.setEntityClass(entityClass);
+        mybatisQueryProvider.columnsExpressionPlaceHolder = columnsExpressionPlaceHolder;
+        return mybatisQueryProvider;
+    }
+
+    public MybatisQueryProvider<T> addFilters(
+            final String whereExpressionPlaceholder,
+            final FilterDescriptorBase... filters) {
+        this.whereExpressionPlaceholder = whereExpressionPlaceholder;
+        this.dynamicQuery.setFilters(filters);
+        return this;
+    }
+
+    public MybatisQueryProvider<T> addSorts(
+            final String sortExpressionPlaceholder,
+            final SortDescriptorBase... sorts) {
+        this.sortExpressionPlaceholder = sortExpressionPlaceholder;
+        this.dynamicQuery.setSorts(sorts);
+        return this;
+    }
+
+    public Map<String, Object> toQueryParam()
+            throws PropertyNotFoundException {
+        return MybatisQueryProvider.getQueryParamMap(
+                this.dynamicQuery,
+                this.whereExpressionPlaceholder,
+                this.sortExpressionPlaceholder,
+                this.columnsExpressionPlaceHolder);
+    }
+
+    /// region static method
+    public static <T> String getQueryColumn(
+            final Class<T> entityClass,
+            final Function<T, Object> getFieldFunc) {
+        String propertyName = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        ColumnInfo columnInfo = queryHelper.getColumnInfo(entityClass, propertyName);
+        return columnInfo.getQueryColumn();
     }
 
     public static <T> Map<String, Object> getQueryParamMap(
@@ -40,7 +95,7 @@ public class MybatisQueryProvider {
         }
 
         if (StringUtils.isNotBlank(sortExpressionPlaceholder)) {
-            SortDescriptor[] sorts = dynamicQuery.getSorts();
+            SortDescriptorBase[] sorts = dynamicQuery.getSorts();
             Map<String, Object> sortQueryParamMap =
                     getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
             result.putAll(sortQueryParamMap);
@@ -106,14 +161,15 @@ public class MybatisQueryProvider {
     public static Map<String, Object> getSortQueryParamMap(
             final Class entityClass,
             final String sortExpressionPlaceholder,
-            final SortDescriptor... sorts) throws PropertyNotFoundException {
+            final SortDescriptorBase... sorts) throws PropertyNotFoundException {
         if (StringUtils.isBlank(sortExpressionPlaceholder)) {
             throw new NullPointerException("sortExpressionPlaceholder");
         }
 
-        String sortExpression = getSortExpression(entityClass, sorts);
+        ParamExpression sortExpression = getSortExpression(entityClass, sorts);
         Map<String, Object> queryParams = new LinkedHashMap<>();
-        queryParams.put(sortExpressionPlaceholder, sortExpression);
+        queryParams.put(sortExpressionPlaceholder, sortExpression.getExpression());
+        queryParams.putAll(sortExpression.getParamMap());
         return queryParams;
     }
 
@@ -125,7 +181,7 @@ public class MybatisQueryProvider {
      * @return the sort expression
      * @throws PropertyNotFoundException the property not found exception
      */
-    public static String getSortExpression(final Class entityClass, final SortDescriptor... sorts)
+    public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
             throws PropertyNotFoundException {
         return queryHelper.toSortExpression(entityClass, sorts);
     }
@@ -133,4 +189,5 @@ public class MybatisQueryProvider {
     public static String getAllColumnsExpression(final Class entityClass) {
         return queryHelper.toAllColumnsExpression(entityClass);
     }
+    /// endregion
 }

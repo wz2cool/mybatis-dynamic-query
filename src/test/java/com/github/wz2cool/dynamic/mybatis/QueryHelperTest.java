@@ -5,10 +5,13 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.model.Student;
+import org.apache.ibatis.jdbc.Null;
 import org.junit.Test;
+import sun.util.resources.cldr.chr.CalendarData_chr_US;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -26,17 +29,17 @@ public class QueryHelperTest {
         SortDescriptor nameSort = new SortDescriptor("name", SortDirection.DESC);
         SortDescriptor ageSort = new SortDescriptor("age", SortDirection.ASC);
 
-        String result = queryHelper.toSortExpression(Student.class, nameSort);
-        assertEquals("name DESC", result);
+        ParamExpression result = queryHelper.toSortExpression(Student.class, nameSort);
+        assertEquals("name DESC", result.getExpression());
 
         result = queryHelper.toSortExpression(Student.class, nameSort, ageSort);
-        assertEquals("name DESC, age ASC", result);
+        assertEquals("name DESC, age ASC", result.getExpression());
 
         result = queryHelper.toSortExpression(Student.class);
-        assertEquals("", result);
+        assertEquals("", result.getExpression());
 
         result = queryHelper.toSortExpression(null);
-        assertEquals("", result);
+        assertEquals("", result.getExpression());
     }
 
 
@@ -340,4 +343,20 @@ public class QueryHelperTest {
         assertEquals("%frank%", result);
     }
 
+    @Test
+    public void testToSortExpressionByCustomSort() {
+        CustomSortDescriptor customSortDescriptor = new CustomSortDescriptor();
+        customSortDescriptor.setExpression("CASE `{0}` WHEN 'ENU' Then 1 ELSE 4 END");
+        customSortDescriptor.setParams("TEST_COLUMN");
+
+        ParamExpression result = queryHelper.toSortExpression(Student.class, customSortDescriptor);
+        String pattern = "^CASE `#\\{param_custom_sort_\\w+\\}` WHEN 'ENU' Then 1 ELSE 4 END$";
+        boolean test = Pattern.matches(pattern, result.getExpression());
+        assertEquals(true, test);
+        assertEquals("TEST_COLUMN", result.getParamMap().values().iterator().next());
+
+        SortDescriptorBase nullSortBase = null;
+        result = queryHelper.toSortExpression(Student.class, nullSortBase);
+        assertEquals("", result.getExpression());
+    }
 }

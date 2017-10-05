@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -12,13 +13,6 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
 
 public class MybatisQueryProviderTest {
-
-    @Test(expected = InvocationTargetException.class)
-    public void TestMybatisQueryProvider() throws Exception {
-        Constructor<MybatisQueryProvider> c = MybatisQueryProvider.class.getDeclaredConstructor();
-        c.setAccessible(true);
-        c.newInstance();
-    }
 
     @Test
     public void TestGetWhereExpression() throws Exception {
@@ -36,8 +30,8 @@ public class MybatisQueryProviderTest {
         SortDescriptor sortDescriptor =
                 new SortDescriptor("age", SortDirection.DESC);
 
-        String result = MybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
-        assertEquals("age DESC", result);
+        ParamExpression result = MybatisQueryProvider.getSortExpression(Student.class, sortDescriptor);
+        assertEquals("age DESC", result.getExpression());
     }
 
     @Test
@@ -94,4 +88,13 @@ public class MybatisQueryProviderTest {
                 "columnsPlaceholder");
     }
 
+    @Test
+    public void testGetQueryColumn() throws Exception {
+        String nameColumn = MybatisQueryProvider.getQueryColumn(Student.class, student -> student.getName());
+        assertEquals("name", nameColumn);
+
+        String productIdColumn = MybatisQueryProvider.getQueryColumn(
+                ProductView.class, productView -> productView.getProductID());
+        assertEquals("product.product_id", productIdColumn);
+    }
 }

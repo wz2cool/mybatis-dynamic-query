@@ -354,15 +354,14 @@ public class DbFilterTest {
                 new FilterDescriptor(ProductView.class, ProductView::getCategoryName,
                         FilterOperator.START_WITH, "Co");
 
-        DynamicQuery<ProductView> dynamicQuery = new DynamicQuery<>(ProductView.class);
-        dynamicQuery.addFilter(priceFilter1);
-        dynamicQuery.addFilter(priceFilter2);
-        dynamicQuery.addFilter(categoryNameFilter);
-
-        Map<String, Object> params = MybatisQueryProvider.getQueryParamMap(dynamicQuery,
-                "whereExpression",
-                "sortExpression",
-                "columnsExpression");
+        Map<String, Object> params =
+                // NOTE: we recommend you to set "columnsExpressionPlaceholder"
+                // in case of duplicated column name in two tables.
+                // 这里你也可以不给列的站位，但是推荐使用，防止两个表有重复的名字
+                MybatisQueryProvider.createInstance(ProductView.class, "columnsExpression")
+                        .addFilters("whereExpression",
+                                priceFilter1, priceFilter2, categoryNameFilter)
+                        .toQueryParam();
 
         List<ProductView> result = northwindDao.getProductViewsByDynamic(params);
         assertEquals(true, result.size() > 0);
