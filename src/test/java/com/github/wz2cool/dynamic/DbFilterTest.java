@@ -370,15 +370,16 @@ public class DbFilterTest {
     }
 
     @Test
-    public void testSelectColumns() throws Exception {
+    public void testSelectColumns() {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
-                .addSelectField(User::getUsername);
-        List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
+                .addSelectField(User::getUsername)
+                .addSelectField(User::getId);
 
+        List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
         for (User user : userNames) {
             assertEquals(true, StringUtils.isNotBlank(user.getUsername()));
+            // bse we don't select password
             assertEquals(true, StringUtils.isBlank(user.getPassword()));
         }
-
     }
 }
