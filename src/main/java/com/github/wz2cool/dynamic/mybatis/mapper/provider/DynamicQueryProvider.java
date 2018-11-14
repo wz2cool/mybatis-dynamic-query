@@ -60,7 +60,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
-        sql.append(SqlHelper.exampleSelectColumns(entityClass));
+        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getSortClause());
@@ -98,6 +98,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
+        String[] selectFields = dynamicQuery.getSelectFields();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
@@ -111,8 +112,10 @@ public class DynamicQueryProvider extends MapperTemplate {
 
         ParamExpression sortExpression = queryHelper.toSortExpression(entityClass, sorts);
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
-
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
+
+        String selectColumnExpression = queryHelper.toSelectColumnsExpression(entityClass, selectFields);
+        paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
     }
     // endregion
