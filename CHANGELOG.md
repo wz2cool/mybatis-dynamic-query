@@ -29,6 +29,12 @@
 **Feature**
 - support serialize DynamicQuery to json
 
+## [v2.0.2](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.2) (2017-10-05)
+**Feature**
+- add custom sort descriptor
+- get query column ([tableName].[columnName])
+- createInstance for MybatisQueryProvider 
+
 ## [v2.0.3](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.3) (2018-11-14)
 **Feature**
 - add Select Fields(columns)
