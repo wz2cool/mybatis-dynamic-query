@@ -65,7 +65,7 @@ public class DynamicQueryTest {
     @Test
     public void testCreateQuery() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class);
-        assertEquals(true, query != null);
+        assertEquals(0, query.getFilters().length);
     }
 
     @Test
