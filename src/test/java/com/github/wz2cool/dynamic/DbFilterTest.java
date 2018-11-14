@@ -8,6 +8,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -373,6 +374,11 @@ public class DbFilterTest {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
                 .addSelectField(User::getUsername);
         List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
+
+        for (User user : userNames) {
+            assertEquals(true, StringUtils.isNotBlank(user.getUsername()));
+            assertEquals(true, StringUtils.isBlank(user.getPassword()));
+        }
 
     }
 }
