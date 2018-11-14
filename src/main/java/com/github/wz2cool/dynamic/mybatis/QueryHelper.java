@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.exception.PropertyNotFoundException;
 import com.github.wz2cool.helper.CommonsHelper;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.security.InvalidParameterException;
@@ -256,6 +257,27 @@ public class QueryHelper {
         return paramExpression;
     }
     // endregion
+
+    public String toSelectColumnsExpression(final Class entityClass, String[] selectFields) {
+        if (ArrayUtils.isEmpty(selectFields)) {
+            return toAllColumnsExpression(entityClass);
+        }
+
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : columnInfos) {
+            String fieldName = columnInfo.getField().getName();
+            if (!ArrayUtils.contains(selectFields, fieldName)) {
+                continue;
+            }
+
+            String column = String.format("%s AS %s",
+                    columnInfo.getQueryColumn(),
+                    EntityHelper.camelCaseToUnderscore(fieldName));
+            columns.add(column);
+        }
+        return String.join(", ", columns);
+    }
 
     String toAllColumnsExpression(final Class entityClass) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);

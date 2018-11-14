@@ -8,6 +8,7 @@ public class MapperConstants {
     public final static String DISTINCT = "distinct";
     public final static String DYNAMIC_QUERY = "dynamicQuery";
     public final static String DYNAMIC_QUERY_PARAMS = "dynamicQueryParams";
+    public final static String SELECT_COLUMNS_EXPRESSION = "selectColumnsExpression";
     public final static String WHERE_EXPRESSION = "whereExpression";
     public final static String SORT_EXPRESSION = "sortExpression";
 }

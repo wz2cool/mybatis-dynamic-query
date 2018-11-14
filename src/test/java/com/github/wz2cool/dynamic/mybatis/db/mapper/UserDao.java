@@ -2,8 +2,6 @@ package com.github.wz2cool.dynamic.mybatis.db.mapper;
 
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
-import tk.mybatis.mapper.common.ExampleMapper;
-import tk.mybatis.mapper.common.Mapper;
 
 /**
  * \* Created with IntelliJ IDEA.

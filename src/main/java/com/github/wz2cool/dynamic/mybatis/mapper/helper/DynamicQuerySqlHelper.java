@@ -19,6 +19,10 @@ public class DynamicQuerySqlHelper {
         return sql.toString();
     }
 
+    public static String getSelectColumnsClause() {
+        return String.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SELECT_COLUMNS_EXPRESSION);
+    }
+
     public static String getWhereClause() {
         String newExpression = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.WHERE_EXPRESSION);
         return String.format("<if test=\"%s != null and %s != ''\">WHERE ${%s}</if>",
