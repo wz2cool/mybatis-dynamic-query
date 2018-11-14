@@ -266,13 +266,14 @@ public class QueryHelper {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
         for (ColumnInfo columnInfo : columnInfos) {
-            if (!ArrayUtils.contains(selectFields, columnInfo.getField())) {
+            String fieldName = columnInfo.getField().getName();
+            if (!ArrayUtils.contains(selectFields, fieldName)) {
                 continue;
             }
 
             String column = String.format("%s AS %s",
                     columnInfo.getQueryColumn(),
-                    EntityHelper.camelCaseToUnderscore(columnInfo.getField().getName()));
+                    EntityHelper.camelCaseToUnderscore(fieldName));
             columns.add(column);
         }
         return String.join(", ", columns);

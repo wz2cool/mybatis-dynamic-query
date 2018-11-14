@@ -6,6 +6,7 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -365,5 +366,13 @@ public class DbFilterTest {
 
         List<ProductView> result = northwindDao.getProductViewsByDynamic(params);
         assertEquals(true, result.size() > 0);
+    }
+
+    @Test
+    public void testSelectColumns() throws Exception {
+        DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
+                .addSelectField(User::getUsername);
+        List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
+
     }
 }

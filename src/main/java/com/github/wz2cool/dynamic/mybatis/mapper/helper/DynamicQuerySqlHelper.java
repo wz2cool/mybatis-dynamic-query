@@ -20,7 +20,7 @@ public class DynamicQuerySqlHelper {
     }
 
     public static String getSelectColumnsClause() {
-        return String.format("${%s.%s}", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SELECT_COLUMNS_EXPRESSION);
+        return String.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SELECT_COLUMNS_EXPRESSION);
     }
 
     public static String getWhereClause() {
