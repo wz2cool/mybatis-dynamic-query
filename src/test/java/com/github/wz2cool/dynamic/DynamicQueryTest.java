@@ -95,4 +95,15 @@ public class DynamicQueryTest {
         assertEquals("age", sortDescriptor.getPropertyPath());
         assertEquals(SortDirection.DESC, sortDescriptor.getSortDirection());
     }
+
+    @Test
+    public void testAddSelectField() {
+        DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
+                .addSelectField(Student::getAge)
+                .addSelectField(Student::getName);
+
+        String[] selectFields = query.getSelectFields();
+        assertEquals("age", selectFields[0]);
+        assertEquals("name", selectFields[1]);
+    }
 }

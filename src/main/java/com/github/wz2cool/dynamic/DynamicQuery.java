@@ -1,9 +1,9 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.wz2cool.helper.CommonsHelper;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
 @SuppressWarnings("squid:S1948")
@@ -14,6 +14,7 @@ public class DynamicQuery<T> implements Serializable {
     private Class<T> entityClass;
     private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
     private SortDescriptorBase[] sorts = new SortDescriptor[]{};
+    private String[] selectFields = new String[]{};
 
     public DynamicQuery() {
         // for json
@@ -59,52 +60,42 @@ public class DynamicQuery<T> implements Serializable {
         this.sorts = sorts;
     }
 
+    public String[] getSelectFields() {
+        return selectFields;
+    }
+
+    public void setSelectFields(String[] selectFields) {
+        this.selectFields = selectFields;
+    }
+
     public DynamicQuery<T> addFilter(FilterDescriptorBase newFilter) {
         return addFilters(newFilter);
     }
 
     @SuppressWarnings("Duplicates")
     public DynamicQuery<T> addFilters(FilterDescriptorBase... newFilters) {
-        List<FilterDescriptorBase> filtersCopy =
-                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
-        List<FilterDescriptorBase> newFilterList = Arrays.asList(newFilters);
-        boolean result = filtersCopy.addAll(newFilterList);
-        if (result) {
-            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
-        }
+        FilterDescriptorBase[] newAllFilters = ArrayUtils.addAll(this.filters, newFilters);
+        this.setFilters(newAllFilters);
         return this;
     }
 
     @SuppressWarnings("Duplicates")
     public DynamicQuery<T> removeFilter(FilterDescriptorBase removeFilter) {
-        List<FilterDescriptorBase> filtersCopy =
-                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
-        boolean result = filtersCopy.remove(removeFilter);
-        if (result) {
-            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
-        }
+        FilterDescriptorBase[] newAllFilters = ArrayUtils.removeAllOccurences(this.filters, removeFilter);
+        this.setFilters(newAllFilters);
         return this;
     }
 
 
-    public DynamicQuery<T> addSorts(SortDescriptorBase... newFilters) {
-        List<SortDescriptorBase> sortsCopy =
-                sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
-        List<SortDescriptorBase> newSortLists = Arrays.asList(newFilters);
-        boolean result = sortsCopy.addAll(newSortLists);
-        if (result) {
-            this.setSorts(sortsCopy.toArray(new SortDescriptorBase[sortsCopy.size()]));
-        }
+    public DynamicQuery<T> addSorts(SortDescriptorBase... newSorts) {
+        SortDescriptorBase[] newAllSorts = ArrayUtils.addAll(this.sorts, newSorts);
+        this.setSorts(newAllSorts);
         return this;
     }
 
     public DynamicQuery<T> removeSort(SortDescriptorBase sort) {
-        List<SortDescriptorBase> sortsCopy =
-                sorts == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(sorts));
-        boolean result = sortsCopy.remove(sort);
-        if (result) {
-            this.setSorts(sortsCopy.toArray(new SortDescriptorBase[sortsCopy.size()]));
-        }
+        SortDescriptorBase[] newAllSorts = ArrayUtils.removeAllOccurences(this.sorts, sort);
+        this.setSorts(newAllSorts);
         return this;
     }
 
@@ -125,5 +116,12 @@ public class DynamicQuery<T> implements Serializable {
     public DynamicQuery<T> addSortDescriptor(Function<T, Object> getFieldFunc, SortDirection sortDirection) {
         SortDescriptor sortDescriptor = new SortDescriptor(this.entityClass, getFieldFunc, sortDirection);
         return addSorts(sortDescriptor);
+    }
+
+    public DynamicQuery<T> addSelectField(Function<T, Object> getFieldFunc) {
+        String propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        String[] newSelectFields = ArrayUtils.add(this.selectFields, propertyPath);
+        this.setSelectFields(newSelectFields);
+        return this;
     }
 }
