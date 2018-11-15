@@ -1,0 +1,49 @@
+package com.github.wz2cool.dynamic;
+
+import com.github.pagehelper.PageHelper;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ContextConfiguration(classes = TestApplication.class)
+public class DemoTest {
+
+    @Resource
+    private ProductDao productDao;
+
+    @Test
+    public void testLinkOperation() {
+        DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
+                .addSelectField(Product::getProductName)
+                .addSelectField(Product::getPrice)
+                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addSortDescriptor(Product::getPrice, SortDirection.DESC)
+                .addSortDescriptor(Product::getProductID, SortDirection.DESC);
+
+        List<Product> products = PageHelper.startPage(0, 100, false)
+                .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
+
+        for (Product p : products) {
+            // productID ignore to select
+            assertEquals(null, p.getProductID());
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+            // price > 16
+            assertEquals(1, p.getPrice().compareTo(BigDecimal.valueOf(16)));
+        }
+    }
+}
