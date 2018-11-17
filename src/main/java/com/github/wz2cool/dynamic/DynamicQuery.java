@@ -14,7 +14,7 @@ public class DynamicQuery<T> implements Serializable {
     private Class<T> entityClass;
     private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
     private SortDescriptorBase[] sorts = new SortDescriptor[]{};
-    private String[] selectFields = new String[]{};
+    private String[] selectProperties = new String[]{};
 
     public DynamicQuery() {
         // for json
@@ -60,12 +60,12 @@ public class DynamicQuery<T> implements Serializable {
         this.sorts = sorts;
     }
 
-    public String[] getSelectFields() {
-        return selectFields;
+    public String[] getSelectProperties() {
+        return selectProperties;
     }
 
-    public void setSelectFields(String[] selectFields) {
-        this.selectFields = selectFields;
+    public void setSelectProperties(String[] selectProperties) {
+        this.selectProperties = selectProperties;
     }
 
     public DynamicQuery<T> addFilter(FilterDescriptorBase newFilter) {
@@ -118,10 +118,10 @@ public class DynamicQuery<T> implements Serializable {
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> addSelectField(Function<T, Object> getFieldFunc) {
+    public DynamicQuery<T> addSelectProperty(Function<T, Object> getFieldFunc) {
         String propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
-        String[] newSelectFields = ArrayUtils.add(this.selectFields, propertyPath);
-        this.setSelectFields(newSelectFields);
+        String[] newSelectFields = ArrayUtils.add(this.selectProperties, propertyPath);
+        this.setSelectProperties(newSelectFields);
         return this;
     }
 }

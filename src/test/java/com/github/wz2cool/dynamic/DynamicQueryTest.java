@@ -99,10 +99,10 @@ public class DynamicQueryTest {
     @Test
     public void testAddSelectField() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .addSelectField(Student::getAge)
-                .addSelectField(Student::getName);
+                .addSelectProperty(Student::getAge)
+                .addSelectProperty(Student::getName);
 
-        String[] selectFields = query.getSelectFields();
+        String[] selectFields = query.getSelectProperties();
         assertEquals("age", selectFields[0]);
         assertEquals("name", selectFields[1]);
     }

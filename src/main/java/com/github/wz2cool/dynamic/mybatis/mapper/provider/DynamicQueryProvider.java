@@ -2,7 +2,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
-import com.github.wz2cool.dynamic.SortDescriptor;
 import com.github.wz2cool.dynamic.SortDescriptorBase;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
@@ -98,7 +97,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
-        String[] selectFields = dynamicQuery.getSelectFields();
+        String[] selectFields = dynamicQuery.getSelectProperties();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();

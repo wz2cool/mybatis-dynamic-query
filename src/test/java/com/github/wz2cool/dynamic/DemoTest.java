@@ -25,10 +25,27 @@ public class DemoTest {
     private ProductDao productDao;
 
     @Test
+    public void testSelectFields() {
+        DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
+                .addSelectProperty(Product::getProductName)
+                .addSelectProperty(Product::getPrice);
+
+        List<Product> products = PageHelper.startPage(0, 3, false)
+                .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
+
+        for (Product p : products) {
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+        }
+    }
+
+    @Test
     public void testLinkOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .addSelectField(Product::getProductName)
-                .addSelectField(Product::getPrice)
+                .addSelectProperty(Product::getProductID)
+                .addSelectProperty(Product::getProductName)
+                .addSelectProperty(Product::getPrice)
                 .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
@@ -37,8 +54,6 @@ public class DemoTest {
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
         for (Product p : products) {
-            // productID ignore to select
-            assertEquals(null, p.getProductID());
             // categoryID ignore to select
             assertEquals(null, p.getCategoryID());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
