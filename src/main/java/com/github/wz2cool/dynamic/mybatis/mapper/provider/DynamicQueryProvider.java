@@ -97,7 +97,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
-        String[] selectFields = dynamicQuery.getSelectProperties();
+        String[] selectFields = dynamicQuery.getSelectedProperties();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
