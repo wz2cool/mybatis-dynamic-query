@@ -27,8 +27,8 @@ public class DemoTest {
     @Test
     public void testSelectFields() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .addSelectProperty(Product::getProductName)
-                .addSelectProperty(Product::getPrice);
+                .selectProperty(Product::getProductName)
+                .selectProperty(Product::getPrice);
 
         List<Product> products = PageHelper.startPage(0, 3, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
@@ -43,9 +43,9 @@ public class DemoTest {
     @Test
     public void testLinkOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .addSelectProperty(Product::getProductID)
-                .addSelectProperty(Product::getProductName)
-                .addSelectProperty(Product::getPrice)
+                .selectProperty(Product::getProductID)
+                .selectProperty(Product::getProductName)
+                .selectProperty(Product::getPrice)
                 .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);

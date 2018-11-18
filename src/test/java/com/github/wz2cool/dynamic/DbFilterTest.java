@@ -374,9 +374,9 @@ public class DbFilterTest {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
                 .addFilterDescriptor(User::getId, FilterOperator.EQUAL, 2)
                 // select 'Username' field(column)
-                .addSelectProperty(User::getUsername)
+                .selectProperty(User::getUsername)
                 // select 'Id' field(column)
-                .addSelectProperty(User::getId);
+                .selectProperty(User::getId);
         List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
 
         for (User user : userNames) {

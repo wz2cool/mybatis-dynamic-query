@@ -118,7 +118,7 @@ public class DynamicQuery<T> implements Serializable {
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> addSelectProperty(Function<T, Object> getPropertyFunc) {
+    public DynamicQuery<T> selectProperty(Function<T, Object> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyName(entityClass, getPropertyFunc);
         String[] newSelectFields = ArrayUtils.add(this.selectProperties, propertyPath);
         this.setSelectProperties(newSelectFields);
