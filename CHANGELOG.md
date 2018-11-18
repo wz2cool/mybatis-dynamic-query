@@ -38,3 +38,7 @@
 ## [v2.0.3](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.3) (2018-11-14)
 **Feature**
 - add Select Fields(columns)
+
+## [v2.0.4](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.3) (2018-11-18)
+**Feature**
+- change select fields to select property
