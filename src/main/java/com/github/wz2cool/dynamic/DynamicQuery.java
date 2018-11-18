@@ -100,26 +100,26 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public DynamicQuery<T> addFilterDescriptor(
-            FilterCondition condition, Function<T, Object> getFieldFunc,
+            FilterCondition condition, Function<T, Object> getPropertyFunc,
             FilterOperator operator, Object value) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, this.entityClass, getFieldFunc, operator, value);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, this.entityClass, getPropertyFunc, operator, value);
         return addFilter(filterDescriptor);
     }
 
     public DynamicQuery<T> addFilterDescriptor(
-            Function<T, Object> getFieldFunc,
+            Function<T, Object> getPropertyFunc,
             FilterOperator operator, Object value) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, this.entityClass, getFieldFunc, operator, value);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, this.entityClass, getPropertyFunc, operator, value);
         return addFilter(filterDescriptor);
     }
 
-    public DynamicQuery<T> addSortDescriptor(Function<T, Object> getFieldFunc, SortDirection sortDirection) {
-        SortDescriptor sortDescriptor = new SortDescriptor(this.entityClass, getFieldFunc, sortDirection);
+    public DynamicQuery<T> addSortDescriptor(Function<T, Object> getPropertyFunc, SortDirection sortDirection) {
+        SortDescriptor sortDescriptor = new SortDescriptor(this.entityClass, getPropertyFunc, sortDirection);
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> addSelectProperty(Function<T, Object> getFieldFunc) {
-        String propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+    public DynamicQuery<T> addSelectProperty(Function<T, Object> getPropertyFunc) {
+        String propertyPath = CommonsHelper.getPropertyName(entityClass, getPropertyFunc);
         String[] newSelectFields = ArrayUtils.add(this.selectProperties, propertyPath);
         this.setSelectProperties(newSelectFields);
         return this;
