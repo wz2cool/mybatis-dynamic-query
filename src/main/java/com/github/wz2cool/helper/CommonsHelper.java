@@ -80,7 +80,7 @@ public class CommonsHelper {
         return methodName;
     }
 
-    public static synchronized <T> String obtainGetMethodName(final Class<T> target, final Function<T, Object> getMethodFunc) {
+    public static <T> String obtainGetMethodName(final Class<T> target, final Function<T, Object> getMethodFunc) {
         Methref<T> methodRef = Methref.on(target);
         getMethodFunc.apply(methodRef.to());
         return methodRef.ref();
