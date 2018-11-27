@@ -152,6 +152,22 @@ public class CommonsHelperTest {
     }
 
     @Test
+    public void testGetPropertyName2() {
+        int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        Arrays.stream(servers).parallel().forEach((a) -> {
+            String result = CommonsHelper.getPropertyName(Student::getAge);
+            assertEquals("age", result);
+
+            result = CommonsHelper.getPropertyName(Student::getName);
+            assertEquals("name", result);
+
+            result = CommonsHelper.getPropertyName(Student::getNote);
+            assertEquals("note", result);
+        });
+    }
+
+
+    @Test
     public void testToStringSafe() {
         String result = CommonsHelper.toStringSafe(null);
         assertEquals("", result);

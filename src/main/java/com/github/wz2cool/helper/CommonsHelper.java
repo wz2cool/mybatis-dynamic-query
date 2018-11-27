@@ -2,7 +2,9 @@ package com.github.wz2cool.helper;
 
 import jodd.methref.Methref;
 
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
@@ -67,6 +69,24 @@ public class CommonsHelper {
         }
 
         return obj.toString();
+    }
+
+    public static <T> String getPropertyName(GetPropertyNameFunction<T> fn) {
+        try {
+            Method method = fn.getClass().getDeclaredMethod("writeReplace");
+            method.setAccessible(true);
+            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
+            String methodName = serializedLambda.getImplMethodName();
+            if (methodName.startsWith("get")) {
+                return java.beans.Introspector.decapitalize(methodName.substring(3));
+            } else if (methodName.startsWith("is")) {
+                return java.beans.Introspector.decapitalize(methodName.substring(2));
+            } else {
+                return methodName;
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static <T> String getPropertyName(final Class<T> target, final Function<T, Object> getMethodFunc) {
