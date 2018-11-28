@@ -2,8 +2,7 @@ package com.github.wz2cool.dynamic.model;
 
 public class PropertyInfo {
     private String propertyName;
-    private String className;
-    private String propertyType;
+    private Class ownerClass;
 
     public String getPropertyName() {
         return propertyName;
@@ -13,19 +12,11 @@ public class PropertyInfo {
         this.propertyName = propertyName;
     }
 
-    public String getClassName() {
-        return className;
+    public Class getOwnerClass() {
+        return ownerClass;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getPropertyType() {
-        return propertyType;
-    }
-
-    public void setPropertyType(String propertyType) {
-        this.propertyType = propertyType;
+    public void setOwnerClass(Class ownerClass) {
+        this.ownerClass = ownerClass;
     }
 }

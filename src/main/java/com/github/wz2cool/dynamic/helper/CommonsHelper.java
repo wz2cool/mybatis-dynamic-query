@@ -9,12 +9,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
  * Created by Frank on 7/7/2017.
  */
 public class CommonsHelper {
+    private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
+
     private CommonsHelper() {
         throw new UnsupportedOperationException();
     }
@@ -80,7 +83,6 @@ public class CommonsHelper {
             SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
             String methodName = serializedLambda.getImplMethodName();
             String className = serializedLambda.getImplClass();
-            String propertyType = serializedLambda.getImplMethodSignature();
             String propertyName;
             if (methodName.startsWith("get")) {
                 propertyName = java.beans.Introspector.decapitalize(methodName.substring(3));
@@ -89,10 +91,18 @@ public class CommonsHelper {
             } else {
                 propertyName = methodName;
             }
+
+            Class ownerClass;
+            if (classMap.containsKey(className)) {
+                ownerClass = classMap.get(className);
+            } else {
+                ownerClass = Class.forName(className.replace('/', '.'));
+                classMap.put(className, ownerClass);
+            }
+
             PropertyInfo propertyInfo = new PropertyInfo();
             propertyInfo.setPropertyName(propertyName);
-            propertyInfo.setClassName(className);
-            propertyInfo.setPropertyType(propertyType);
+            propertyInfo.setOwnerClass(ownerClass);
             return propertyInfo;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
