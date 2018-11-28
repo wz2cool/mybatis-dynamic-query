@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -34,7 +34,7 @@ public class SortDescriptor extends SortDescriptorBase implements Serializable {
     }
 
     public <T> SortDescriptor(Class<T> entityClass, Function<T, Object> getFieldFunc, SortDirection sortDirection) {
-        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
         this.sortDirection = sortDirection;
     }
 
@@ -57,7 +57,7 @@ public class SortDescriptor extends SortDescriptorBase implements Serializable {
     }
 
     public <T> void setPropertyPath(Class<T> entityClass, Function<T, Object> getFieldFunc) {
-        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
     }
 
     /**

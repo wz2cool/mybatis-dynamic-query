@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -51,7 +51,7 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
                                 FilterOperator operator,
                                 Object value) {
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
         this.value = value;
     }
 
@@ -62,7 +62,7 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
                                 Object value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
         this.value = value;
     }
 
@@ -103,7 +103,7 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
     }
 
     public <T> void setPropertyPath(Class<T> entityClass, Function<T, Object> getFieldFunc) {
-        this.propertyPath = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
     }
 
     /**

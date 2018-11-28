@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Serializable;
@@ -119,7 +119,7 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public DynamicQuery<T> selectProperty(Function<T, Object> getPropertyFunc) {
-        String propertyPath = CommonsHelper.getPropertyName(entityClass, getPropertyFunc);
+        String propertyPath = CommonsHelper.getPropertyInfo(entityClass, getPropertyFunc);
         String[] newSelectFields = ArrayUtils.add(this.selectedProperties, propertyPath);
         this.setSelectedProperties(newSelectFields);
         return this;

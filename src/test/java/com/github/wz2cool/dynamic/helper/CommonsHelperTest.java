@@ -1,5 +1,6 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -141,28 +142,31 @@ public class CommonsHelperTest {
 
     @Test
     public void testGetPropertyName() {
-        String result = CommonsHelper.getPropertyName(Student.class, Student::getAge);
+        String result = CommonsHelper.getPropertyInfo(Student.class, Student::getAge);
         assertEquals("age", result);
 
-        result = CommonsHelper.getPropertyName(Student.class, Student::toString);
+        result = CommonsHelper.getPropertyInfo(Student.class, Student::toString);
         assertEquals("toString", result);
 
-        result = CommonsHelper.getPropertyName(Student.class, Student::isDeleted);
+        result = CommonsHelper.getPropertyInfo(Student.class, Student::isDeleted);
         assertEquals("deleted", result);
     }
 
     @Test
-    public void testGetPropertyName2() {
+    public void testGetPropertyInfo() {
         int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         Arrays.stream(servers).parallel().forEach((a) -> {
-            String result = CommonsHelper.getPropertyName(Student::getAge);
-            assertEquals("age", result);
+            PropertyInfo result = CommonsHelper.getPropertyInfo(Student::getAge);
+            assertEquals("age", result.getPropertyName());
 
-            result = CommonsHelper.getPropertyName(Student::getName);
-            assertEquals("name", result);
+            result = CommonsHelper.getPropertyInfo(Student::getName);
+            assertEquals("name", result.getPropertyName());
 
-            result = CommonsHelper.getPropertyName(Student::getNote);
-            assertEquals("note", result);
+            result = CommonsHelper.getPropertyInfo(Student::getNote);
+            assertEquals("note", result.getPropertyName());
+
+            result = CommonsHelper.getPropertyInfo(Student::isDeleted);
+            assertEquals("deleted", result.getPropertyName());
         });
     }
 

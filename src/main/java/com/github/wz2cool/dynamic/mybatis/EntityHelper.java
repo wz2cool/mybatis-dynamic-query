@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.exception.PropertyNotFoundInternalException;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;

@@ -1,8 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 

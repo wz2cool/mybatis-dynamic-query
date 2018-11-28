@@ -2,16 +2,13 @@ package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.exception.PropertyNotFoundInternalException;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.model.Student;
-import org.apache.ibatis.jdbc.Null;
 import org.junit.Test;
-import sun.util.resources.cldr.chr.CalendarData_chr_US;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 

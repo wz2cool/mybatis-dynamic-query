@@ -3,8 +3,8 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptorBase;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class MybatisQueryProvider<T> {
     public static <T> String getQueryColumn(
             final Class<T> entityClass,
             final Function<T, Object> getFieldFunc) {
-        String propertyName = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
+        String propertyName = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
         ColumnInfo columnInfo = queryHelper.getColumnInfo(entityClass, propertyName);
         return columnInfo.getQueryColumn();
     }

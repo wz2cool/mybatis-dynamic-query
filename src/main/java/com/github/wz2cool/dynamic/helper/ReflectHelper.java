@@ -1,4 +1,4 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
 import org.apache.commons.lang3.StringUtils;
 

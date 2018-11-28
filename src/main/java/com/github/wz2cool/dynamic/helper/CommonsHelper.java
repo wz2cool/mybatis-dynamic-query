@@ -1,5 +1,7 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 import jodd.methref.Methref;
 
 import java.lang.invoke.SerializedLambda;
@@ -71,25 +73,33 @@ public class CommonsHelper {
         return obj.toString();
     }
 
-    public static <T> String getPropertyName(GetPropertyNameFunction<T> fn) {
+    public static <T> PropertyInfo getPropertyInfo(GetPropertyFunction<T> fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(true);
             SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
             String methodName = serializedLambda.getImplMethodName();
+            String className = serializedLambda.getImplClass();
+            String propertyType = serializedLambda.getImplMethodSignature();
+            String propertyName;
             if (methodName.startsWith("get")) {
-                return java.beans.Introspector.decapitalize(methodName.substring(3));
+                propertyName = java.beans.Introspector.decapitalize(methodName.substring(3));
             } else if (methodName.startsWith("is")) {
-                return java.beans.Introspector.decapitalize(methodName.substring(2));
+                propertyName = java.beans.Introspector.decapitalize(methodName.substring(2));
             } else {
-                return methodName;
+                propertyName = methodName;
             }
+            PropertyInfo propertyInfo = new PropertyInfo();
+            propertyInfo.setPropertyName(propertyName);
+            propertyInfo.setClassName(className);
+            propertyInfo.setPropertyType(propertyType);
+            return propertyInfo;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T> String getPropertyName(final Class<T> target, final Function<T, Object> getMethodFunc) {
+    public static <T> String getPropertyInfo(final Class<T> target, final Function<T, Object> getMethodFunc) {
         String methodName = obtainGetMethodName(target, getMethodFunc);
         if (methodName.startsWith("get")) {
             return java.beans.Introspector.decapitalize(methodName.substring(3));
