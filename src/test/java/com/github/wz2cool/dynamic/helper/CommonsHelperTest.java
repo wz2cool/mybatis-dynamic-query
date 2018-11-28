@@ -158,15 +158,19 @@ public class CommonsHelperTest {
         Arrays.stream(servers).parallel().forEach((a) -> {
             PropertyInfo result = CommonsHelper.getPropertyInfo(Student::getAge);
             assertEquals("age", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
 
             result = CommonsHelper.getPropertyInfo(Student::getName);
             assertEquals("name", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
 
             result = CommonsHelper.getPropertyInfo(Student::getNote);
             assertEquals("note", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
 
             result = CommonsHelper.getPropertyInfo(Student::isDeleted);
             assertEquals("deleted", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
         });
     }
 
