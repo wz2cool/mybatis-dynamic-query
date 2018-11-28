@@ -2,7 +2,6 @@ package com.github.wz2cool.dynamic.helper;
 
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
-import jodd.methref.Methref;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Array;
@@ -10,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * Created by Frank on 7/7/2017.
