@@ -109,7 +109,7 @@ public class CommonsHelper {
         }
     }
 
-    public static <T> String getPropertyInfo(final Class<T> target, final Function<T, Object> getMethodFunc) {
+   /* public static <T> String getPropertyInfo(final Class<T> target, final Function<T, Object> getMethodFunc) {
         String methodName = obtainGetMethodName(target, getMethodFunc);
         if (methodName.startsWith("get")) {
             return java.beans.Introspector.decapitalize(methodName.substring(3));
@@ -124,5 +124,5 @@ public class CommonsHelper {
         Methref<T> methodRef = Methref.on(target);
         getMethodFunc.apply(methodRef.to());
         return methodRef.ref();
-    }
+    }*/
 }

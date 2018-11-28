@@ -5,6 +5,8 @@ import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptorBase;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -69,10 +71,11 @@ public class MybatisQueryProvider<T> {
 
     /// region static method
     public static <T> String getQueryColumn(
-            final Class<T> entityClass,
-            final Function<T, Object> getFieldFunc) {
-        String propertyName = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
-        ColumnInfo columnInfo = queryHelper.getColumnInfo(entityClass, propertyName);
+            final GetPropertyFunction<T> getFieldFunc) {
+        PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);
+        String propertyName = propertyInfo.getPropertyName();
+        Class ownerClass = propertyInfo.getOwnerClass();
+        ColumnInfo columnInfo = queryHelper.getColumnInfo(ownerClass, propertyName);
         return columnInfo.getQueryColumn();
     }
 

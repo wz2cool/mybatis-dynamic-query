@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -46,23 +47,21 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
         this.value = value;
     }
 
-    public <T> FilterDescriptor(Class<T> entityClass,
-                                Function<T, Object> getFieldFunc,
+    public <T> FilterDescriptor(GetPropertyFunction<T> getFieldFunc,
                                 FilterOperator operator,
                                 Object value) {
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
     public <T> FilterDescriptor(FilterCondition condition,
-                                Class<T> entityClass,
-                                Function<T, Object> getFieldFunc,
+                                GetPropertyFunction<T> getFieldFunc,
                                 FilterOperator operator,
                                 Object value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
+        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
@@ -102,8 +101,8 @@ public class FilterDescriptor extends FilterDescriptorBase implements Serializab
         this.propertyPath = propertyPath;
     }
 
-    public <T> void setPropertyPath(Class<T> entityClass, Function<T, Object> getFieldFunc) {
-        this.propertyPath = CommonsHelper.getPropertyInfo(entityClass, getFieldFunc);
+    public <T> void setPropertyPath(GetPropertyFunction<T> getFieldFunc) {
+        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
     }
 
     /**

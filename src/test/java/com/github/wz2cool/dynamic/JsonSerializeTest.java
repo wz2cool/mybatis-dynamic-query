@@ -23,7 +23,7 @@ public class JsonSerializeTest {
     @Test
     public void testSerializeFilterDescriptor() throws Exception {
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.EQUAL, 2);
+                new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 2);
         String jsonStr = mapper.writeValueAsString(ageFilter);
         FilterDescriptor ageFilterCopy = mapper.readValue(jsonStr, FilterDescriptor.class);
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
@@ -40,9 +40,9 @@ public class JsonSerializeTest {
     @Test
     public void testSerializeFilterGroupDescriptor() throws Exception {
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.GREATER_THAN, 20);
+                new FilterDescriptor(Student::getAge, FilterOperator.GREATER_THAN, 20);
         FilterDescriptor ageFilter2 =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.LESS_THAN, 30);
+                new FilterDescriptor(Student::getAge, FilterOperator.LESS_THAN, 30);
 
         FilterGroupDescriptor ageGroupFilter = new FilterGroupDescriptor();
         ageGroupFilter.addFilters(ageFilter);
@@ -92,11 +92,11 @@ public class JsonSerializeTest {
     public void testSerializeDynamicQuery() throws Exception {
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
         FilterDescriptor nameFilter =
-                new FilterDescriptor(Student.class, Student::getName, FilterOperator.EQUAL, "frank");
+                new FilterDescriptor(Student::getName, FilterOperator.EQUAL, "frank");
         dynamicQuery.addFilters(nameFilter);
 
         SortDescriptor ageSort =
-                new SortDescriptor(Student.class, Student::getAge, SortDirection.ASC);
+                new SortDescriptor(Student::getAge, SortDirection.ASC);
         dynamicQuery.addSorts(ageSort);
 
         String jsonStr = mapper.writeValueAsString(dynamicQuery);

@@ -18,8 +18,7 @@ public class FilterDescriptorTest {
     @Test
     public void lambdaNewInstanceTest() {
         FilterDescriptor filterDescriptor =
-                new FilterDescriptor(FilterCondition.AND,
-                        Student.class, Student::getAge,
+                new FilterDescriptor(FilterCondition.AND, Student::getAge,
                         FilterOperator.EQUAL, "3");
 
         assertEquals("age", filterDescriptor.getPropertyPath());
@@ -28,7 +27,7 @@ public class FilterDescriptorTest {
     @Test
     public void lambdaSetPropertyTest() {
         FilterDescriptor filterDescriptor = new FilterDescriptor();
-        filterDescriptor.setPropertyPath(Student.class, Student::getAge);
+        filterDescriptor.setPropertyPath(Student::getAge);
         assertEquals("age", filterDescriptor.getPropertyPath());
     }
 }

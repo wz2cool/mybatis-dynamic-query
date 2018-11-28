@@ -19,7 +19,7 @@ public class SortDescriptorTest {
     @Test
     public void lambdaNewInstanceTest() {
         SortDescriptor filterDescriptor =
-                new SortDescriptor(Student.class, Student::getAge, SortDirection.DESC);
+                new SortDescriptor(Student::getAge, SortDirection.DESC);
 
         assertEquals("age", filterDescriptor.getPropertyPath());
     }
@@ -28,7 +28,7 @@ public class SortDescriptorTest {
     @Test
     public void lambdaSetPropertyTest() {
         SortDescriptor filterDescriptor = new SortDescriptor();
-        filterDescriptor.setPropertyPath(Student.class, Student::getAge);
+        filterDescriptor.setPropertyPath(Student::getAge);
         assertEquals("age", filterDescriptor.getPropertyPath());
     }
 }

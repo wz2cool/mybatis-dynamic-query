@@ -126,33 +126,6 @@ public class CommonsHelperTest {
     }
 
     @Test
-    public void testObtainGetMethodName() {
-        int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        Arrays.stream(servers).parallel().forEach((a) -> {
-            String result = CommonsHelper.obtainGetMethodName(Student.class, Student::getAge);
-            assertEquals("getAge", result);
-
-            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getName());
-            assertEquals("getName", result);
-
-            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getNote());
-            assertEquals("getNote", result);
-        });
-    }
-
-    @Test
-    public void testGetPropertyName() {
-        String result = CommonsHelper.getPropertyInfo(Student.class, Student::getAge);
-        assertEquals("age", result);
-
-        result = CommonsHelper.getPropertyInfo(Student.class, Student::toString);
-        assertEquals("toString", result);
-
-        result = CommonsHelper.getPropertyInfo(Student.class, Student::isDeleted);
-        assertEquals("deleted", result);
-    }
-
-    @Test
     public void testGetPropertyInfo() {
         int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         Arrays.stream(servers).parallel().forEach((a) -> {

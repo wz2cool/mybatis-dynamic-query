@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Serializable;
@@ -100,26 +101,26 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public DynamicQuery<T> addFilterDescriptor(
-            FilterCondition condition, Function<T, Object> getPropertyFunc,
+            FilterCondition condition, GetPropertyFunction<T> getPropertyFunc,
             FilterOperator operator, Object value) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, this.entityClass, getPropertyFunc, operator, value);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, getPropertyFunc, operator, value);
         return addFilter(filterDescriptor);
     }
 
     public DynamicQuery<T> addFilterDescriptor(
-            Function<T, Object> getPropertyFunc,
+            GetPropertyFunction<T> getPropertyFunc,
             FilterOperator operator, Object value) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, this.entityClass, getPropertyFunc, operator, value);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, getPropertyFunc, operator, value);
         return addFilter(filterDescriptor);
     }
 
-    public DynamicQuery<T> addSortDescriptor(Function<T, Object> getPropertyFunc, SortDirection sortDirection) {
-        SortDescriptor sortDescriptor = new SortDescriptor(this.entityClass, getPropertyFunc, sortDirection);
+    public DynamicQuery<T> addSortDescriptor(GetPropertyFunction<T> getPropertyFunc, SortDirection sortDirection) {
+        SortDescriptor sortDescriptor = new SortDescriptor(getPropertyFunc, sortDirection);
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> selectProperty(Function<T, Object> getPropertyFunc) {
-        String propertyPath = CommonsHelper.getPropertyInfo(entityClass, getPropertyFunc);
+    public DynamicQuery<T> selectProperty(GetPropertyFunction<T> getPropertyFunc) {
+        String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
         String[] newSelectFields = ArrayUtils.add(this.selectedProperties, propertyPath);
         this.setSelectedProperties(newSelectFields);
         return this;

@@ -347,13 +347,13 @@ public class DbFilterTest {
     @Test
     public void testMultiTablesFilter() throws Exception {
         FilterDescriptor priceFilter1 =
-                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                new FilterDescriptor(ProductView::getPrice,
                         FilterOperator.GREATER_THAN_OR_EQUAL, 6);
         FilterDescriptor priceFilter2 =
-                new FilterDescriptor(ProductView.class, ProductView::getPrice,
+                new FilterDescriptor(ProductView::getPrice,
                         FilterOperator.LESS_THAN, 10);
         FilterDescriptor categoryNameFilter =
-                new FilterDescriptor(ProductView.class, ProductView::getCategoryName,
+                new FilterDescriptor(ProductView::getCategoryName,
                         FilterOperator.START_WITH, "Co");
 
         Map<String, Object> params =
