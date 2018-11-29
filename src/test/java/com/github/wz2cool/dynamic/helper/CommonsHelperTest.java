@@ -144,6 +144,13 @@ public class CommonsHelperTest {
             result = CommonsHelper.getPropertyInfo(Student::isDeleted);
             assertEquals("deleted", result.getPropertyName());
             assertEquals(Student.class, result.getOwnerClass());
+            // this will call cache to get class
+            result = CommonsHelper.getPropertyInfo(Student::isDeleted);
+            assertEquals("deleted", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
+
+            result = CommonsHelper.getPropertyInfo(Student::toString);
+            assertEquals("toString", result.getPropertyName());
         });
     }
 

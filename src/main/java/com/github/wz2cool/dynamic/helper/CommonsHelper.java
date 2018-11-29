@@ -106,21 +106,4 @@ public class CommonsHelper {
             throw new RuntimeException(e);
         }
     }
-
-   /* public static <T> String getPropertyInfo(final Class<T> target, final Function<T, Object> getMethodFunc) {
-        String methodName = obtainGetMethodName(target, getMethodFunc);
-        if (methodName.startsWith("get")) {
-            return java.beans.Introspector.decapitalize(methodName.substring(3));
-        } else if (methodName.startsWith("is")) {
-            return java.beans.Introspector.decapitalize(methodName.substring(2));
-        }
-
-        return methodName;
-    }
-
-    public static <T> String obtainGetMethodName(final Class<T> target, final Function<T, Object> getMethodFunc) {
-        Methref<T> methodRef = Methref.on(target);
-        getMethodFunc.apply(methodRef.to());
-        return methodRef.ref();
-    }*/
 }
