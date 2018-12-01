@@ -46,6 +46,7 @@ public class DemoTest {
                 .selectProperty(Product::getProductID)
                 .selectProperty(Product::getProductName)
                 .selectProperty(Product::getPrice)
+                .ignoreProperty(Product::getProductID) // set will not effect bse we already set selectProperty
                 .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
