@@ -71,24 +71,23 @@ public class DynamicQueryProvider extends MapperTemplate {
     }
 
     public String updateSelectiveByDynamicQuery(MappedStatement ms) {
+        return updateByDynamicQuery(ms, true);
+    }
+
+    public String updateByDynamicQuery(MappedStatement ms) {
+        return updateByDynamicQuery(ms, false);
+    }
+
+    private String updateByDynamicQuery(MappedStatement ms, boolean noNull) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams());
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
-        sql.append(SqlHelper.updateSetColumns(entityClass, "record", true, isNotEmpty()));
+        sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
     }
 
-    public String updateByDynamicQuery(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
-        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
-        sql.append(SqlHelper.updateSetColumns(entityClass, "record", false, isNotEmpty()));
-        sql.append(DynamicQuerySqlHelper.getWhereClause());
-        return sql.toString();
-    }
 
     /// region for xml query.
     // add filterParams prefix
