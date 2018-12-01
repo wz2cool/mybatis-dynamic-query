@@ -20,10 +20,10 @@ import java.util.function.Function;
  */
 public class MybatisQueryProvider<T> {
     private final static QueryHelper queryHelper = new QueryHelper();
-    final DynamicQuery<T> dynamicQuery;
-    String whereExpressionPlaceholder;
-    String sortExpressionPlaceholder;
-    String columnsExpressionPlaceHolder;
+    private final DynamicQuery<T> dynamicQuery;
+    private String whereExpressionPlaceholder;
+    private String sortExpressionPlaceholder;
+    private String columnsExpressionPlaceHolder;
 
     private MybatisQueryProvider() {
         dynamicQuery = new DynamicQuery<>();

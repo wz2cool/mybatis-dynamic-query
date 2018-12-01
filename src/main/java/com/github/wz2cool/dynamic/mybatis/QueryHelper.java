@@ -258,23 +258,31 @@ public class QueryHelper {
     }
     // endregion
 
-    public String toSelectColumnsExpression(final Class entityClass, String[] selectFields) {
-        if (ArrayUtils.isEmpty(selectFields)) {
-            return toAllColumnsExpression(entityClass);
-        }
-
+    public String toSelectColumnsExpression(final Class entityClass,
+                                            String[] selectedProperties,
+                                            String[] ignoredProperties) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
+        boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
+        boolean isIgnoredPropertiesNotEmpty = ArrayUtils.isNotEmpty(ignoredProperties);
         for (ColumnInfo columnInfo : columnInfos) {
             String fieldName = columnInfo.getField().getName();
-            if (!ArrayUtils.contains(selectFields, fieldName)) {
-                continue;
+            boolean needSelectColumn;
+            if (isSelectedPropertiesNotEmpty) {
+                needSelectColumn = ArrayUtils.contains(selectedProperties, fieldName);
+            } else if (isIgnoredPropertiesNotEmpty) {
+                needSelectColumn = !ArrayUtils.contains(ignoredProperties, fieldName);
+            } else {
+                needSelectColumn = true;
             }
 
-            String column = String.format("%s AS %s",
-                    columnInfo.getQueryColumn(),
-                    EntityHelper.camelCaseToUnderscore(fieldName));
-            columns.add(column);
+            if (needSelectColumn) {
+                String column = String.format("%s AS %s",
+                        columnInfo.getQueryColumn(),
+                        EntityHelper.camelCaseToUnderscore(fieldName));
+                columns.add(column);
+            }
+
         }
         return String.join(", ", columns);
     }

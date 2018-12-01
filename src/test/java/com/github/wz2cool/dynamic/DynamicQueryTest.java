@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.model.Student;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -94,16 +95,26 @@ public class DynamicQueryTest {
         SortDescriptor sortDescriptor = (SortDescriptor) query.getSorts()[0];
         assertEquals("age", sortDescriptor.getPropertyPath());
         assertEquals(SortDirection.DESC, sortDescriptor.getSortDirection());
+
     }
 
     @Test
-    public void testAddSelectField() {
+    public void testAddSelectProperty() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
                 .selectProperty(Student::getAge)
                 .selectProperty(Student::getName);
-
         String[] selectFields = query.getSelectedProperties();
         assertEquals("age", selectFields[0]);
         assertEquals("name", selectFields[1]);
+    }
+
+    @Test
+    public void testAddIgnoredProperty() {
+        DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
+                .ignoreProperty(Student::getAge)
+                .ignoreProperty(Student::getName);
+        String[] ignoredProperties = query.getIgnoredProperties();
+        assertEquals("age", ignoredProperties[0]);
+        assertEquals("name", ignoredProperties[1]);
     }
 }

@@ -5,6 +5,8 @@ import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 @SuppressWarnings("squid:S1948")
@@ -16,6 +18,7 @@ public class DynamicQuery<T> implements Serializable {
     private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
     private SortDescriptorBase[] sorts = new SortDescriptor[]{};
     private String[] selectedProperties = new String[]{};
+    private String[] ignoredProperties = new String[]{};
 
     public DynamicQuery() {
         // for json
@@ -67,6 +70,14 @@ public class DynamicQuery<T> implements Serializable {
 
     public void setSelectedProperties(String[] selectedProperties) {
         this.selectedProperties = selectedProperties;
+    }
+
+    public String[] getIgnoredProperties() {
+        return ignoredProperties;
+    }
+
+    public void setIgnoredProperties(String[] ignoredProperties) {
+        this.ignoredProperties = ignoredProperties;
     }
 
     public DynamicQuery<T> addFilter(FilterDescriptorBase newFilter) {
@@ -121,8 +132,15 @@ public class DynamicQuery<T> implements Serializable {
 
     public DynamicQuery<T> selectProperty(GetPropertyFunction<T> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
-        String[] newSelectFields = ArrayUtils.add(this.selectedProperties, propertyPath);
-        this.setSelectedProperties(newSelectFields);
+        String[] newSelectProperties = ArrayUtils.add(this.selectedProperties, propertyPath);
+        this.setSelectedProperties(newSelectProperties);
+        return this;
+    }
+
+    public DynamicQuery<T> ignoreProperty(GetPropertyFunction<T> getPropertyFunc) {
+        String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
+        String[] newIgnoreProperties = ArrayUtils.add(this.ignoredProperties, propertyPath);
+        this.setIgnoredProperties(newIgnoreProperties);
         return this;
     }
 }

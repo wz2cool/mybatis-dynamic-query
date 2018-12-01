@@ -61,4 +61,22 @@ public class DemoTest {
             assertEquals(1, p.getPrice().compareTo(BigDecimal.valueOf(16)));
         }
     }
+
+    @Test
+    public void testIgnoreFieldOperation() {
+        DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
+                .ignoreProperty(Product::getProductID)
+                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addSortDescriptor(Product::getPrice, SortDirection.DESC)
+                .addSortDescriptor(Product::getProductID, SortDirection.DESC);
+
+        List<Product> products = PageHelper.startPage(0, 100, false)
+                .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
+
+        for (Product p : products) {
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+        }
+    }
 }
