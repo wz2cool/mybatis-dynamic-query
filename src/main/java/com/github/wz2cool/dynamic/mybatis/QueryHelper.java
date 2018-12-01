@@ -17,14 +17,14 @@ public class QueryHelper {
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
-    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters)
-            throws PropertyNotFoundException {
+    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
 
+/*
         validFilters(entityClass, filters);
-        validFilters(entityClass, filters);
+*/
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
@@ -49,8 +49,7 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase)
-            throws PropertyNotFoundException {
+    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase) {
         if (filterDescriptorBase instanceof FilterDescriptor) {
             return toWhereExpression(entityClass, (FilterDescriptor) filterDescriptorBase);
         } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
@@ -190,13 +189,14 @@ public class QueryHelper {
 
     // region sort
 
-    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
-            throws PropertyNotFoundException {
+    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return new ParamExpression();
         }
+/*
 
         validSorts(entityClass, sorts);
+*/
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();

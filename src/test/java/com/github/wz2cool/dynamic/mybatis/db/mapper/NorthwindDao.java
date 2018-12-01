@@ -22,6 +22,8 @@ public interface NorthwindDao {
 
     List<ProductView> getProductViewsByDynamic(Map<String, Object> params);
 
+    List<ProductView> getProductViewsByDynamic2(Map<String, Object> params);
+
     int insert(Map<String, Object> params);
 
     int update(Map<String, Object> params);

@@ -1,8 +1,10 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageHelper;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,6 +26,8 @@ public class DemoTest {
 
     @Resource
     private ProductDao productDao;
+    @Resource
+    private NorthwindDao northwindDao;
 
     @Test
     public void testSelectFields() {
@@ -78,6 +83,63 @@ public class DemoTest {
             // categoryID ignore to select
             assertEquals(null, p.getCategoryID());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+        }
+    }
+
+    @Test
+    public void testSelectByView() {
+        DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
+                .ignoreProperty(ProductView::getCategoryID)
+                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addSortDescriptor(ProductView::getPrice, SortDirection.DESC)
+                .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
+        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+
+        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+                .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
+
+        for (ProductView p : productViews) {
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+            assertEquals(true, StringUtils.isNotBlank(p.getCategoryName()));
+        }
+    }
+
+    @Test
+    public void testSelectByViewWithoutFilters() {
+        DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
+                .ignoreProperty(ProductView::getCategoryID)
+                .addSortDescriptor(ProductView::getPrice, SortDirection.DESC)
+                .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
+        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+
+        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+                .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
+
+        for (ProductView p : productViews) {
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+            assertEquals(true, StringUtils.isNotBlank(p.getCategoryName()));
+        }
+    }
+
+    @Test
+    public void testSelectByViewWithoutSorts() {
+        DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
+                .ignoreProperty(ProductView::getCategoryID)
+                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16);
+        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+
+        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+                .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
+
+        for (ProductView p : productViews) {
+            // categoryID ignore to select
+            assertEquals(null, p.getCategoryID());
+            assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
+            assertEquals(true, StringUtils.isNotBlank(p.getCategoryName()));
         }
     }
 }
