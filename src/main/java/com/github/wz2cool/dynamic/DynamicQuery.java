@@ -163,7 +163,7 @@ public class DynamicQuery<T> implements Serializable {
         return queryHelper.toSortExpression(this.entityClass, this.sorts);
     }
 
-    public Map<String, Object> getQueryParamMap() {
+    public Map<String, Object> toQueryParamMap() {
         Map<String, Object> result = new HashMap<>();
         String selectColumnsExpression = getSelectColumnsExpression();
         result.put(columnExpressionPlaceholder, selectColumnsExpression);

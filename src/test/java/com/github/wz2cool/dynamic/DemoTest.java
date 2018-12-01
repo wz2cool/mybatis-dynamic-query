@@ -93,7 +93,7 @@ public class DemoTest {
                 .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(ProductView::getPrice, SortDirection.DESC)
                 .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
-        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
@@ -112,7 +112,7 @@ public class DemoTest {
                 .ignoreProperty(ProductView::getCategoryID)
                 .addSortDescriptor(ProductView::getPrice, SortDirection.DESC)
                 .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
-        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
@@ -130,7 +130,7 @@ public class DemoTest {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignoreProperty(ProductView::getCategoryID)
                 .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16);
-        Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
+        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
