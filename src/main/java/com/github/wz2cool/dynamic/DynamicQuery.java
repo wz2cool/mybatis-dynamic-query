@@ -159,7 +159,7 @@ public class DynamicQuery<T> implements Serializable {
         return queryHelper.toWhereExpression(this.entityClass, this.filters);
     }
 
-    public ParamExpression getOrderExpression() {
+    public ParamExpression getSortExpression() {
         return queryHelper.toSortExpression(this.entityClass, this.sorts);
     }
 
@@ -178,7 +178,7 @@ public class DynamicQuery<T> implements Serializable {
         }
 
         if (ArrayUtils.isNotEmpty(this.sorts)) {
-            ParamExpression sortExpression = getOrderExpression();
+            ParamExpression sortExpression = getSortExpression();
             String sortString = String.format("ORDER BY %s ", sortExpression.getExpression());
             result.put(sortExpressionPlaceholder, sortString);
             result.putAll(sortExpression.getParamMap());
