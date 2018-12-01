@@ -177,7 +177,6 @@ public class DynamicQuery<T> implements Serializable {
             result.put(whereExpressionPlaceholder, "");
         }
 
-
         if (ArrayUtils.isNotEmpty(this.sorts)) {
             ParamExpression sortExpression = getOrderExpression();
             String sortString = String.format("ORDER BY %s ", sortExpression.getExpression());
