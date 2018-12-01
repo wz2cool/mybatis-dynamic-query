@@ -95,7 +95,7 @@ public class DemoTest {
                 .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
         Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
 
-        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+        List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
 
         for (ProductView p : productViews) {
@@ -114,7 +114,7 @@ public class DemoTest {
                 .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
         Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
 
-        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+        List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
 
         for (ProductView p : productViews) {
@@ -132,7 +132,7 @@ public class DemoTest {
                 .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16);
         Map<String, Object> queryParamMap = dynamicQuery.getQueryParamMap();
 
-        List<ProductView> productViews = PageHelper.startPage(0, 100, false)
+        List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
 
         for (ProductView p : productViews) {
