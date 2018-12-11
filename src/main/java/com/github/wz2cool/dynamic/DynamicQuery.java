@@ -21,6 +21,7 @@ public class DynamicQuery<T> implements Serializable {
     private static final String sortExpressionPlaceholder = "orderByExpression";
 
     private boolean distinct;
+    private boolean mapUnderscoreToCamelCase;
     private Class<T> entityClass;
     private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
     private SortDescriptorBase[] sorts = new SortDescriptor[]{};
@@ -37,6 +38,14 @@ public class DynamicQuery<T> implements Serializable {
 
     public static <T> DynamicQuery<T> createQuery(Class<T> entityClass) {
         return new DynamicQuery<>(entityClass);
+    }
+
+    public boolean isMapUnderscoreToCamelCase() {
+        return mapUnderscoreToCamelCase;
+    }
+
+    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
+        this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
     }
 
     public boolean isDistinct() {
@@ -152,7 +161,8 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public String getSelectColumnsExpression() {
-        return queryHelper.toSelectColumnsExpression(this.entityClass, this.selectedProperties, this.ignoredProperties);
+        return queryHelper.toSelectColumnsExpression(
+                this.entityClass, this.selectedProperties, this.ignoredProperties, this.mapUnderscoreToCamelCase);
     }
 
     public ParamExpression getWhereExpression() {

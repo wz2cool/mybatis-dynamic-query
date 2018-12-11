@@ -98,6 +98,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
         String[] selectedProperties = dynamicQuery.getSelectedProperties();
         String[] ignoredProperties = dynamicQuery.getIgnoredProperties();
+        boolean mapUnderscoreToCamelCase = dynamicQuery.isMapUnderscoreToCamelCase();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
@@ -114,7 +115,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
 
         String selectColumnExpression = queryHelper.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties);
+                entityClass, selectedProperties, ignoredProperties, mapUnderscoreToCamelCase);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
     }

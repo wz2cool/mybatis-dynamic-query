@@ -38,7 +38,7 @@ public class DemoTest {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
                 .selectProperty(Product::getProductName)
                 .selectProperty(Product::getPrice);
-
+        dynamicQuery.setMapUnderscoreToCamelCase(true);
         List<Product> products = PageHelper.startPage(0, 3, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -59,7 +59,7 @@ public class DemoTest {
                 .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
-
+        dynamicQuery.setMapUnderscoreToCamelCase(true);
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -79,7 +79,7 @@ public class DemoTest {
                 .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
-
+        dynamicQuery.setMapUnderscoreToCamelCase(true);
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 

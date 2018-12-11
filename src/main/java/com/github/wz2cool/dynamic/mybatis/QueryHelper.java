@@ -259,8 +259,9 @@ public class QueryHelper {
     // endregion
 
     public String toSelectColumnsExpression(final Class entityClass,
-                                            String[] selectedProperties,
-                                            String[] ignoredProperties) {
+                                            final String[] selectedProperties,
+                                            final String[] ignoredProperties,
+                                            final boolean mapUnderscoreToCamelCase) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
         boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
@@ -277,12 +278,10 @@ public class QueryHelper {
             }
 
             if (needSelectColumn) {
-                String column = String.format("%s AS %s",
-                        columnInfo.getQueryColumn(),
-                        EntityHelper.camelCaseToUnderscore(fieldName));
+                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
+                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
                 columns.add(column);
             }
-
         }
         return String.join(", ", columns);
     }
