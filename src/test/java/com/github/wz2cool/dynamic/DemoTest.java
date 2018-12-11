@@ -1,10 +1,12 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageHelper;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import com.github.wz2cool.model.Bug;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,8 @@ public class DemoTest {
     private ProductDao productDao;
     @Resource
     private NorthwindDao northwindDao;
+    @Resource
+    private BugDao bugDao;
 
     @Test
     public void testSelectFields() {
@@ -140,6 +144,17 @@ public class DemoTest {
             assertEquals(null, p.getCategoryID());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
             assertEquals(true, StringUtils.isNotBlank(p.getCategoryName()));
+        }
+    }
+
+    @Test
+    public void testGetBug() {
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, 1);
+
+        List<Bug> bugs = bugDao.selectByDynamicQuery(query);
+        for (Bug bug : bugs) {
+            assertEquals(true, StringUtils.isNotBlank(bug.getAssignTo()));
         }
     }
 }
