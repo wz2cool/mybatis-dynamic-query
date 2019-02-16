@@ -31,7 +31,7 @@ public class DbSortTest {
 
     @Test
     public void testIdDescSort() throws Exception {
-        SortDescriptor idSort = new SortDescriptor(Product.class, Product::getProductID, SortDirection.DESC);
+        SortDescriptor idSort = new SortDescriptor(Product::getProductID, SortDirection.DESC);
         Map<String, Object> queryParam =
                 MybatisQueryProvider.createInstance(Product.class)
                         .addSorts("orderExpression", idSort)
@@ -51,7 +51,7 @@ public class DbSortTest {
 
     @Test
     public void testCustomSort() throws Exception {
-        String idQueryColumn = MybatisQueryProvider.getQueryColumn(ProductView.class, product -> product.getProductID());
+        String idQueryColumn = MybatisQueryProvider.getQueryColumn(ProductView::getProductID);
         // NOTE: queryColumn cannot be parameter.
         // 这里注意：列不能当做参数，否则会报错，所以我们字符串拼接出来。
         String customSortExpression = String.format("CASE %s WHEN {0} THEN {1} ELSE product.product_id END DESC", idQueryColumn);

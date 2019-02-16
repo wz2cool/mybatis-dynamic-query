@@ -1,4 +1,4 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
 import com.github.wz2cool.model.ChildClass;
 import com.github.wz2cool.model.Student;

@@ -3,8 +3,10 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptorBase;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -18,10 +20,10 @@ import java.util.function.Function;
  */
 public class MybatisQueryProvider<T> {
     private final static QueryHelper queryHelper = new QueryHelper();
-    final DynamicQuery<T> dynamicQuery;
-    String whereExpressionPlaceholder;
-    String sortExpressionPlaceholder;
-    String columnsExpressionPlaceHolder;
+    private final DynamicQuery<T> dynamicQuery;
+    private String whereExpressionPlaceholder;
+    private String sortExpressionPlaceholder;
+    private String columnsExpressionPlaceHolder;
 
     private MybatisQueryProvider() {
         dynamicQuery = new DynamicQuery<>();
@@ -69,10 +71,11 @@ public class MybatisQueryProvider<T> {
 
     /// region static method
     public static <T> String getQueryColumn(
-            final Class<T> entityClass,
-            final Function<T, Object> getFieldFunc) {
-        String propertyName = CommonsHelper.getPropertyName(entityClass, getFieldFunc);
-        ColumnInfo columnInfo = queryHelper.getColumnInfo(entityClass, propertyName);
+            final GetPropertyFunction<T> getFieldFunc) {
+        PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);
+        String propertyName = propertyInfo.getPropertyName();
+        Class ownerClass = propertyInfo.getOwnerClass();
+        ColumnInfo columnInfo = queryHelper.getColumnInfo(ownerClass, propertyName);
         return columnInfo.getQueryColumn();
     }
 

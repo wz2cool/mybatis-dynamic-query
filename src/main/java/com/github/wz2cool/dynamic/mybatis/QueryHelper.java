@@ -1,8 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
-import com.github.wz2cool.exception.PropertyNotFoundException;
-import com.github.wz2cool.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,14 +17,14 @@ public class QueryHelper {
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
-    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters)
-            throws PropertyNotFoundException {
+    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
 
+/*
         validFilters(entityClass, filters);
-        validFilters(entityClass, filters);
+*/
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
@@ -49,8 +49,7 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase)
-            throws PropertyNotFoundException {
+    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase) {
         if (filterDescriptorBase instanceof FilterDescriptor) {
             return toWhereExpression(entityClass, (FilterDescriptor) filterDescriptorBase);
         } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
@@ -190,13 +189,14 @@ public class QueryHelper {
 
     // region sort
 
-    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
-            throws PropertyNotFoundException {
+    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return new ParamExpression();
         }
+/*
 
         validSorts(entityClass, sorts);
+*/
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
@@ -258,23 +258,30 @@ public class QueryHelper {
     }
     // endregion
 
-    public String toSelectColumnsExpression(final Class entityClass, String[] selectFields) {
-        if (ArrayUtils.isEmpty(selectFields)) {
-            return toAllColumnsExpression(entityClass);
-        }
-
+    public String toSelectColumnsExpression(final Class entityClass,
+                                            final String[] selectedProperties,
+                                            final String[] ignoredProperties,
+                                            final boolean mapUnderscoreToCamelCase) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
+        boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
+        boolean isIgnoredPropertiesNotEmpty = ArrayUtils.isNotEmpty(ignoredProperties);
         for (ColumnInfo columnInfo : columnInfos) {
             String fieldName = columnInfo.getField().getName();
-            if (!ArrayUtils.contains(selectFields, fieldName)) {
-                continue;
+            boolean needSelectColumn;
+            if (isSelectedPropertiesNotEmpty) {
+                needSelectColumn = ArrayUtils.contains(selectedProperties, fieldName);
+            } else if (isIgnoredPropertiesNotEmpty) {
+                needSelectColumn = !ArrayUtils.contains(ignoredProperties, fieldName);
+            } else {
+                needSelectColumn = true;
             }
 
-            String column = String.format("%s AS %s",
-                    columnInfo.getQueryColumn(),
-                    EntityHelper.camelCaseToUnderscore(fieldName));
-            columns.add(column);
+            if (needSelectColumn) {
+                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
+                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
+                columns.add(column);
+            }
         }
         return String.join(", ", columns);
     }

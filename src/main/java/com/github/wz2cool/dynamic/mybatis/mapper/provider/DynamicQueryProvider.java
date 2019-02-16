@@ -7,7 +7,7 @@ import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.exception.PropertyNotFoundException;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.MapperTemplate;
@@ -71,24 +71,23 @@ public class DynamicQueryProvider extends MapperTemplate {
     }
 
     public String updateSelectiveByDynamicQuery(MappedStatement ms) {
+        return updateByDynamicQuery(ms, true);
+    }
+
+    public String updateByDynamicQuery(MappedStatement ms) {
+        return updateByDynamicQuery(ms, false);
+    }
+
+    private String updateByDynamicQuery(MappedStatement ms, boolean noNull) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams());
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
-        sql.append(SqlHelper.updateSetColumns(entityClass, "record", true, isNotEmpty()));
+        sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
     }
 
-    public String updateByDynamicQuery(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
-        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
-        sql.append(SqlHelper.updateSetColumns(entityClass, "record", false, isNotEmpty()));
-        sql.append(DynamicQuerySqlHelper.getWhereClause());
-        return sql.toString();
-    }
 
     /// region for xml query.
     // add filterParams prefix
@@ -97,7 +96,9 @@ public class DynamicQueryProvider extends MapperTemplate {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
-        String[] selectFields = dynamicQuery.getSelectedProperties();
+        String[] selectedProperties = dynamicQuery.getSelectedProperties();
+        String[] ignoredProperties = dynamicQuery.getIgnoredProperties();
+        boolean mapUnderscoreToCamelCase = dynamicQuery.isMapUnderscoreToCamelCase();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
@@ -113,7 +114,8 @@ public class DynamicQueryProvider extends MapperTemplate {
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
 
-        String selectColumnExpression = queryHelper.toSelectColumnsExpression(entityClass, selectFields);
+        String selectColumnExpression = queryHelper.toSelectColumnsExpression(
+                entityClass, selectedProperties, ignoredProperties, mapUnderscoreToCamelCase);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
     }

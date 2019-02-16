@@ -12,7 +12,7 @@ public class SerializableTest {
     @Test
     public void testSerializeFilterDescriptor() throws Exception {
         FilterDescriptor filterDescriptor =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.EQUAL, 1);
+                new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 1);
         byte[] bytes = pickle(filterDescriptor);
         FilterDescriptor copy = unpickle(bytes, FilterDescriptor.class);
         assertEquals(filterDescriptor.getPropertyPath(), copy.getPropertyPath());
@@ -29,7 +29,7 @@ public class SerializableTest {
     @Test
     public void testSerializeFilterGroupDescriptor() throws Exception {
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.EQUAL, 1);
+                new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 1);
         FilterGroupDescriptor filterGroupDescriptor = new FilterGroupDescriptor();
         filterGroupDescriptor.addFilters(ageFilter);
         byte[] bytes = pickle(filterGroupDescriptor);
@@ -72,11 +72,11 @@ public class SerializableTest {
     @Test
     public void testSerializeComplexFilter() throws Exception {
         FilterDescriptor nameFilter =
-                new FilterDescriptor(Student.class, Student::getName, FilterOperator.START_WITH, "frank");
+                new FilterDescriptor(Student::getName, FilterOperator.START_WITH, "frank");
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.GREATER_THAN, 20);
+                new FilterDescriptor(Student::getAge, FilterOperator.GREATER_THAN, 20);
         FilterDescriptor ageFilter2 =
-                new FilterDescriptor(Student.class, Student::getAge, FilterOperator.LESS_THAN, 30);
+                new FilterDescriptor(Student::getAge, FilterOperator.LESS_THAN, 30);
         FilterGroupDescriptor ageGroupFilter = new FilterGroupDescriptor();
         ageGroupFilter.addFilters(ageFilter);
         ageGroupFilter.addFilters(ageFilter2);

@@ -1,16 +1,21 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
-import jodd.methref.Methref;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Function;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Frank on 7/7/2017.
  */
 public class CommonsHelper {
+    private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
+
     private CommonsHelper() {
         throw new UnsupportedOperationException();
     }
@@ -69,20 +74,36 @@ public class CommonsHelper {
         return obj.toString();
     }
 
-    public static <T> String getPropertyName(final Class<T> target, final Function<T, Object> getMethodFunc) {
-        String methodName = obtainGetMethodName(target, getMethodFunc);
-        if (methodName.startsWith("get")) {
-            return java.beans.Introspector.decapitalize(methodName.substring(3, methodName.length()));
-        } else if (methodName.startsWith("is")) {
-            return java.beans.Introspector.decapitalize(methodName.substring(2, methodName.length()));
+    public static <T> PropertyInfo getPropertyInfo(GetPropertyFunction<T> fn) {
+        try {
+            Method method = fn.getClass().getDeclaredMethod("writeReplace");
+            method.setAccessible(true);
+            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
+            String methodName = serializedLambda.getImplMethodName();
+            String className = serializedLambda.getImplClass();
+            String propertyName;
+            if (methodName.startsWith("get")) {
+                propertyName = java.beans.Introspector.decapitalize(methodName.substring(3));
+            } else if (methodName.startsWith("is")) {
+                propertyName = java.beans.Introspector.decapitalize(methodName.substring(2));
+            } else {
+                propertyName = methodName;
+            }
+
+            Class ownerClass;
+            if (classMap.containsKey(className)) {
+                ownerClass = classMap.get(className);
+            } else {
+                ownerClass = Class.forName(className.replace('/', '.'));
+                classMap.put(className, ownerClass);
+            }
+
+            PropertyInfo propertyInfo = new PropertyInfo();
+            propertyInfo.setPropertyName(propertyName);
+            propertyInfo.setOwnerClass(ownerClass);
+            return propertyInfo;
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
-
-        return methodName;
-    }
-
-    public static synchronized <T> String obtainGetMethodName(final Class<T> target, final Function<T, Object> getMethodFunc) {
-        Methref<T> methodRef = Methref.on(target);
-        getMethodFunc.apply(methodRef.to());
-        return methodRef.ref();
     }
 }

@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.exception.PropertyNotFoundInternalException;
-import com.github.wz2cool.helper.ReflectHelper;
+import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
+import com.github.wz2cool.dynamic.helper.ReflectHelper;
 import com.github.wz2cool.model.ChildClass;
 import com.github.wz2cool.model.HelloWorld;
 import com.github.wz2cool.model.Student;

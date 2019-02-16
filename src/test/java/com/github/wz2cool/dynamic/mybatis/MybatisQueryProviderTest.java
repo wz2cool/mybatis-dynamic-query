@@ -65,10 +65,9 @@ public class MybatisQueryProviderTest {
     public void testGetQueryParamMap() throws Exception {
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
         FilterDescriptor nameFilter =
-                new FilterDescriptor(FilterCondition.AND,
-                        Student.class, Student::getName, FilterOperator.EQUAL, "frank");
+                new FilterDescriptor(FilterCondition.AND, Student::getName, FilterOperator.EQUAL, "frank");
         SortDescriptor ageSort =
-                new SortDescriptor(Student.class, Student::getAge, SortDirection.DESC);
+                new SortDescriptor(Student::getAge, SortDirection.DESC);
         dynamicQuery.addFilters(nameFilter);
         dynamicQuery.addSorts(ageSort);
 
@@ -90,11 +89,10 @@ public class MybatisQueryProviderTest {
 
     @Test
     public void testGetQueryColumn() throws Exception {
-        String nameColumn = MybatisQueryProvider.getQueryColumn(Student.class, student -> student.getName());
+        String nameColumn = MybatisQueryProvider.getQueryColumn(Student::getName);
         assertEquals("name", nameColumn);
 
-        String productIdColumn = MybatisQueryProvider.getQueryColumn(
-                ProductView.class, productView -> productView.getProductID());
+        String productIdColumn = MybatisQueryProvider.getQueryColumn(ProductView::getProductID);
         assertEquals("product.product_id", productIdColumn);
     }
 }

@@ -1,5 +1,6 @@
-package com.github.wz2cool.helper;
+package com.github.wz2cool.dynamic.helper;
 
+import com.github.wz2cool.dynamic.model.PropertyInfo;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -125,31 +126,34 @@ public class CommonsHelperTest {
     }
 
     @Test
-    public void testObtainGetMethodName() {
+    public void testGetPropertyInfo() {
         int[] servers = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         Arrays.stream(servers).parallel().forEach((a) -> {
-            String result = CommonsHelper.obtainGetMethodName(Student.class, Student::getAge);
-            assertEquals("getAge", result);
+            PropertyInfo result = CommonsHelper.getPropertyInfo(Student::getAge);
+            assertEquals("age", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
 
-            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getName());
-            assertEquals("getName", result);
+            result = CommonsHelper.getPropertyInfo(Student::getName);
+            assertEquals("name", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
 
-            result = CommonsHelper.obtainGetMethodName(Student.class, (o) -> o.getNote());
-            assertEquals("getNote", result);
+            result = CommonsHelper.getPropertyInfo(Student::getNote);
+            assertEquals("note", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
+
+            result = CommonsHelper.getPropertyInfo(Student::isDeleted);
+            assertEquals("deleted", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
+            // this will call cache to get class
+            result = CommonsHelper.getPropertyInfo(Student::isDeleted);
+            assertEquals("deleted", result.getPropertyName());
+            assertEquals(Student.class, result.getOwnerClass());
+
+            result = CommonsHelper.getPropertyInfo(Student::toString);
+            assertEquals("toString", result.getPropertyName());
         });
     }
 
-    @Test
-    public void testGetPropertyName() {
-        String result = CommonsHelper.getPropertyName(Student.class, Student::getAge);
-        assertEquals("age", result);
-
-        result = CommonsHelper.getPropertyName(Student.class, Student::toString);
-        assertEquals("toString", result);
-
-        result = CommonsHelper.getPropertyName(Student.class, Student::isDeleted);
-        assertEquals("deleted", result);
-    }
 
     @Test
     public void testToStringSafe() {
