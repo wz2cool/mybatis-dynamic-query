@@ -1,8 +1,24 @@
 language: java
 sudo: false
+install: true
+
+
+addons:
+  sonarcloud:
+    organization: "wz2cool-github" # the key of the org you chose at step #3
+    token:
+      secure: "fEGXlT15yYtTFI+BhMxIj6Hr+bDNiaX16Sq8DZNdceJkquF5b3XUXhGhcVHctsQLBsNm8XLm7O/SlUoI5VH8rFhh5av9+zPiNIIuBH73FbBYyMw9UDQ20tbOI6fnUuMw+6BXI2AaFXmNud2nC2BDapj5XTQV7hsqgDR4Nw8JVWxAHE0Guh60vow2/xrq3L0avwbjRnFBQo3nvI19ZhGHtGiHH3Y4YxHH/8HiQSkPBipYNlGJFrvC1L/BskdPvh7NvDcxn02TuST1zm1ZUNKTsXQkGWwdi/DFntC+K+CpCsrvkM3RFEfZm6nUdNua5loriWSa9xyvEuZpCXmhAD1gdCwWdp2kXz67fai1aq+RhvwnoZ9CAyCNz/RiYbFOlqMVauCpcyRTIKCci3Q/y9m+a1iX2H0E8Jiiu45hanu5i+lSlunPcWECliBktkE4lSTlL6N2sMCrJbL1FDII0/qZ5viH1xLDDkWZ/2I15BhVfXOMZBAeW1k7lBRsMTXEfa9Ly1qRb+VgbcTkC+AmflTS8Ax5oSPxPshywNWy0+mcmoHqwLLnr8tHXPzcK3CZLcU2wDznBxUGFU5t+SKwTEoRRNwQlDs1YayfJOTtsONzyWLsCm98j0lPkyfQ1SBl3lzpNk3OONtz2liP03NKoUn2zfxuokhrWQOaWxz8425PhsA=" # encrypted value of your token
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
 
 jdk:
   - oraclejdk8
