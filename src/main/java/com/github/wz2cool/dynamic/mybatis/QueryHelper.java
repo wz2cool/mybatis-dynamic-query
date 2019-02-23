@@ -22,10 +22,6 @@ public class QueryHelper {
             return new ParamExpression();
         }
 
-/*
-        validFilters(entityClass, filters);
-*/
-
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (FilterDescriptorBase filterDescriptorBase : filters) {
@@ -193,10 +189,6 @@ public class QueryHelper {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return new ParamExpression();
         }
-/*
-
-        validSorts(entityClass, sorts);
-*/
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
