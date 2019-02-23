@@ -7,7 +7,6 @@ import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.MapperTemplate;
@@ -25,7 +24,7 @@ import java.util.Map;
  * \
  */
 public class DynamicQueryProvider extends MapperTemplate {
-    private final static QueryHelper queryHelper = new QueryHelper();
+    private static final QueryHelper queryHelper = new QueryHelper();
 
     public DynamicQueryProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
@@ -91,8 +90,7 @@ public class DynamicQueryProvider extends MapperTemplate {
 
     /// region for xml query.
     // add filterParams prefix
-    public static Map<String, Object> getDynamicQueryParamInternal(final DynamicQuery dynamicQuery)
-            throws PropertyNotFoundException {
+    public static Map<String, Object> getDynamicQueryParamInternal(final DynamicQuery dynamicQuery) {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();

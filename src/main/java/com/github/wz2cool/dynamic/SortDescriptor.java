@@ -5,7 +5,6 @@ import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 
 import java.io.Serializable;
-import java.util.function.Function;
 
 /**
  * The type Sort descriptor.

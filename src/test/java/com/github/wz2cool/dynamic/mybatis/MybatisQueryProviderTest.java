@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -71,16 +72,27 @@ public class MybatisQueryProviderTest {
         dynamicQuery.addFilters(nameFilter);
         dynamicQuery.addSorts(ageSort);
 
-        Map<String, Object> result = MybatisQueryProvider.getQueryParamMap(
+
+        Method method = MybatisQueryProvider.class.getDeclaredMethod("getQueryParamMap",
+                DynamicQuery.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+
+        Map<String, Object> result = (Map<String, Object>) method.invoke(MybatisQueryProvider.class,
                 dynamicQuery,
                 "wherePlaceholder",
                 "sortPlaceholder",
                 "columnsPlaceholder");
+        assertEquals("age DESC", result.get("sortPlaceholder"));
+        assertEquals("queryColumn.note AS note, deleted AS deleted, name AS name, age AS age", result.get("columnsPlaceholder"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = InvocationTargetException.class)
     public void testGetQueryParamMapThrowNull() throws Exception {
-        Map<String, Object> result = MybatisQueryProvider.getQueryParamMap(
+        Method method = MybatisQueryProvider.class.getDeclaredMethod("getQueryParamMap",
+                DynamicQuery.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+        method.invoke(
+                MybatisQueryProvider.class,
                 null,
                 "wherePlaceholder",
                 "sortPlaceholder",

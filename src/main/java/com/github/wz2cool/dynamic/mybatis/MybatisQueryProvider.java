@@ -12,14 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 
 /**
  * The type Mybatis query provider.
  */
 public class MybatisQueryProvider<T> {
-    private final static QueryHelper queryHelper = new QueryHelper();
+    private static final QueryHelper queryHelper = new QueryHelper();
     private final DynamicQuery<T> dynamicQuery;
     private String whereExpressionPlaceholder;
     private String sortExpressionPlaceholder;
@@ -60,8 +59,7 @@ public class MybatisQueryProvider<T> {
         return this;
     }
 
-    public Map<String, Object> toQueryParam()
-            throws PropertyNotFoundException {
+    public Map<String, Object> toQueryParam() {
         return MybatisQueryProvider.getQueryParamMap(
                 this.dynamicQuery,
                 this.whereExpressionPlaceholder,
@@ -79,11 +77,11 @@ public class MybatisQueryProvider<T> {
         return columnInfo.getQueryColumn();
     }
 
-    public static <T> Map<String, Object> getQueryParamMap(
+    private static <T> Map<String, Object> getQueryParamMap(
             final DynamicQuery<T> dynamicQuery,
             final String whereExpressionPlaceholder,
             final String sortExpressionPlaceholder,
-            final String columnsExpressionPlaceHolder) throws PropertyNotFoundException {
+            final String columnsExpressionPlaceHolder) {
         if (dynamicQuery == null) {
             throw new NullPointerException("dynamicQuery");
         }
@@ -124,7 +122,7 @@ public class MybatisQueryProvider<T> {
     public static Map<String, Object> getWhereQueryParamMap(
             final Class entityClass,
             final String whereExpressionPlaceholder,
-            final FilterDescriptorBase... filters) throws PropertyNotFoundException {
+            final FilterDescriptorBase... filters) {
 
         if (StringUtils.isBlank(whereExpressionPlaceholder)) {
             throw new NullPointerException("whereExpressionPlaceholder");
@@ -147,8 +145,7 @@ public class MybatisQueryProvider<T> {
      * @return the where expression
      * @throws PropertyNotFoundException the property not found exception
      */
-    public static ParamExpression getWhereExpression(final Class entityClass, final FilterDescriptorBase... filters)
-            throws PropertyNotFoundException {
+    public static ParamExpression getWhereExpression(final Class entityClass, final FilterDescriptorBase... filters) {
         return queryHelper.toWhereExpression(entityClass, filters);
     }
 
@@ -159,12 +156,11 @@ public class MybatisQueryProvider<T> {
      * @param sortExpressionPlaceholder the sort expression placeholder
      * @param sorts                     the sorts
      * @return the sort query param map
-     * @throws PropertyNotFoundException the property not found exception
      */
     public static Map<String, Object> getSortQueryParamMap(
             final Class entityClass,
             final String sortExpressionPlaceholder,
-            final SortDescriptorBase... sorts) throws PropertyNotFoundException {
+            final SortDescriptorBase... sorts) {
         if (StringUtils.isBlank(sortExpressionPlaceholder)) {
             throw new NullPointerException("sortExpressionPlaceholder");
         }
@@ -184,8 +180,7 @@ public class MybatisQueryProvider<T> {
      * @return the sort expression
      * @throws PropertyNotFoundException the property not found exception
      */
-    public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts)
-            throws PropertyNotFoundException {
+    public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
         return queryHelper.toSortExpression(entityClass, sorts);
     }
 
