@@ -5,6 +5,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.model.Student;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.security.InvalidParameterException;
@@ -311,6 +312,7 @@ public class QueryHelperTest {
         filterGroupDescriptor.addFilters(ageFilter, nameFilter);
 
         queryHelper.validFilters(Student.class, filterGroupDescriptor);
+        Assert.assertTrue(true);
     }
 
     @Test(expected = PropertyNotFoundException.class)
@@ -324,8 +326,8 @@ public class QueryHelperTest {
     public void TestValidSorts() throws Exception {
         SortDescriptor ageSort = new SortDescriptor("name", SortDirection.DESC);
         queryHelper.validSorts(Student.class, ageSort);
-
         queryHelper.validSorts(Student.class);
+        Assert.assertTrue(true);
     }
 
     @Test(expected = PropertyNotFoundException.class)

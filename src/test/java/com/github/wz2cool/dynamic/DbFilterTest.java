@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Frank on 2017/7/15.
@@ -225,7 +227,8 @@ public class DbFilterTest {
         Map<String, Object> queryParams =
                 MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", idFilter);
-        northwindDao.getProductByDynamic(queryParams);
+        List<Product> products = northwindDao.getProductByDynamic(queryParams);
+        assertTrue(!products.isEmpty());
     }
 
     @Test
@@ -265,22 +268,26 @@ public class DbFilterTest {
                 MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", groupIdFilter, priceFilter);
 
-        northwindDao.getProductByDynamic(queryParams);
+        List<Product> products = northwindDao.getProductByDynamic(queryParams);
+        assertTrue(!products.isEmpty());
     }
 
     @Test
-    public void testSort() throws Exception {
+    public void testSort() {
         SortDescriptor priceSort =
                 new SortDescriptor("price", SortDirection.DESC);
 
         Map<String, Object> queryParams =
                 MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort);
-        northwindDao.getProductByDynamic(queryParams);
+        List<Product> products = northwindDao.getProductByDynamic(queryParams);
+        BigDecimal value1 = products.get(1).getPrice();
+        BigDecimal value2 = products.get(2).getPrice();
+        assertTrue(value1.compareTo(value2) >= 0);
     }
 
     @Test
-    public void testMultiSort() throws Exception {
+    public void testMultiSort() {
         SortDescriptor priceSort =
                 new SortDescriptor("price", SortDirection.DESC);
         SortDescriptor idSort =
@@ -289,11 +296,14 @@ public class DbFilterTest {
         Map<String, Object> queryParams =
                 MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort, idSort);
-        northwindDao.getProductByDynamic(queryParams);
+        List<Product> products = northwindDao.getProductByDynamic(queryParams);
+        Integer value1 = products.get(1).getProductID();
+        Integer value2 = products.get(2).getProductID();
+        assertTrue(value1 > value2);
     }
 
     @Test
-    public void testFilterSort() throws Exception {
+    public void testFilterSort() {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND,
                         "productID", FilterOperator.NOT_EQUAL, 4);
@@ -310,17 +320,27 @@ public class DbFilterTest {
         // 放入到同一个map中去。
         queryParams.putAll(filterParams);
         queryParams.putAll(sortParams);
-        northwindDao.getProductByDynamic(queryParams);
+        List<Product> products = northwindDao.getProductByDynamic(queryParams);
+
+        for (Product product : products) {
+            assertTrue(product.getProductID() != 4);
+        }
     }
 
     @Test
-    public void testAgeCustomFilter() throws Exception {
+    public void testAgeCustomFilter() {
         CustomFilterDescriptor ageFilter =
                 new CustomFilterDescriptor(FilterCondition.AND,
                         "price > {0} AND price < {1}", 7, 17);
         Map<String, Object> filterParams = MybatisQueryProvider.getWhereQueryParamMap(
                 Product.class, "whereExpression", ageFilter);
-        northwindDao.getProductByDynamic(filterParams);
+        List<Product> products = northwindDao.getProductByDynamic(filterParams);
+
+        for (Product product : products) {
+            boolean isMatch1 = product.getPrice().compareTo(BigDecimal.valueOf(7)) > 0;
+            boolean isMatch2 = product.getPrice().compareTo(BigDecimal.valueOf(17)) < 0;
+            assertTrue(isMatch1 && isMatch2);
+        }
     }
 
     @Test
