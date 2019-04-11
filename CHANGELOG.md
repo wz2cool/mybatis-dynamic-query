@@ -50,3 +50,8 @@
 ## [v2.0.6](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.6) (2018-11-18)
 **Feature**
 - add MapUnderscoreToCamelCase to dynamic query
+
+## [v2.0.7](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.7) (2019-04-12)
+**Feature**
+- remove MapUnderscoreToCamelCase from dynamic query
+- read MapUnderscoreToCamelCase from config
