@@ -38,7 +38,7 @@ public class DemoTest {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
                 .selectProperty(Product::getProductName)
                 .selectProperty(Product::getPrice);
-        dynamicQuery.setMapUnderscoreToCamelCase(true);
+      /*  dynamicQuery.setMapUnderscoreToCamelCase(true);*/
         List<Product> products = PageHelper.startPage(0, 3, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
