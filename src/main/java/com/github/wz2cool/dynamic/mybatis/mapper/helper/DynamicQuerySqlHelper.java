@@ -7,14 +7,14 @@ public class DynamicQuerySqlHelper {
         throw new UnsupportedOperationException();
     }
 
-    public static String getBindFilterParams() {
+    public static String getBindFilterParams(boolean isMapUnderscoreToCamelCase) {
         StringBuilder sql = new StringBuilder();
         sql.append("<bind name=\"");
         sql.append(MapperConstants.DYNAMIC_QUERY_PARAMS).append("\" ");
         sql.append("value=\"");
         sql.append("@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider");
         sql.append("@getDynamicQueryParamInternal(");
-        sql.append(MapperConstants.DYNAMIC_QUERY).append(")");
+        sql.append(MapperConstants.DYNAMIC_QUERY).append(", ").append(isMapUnderscoreToCamelCase).append(")");
         sql.append("\"/>");
         return sql.toString();
     }

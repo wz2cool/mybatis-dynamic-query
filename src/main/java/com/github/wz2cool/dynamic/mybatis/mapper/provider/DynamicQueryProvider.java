@@ -33,7 +33,7 @@ public class DynamicQueryProvider extends MapperTemplate {
     public String selectCountByDynamicQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(SqlHelper.selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -43,7 +43,7 @@ public class DynamicQueryProvider extends MapperTemplate {
     public String deleteByDynamicQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
@@ -53,7 +53,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         setResultType(ms, entityClass);
         StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append("SELECT");
         sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
@@ -80,7 +80,7 @@ public class DynamicQueryProvider extends MapperTemplate {
     private String updateByDynamicQuery(MappedStatement ms, boolean noNull) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams());
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -90,13 +90,14 @@ public class DynamicQueryProvider extends MapperTemplate {
 
     /// region for xml query.
     // add filterParams prefix
-    public static Map<String, Object> getDynamicQueryParamInternal(final DynamicQuery dynamicQuery) {
+    public static Map<String, Object> getDynamicQueryParamInternal(
+            final DynamicQuery dynamicQuery,
+            final boolean isMapUnderscoreToCamelCase) {
         Class<?> entityClass = dynamicQuery.getEntityClass();
         FilterDescriptorBase[] filters = dynamicQuery.getFilters();
         SortDescriptorBase[] sorts = dynamicQuery.getSorts();
         String[] selectedProperties = dynamicQuery.getSelectedProperties();
         String[] ignoredProperties = dynamicQuery.getIgnoredProperties();
-        boolean mapUnderscoreToCamelCase = dynamicQuery.isMapUnderscoreToCamelCase();
 
         ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
@@ -113,7 +114,7 @@ public class DynamicQueryProvider extends MapperTemplate {
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
 
         String selectColumnExpression = queryHelper.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, mapUnderscoreToCamelCase);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
     }

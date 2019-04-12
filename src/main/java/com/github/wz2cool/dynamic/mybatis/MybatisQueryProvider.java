@@ -3,7 +3,6 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.FilterDescriptorBase;
 import com.github.wz2cool.dynamic.SortDescriptorBase;
-import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
@@ -117,7 +116,6 @@ public class MybatisQueryProvider<T> {
      * @param whereExpressionPlaceholder the where expression placeholder
      * @param filters                    the filters
      * @return the where query param map
-     * @throws PropertyNotFoundException the property not found exception
      */
     public static Map<String, Object> getWhereQueryParamMap(
             final Class entityClass,
@@ -143,7 +141,6 @@ public class MybatisQueryProvider<T> {
      * @param entityClass the entity class
      * @param filters     the filters
      * @return the where expression
-     * @throws PropertyNotFoundException the property not found exception
      */
     public static ParamExpression getWhereExpression(final Class entityClass, final FilterDescriptorBase... filters) {
         return queryHelper.toWhereExpression(entityClass, filters);
@@ -178,7 +175,6 @@ public class MybatisQueryProvider<T> {
      * @param entityClass the entity class
      * @param sorts       the sorts
      * @return the sort expression
-     * @throws PropertyNotFoundException the property not found exception
      */
     public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
         return queryHelper.toSortExpression(entityClass, sorts);

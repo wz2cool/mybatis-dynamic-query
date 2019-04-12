@@ -9,6 +9,7 @@ import javax.persistence.Transient;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -90,7 +91,7 @@ class EntityCache {
         if (columnInfoCacheMap.containsKey(entityClass)) {
             propertyDbColumnMap = columnInfoCacheMap.get(entityClass);
         } else {
-            Map<String, ColumnInfo> map = new ConcurrentHashMap<>();
+            Map<String, ColumnInfo> map = new HashMap<>();
             Field[] properties = ReflectHelper.getProperties(entityClass);
 
             for (Field field : properties) {
