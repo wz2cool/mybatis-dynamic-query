@@ -37,6 +37,7 @@ public class DemoTest {
     @Test
     public void testSelectFields() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
+                .selectProperty(Product::getProductID)
                 .selectProperty(Product::getProductName)
                 .selectProperty(Product::getPrice);
         /*  dynamicQuery.setMapUnderscoreToCamelCase(true);*/

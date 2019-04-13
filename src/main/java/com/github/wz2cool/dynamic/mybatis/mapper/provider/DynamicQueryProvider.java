@@ -7,9 +7,9 @@ import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.EnhancedMapperTemplate;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
-import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Map;
  * \* Description:
  * \
  */
-public class DynamicQueryProvider extends MapperTemplate {
+public class DynamicQueryProvider extends EnhancedMapperTemplate {
     private static final QueryHelper queryHelper = new QueryHelper();
 
     public DynamicQueryProvider(Class<?> mapperClass, MapperHelper mapperHelper) {

@@ -6,7 +6,6 @@ import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -272,12 +271,7 @@ public class QueryHelper {
 
             if (needSelectColumn) {
                 // 这里我们需要判断一下，是否设置了 @column ,如果有的话，我们不做驼峰
-                String useFieldName;
-                if (columnInfo.getField().isAnnotationPresent(Column.class)) {
-                    useFieldName = fieldName;
-                } else {
-                    useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
-                }
+                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
                 String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
                 columns.add(column);
             }
