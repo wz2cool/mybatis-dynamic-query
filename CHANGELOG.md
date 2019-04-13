@@ -55,3 +55,7 @@
 **Feature**
 - remove MapUnderscoreToCamelCase from dynamic query
 - read MapUnderscoreToCamelCase from config
+
+## [v2.0.9](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.9) (2019-04-13)
+**Bug**
+- fix mapping issue
