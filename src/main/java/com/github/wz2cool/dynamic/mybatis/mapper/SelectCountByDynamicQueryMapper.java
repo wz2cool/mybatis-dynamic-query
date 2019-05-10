@@ -18,5 +18,5 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface SelectCountByDynamicQueryMapper<T> {
 
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
-    long selectCountByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
+    int selectCountByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 }
