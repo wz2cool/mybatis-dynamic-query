@@ -1,8 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
+import com.github.wz2cool.dynamic.BaseFilterDescriptor;
 import com.github.wz2cool.dynamic.DynamicQuery;
-import com.github.wz2cool.dynamic.FilterDescriptorBase;
-import com.github.wz2cool.dynamic.SortDescriptorBase;
+import com.github.wz2cool.dynamic.BaseSortDescriptor;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
@@ -17,7 +17,7 @@ import java.util.Map;
  * The type Mybatis query provider.
  */
 public class MybatisQueryProvider<T> {
-    private static final QueryHelper queryHelper = new QueryHelper();
+    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private final DynamicQuery<T> dynamicQuery;
     private String whereExpressionPlaceholder;
     private String sortExpressionPlaceholder;
@@ -44,7 +44,7 @@ public class MybatisQueryProvider<T> {
 
     public MybatisQueryProvider<T> addFilters(
             final String whereExpressionPlaceholder,
-            final FilterDescriptorBase... filters) {
+            final BaseFilterDescriptor... filters) {
         this.whereExpressionPlaceholder = whereExpressionPlaceholder;
         this.dynamicQuery.setFilters(filters);
         return this;
@@ -52,7 +52,7 @@ public class MybatisQueryProvider<T> {
 
     public MybatisQueryProvider<T> addSorts(
             final String sortExpressionPlaceholder,
-            final SortDescriptorBase... sorts) {
+            final BaseSortDescriptor... sorts) {
         this.sortExpressionPlaceholder = sortExpressionPlaceholder;
         this.dynamicQuery.setSorts(sorts);
         return this;
@@ -72,7 +72,7 @@ public class MybatisQueryProvider<T> {
         PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);
         String propertyName = propertyInfo.getPropertyName();
         Class ownerClass = propertyInfo.getOwnerClass();
-        ColumnInfo columnInfo = queryHelper.getColumnInfo(ownerClass, propertyName);
+        ColumnInfo columnInfo = QUERY_HELPER.getColumnInfo(ownerClass, propertyName);
         return columnInfo.getQueryColumn();
     }
 
@@ -88,14 +88,14 @@ public class MybatisQueryProvider<T> {
         Map<String, Object> result = new HashMap<>();
         Class<T> entityClass = dynamicQuery.getEntityClass();
         if (StringUtils.isNotBlank(whereExpressionPlaceholder)) {
-            FilterDescriptorBase[] filters = dynamicQuery.getFilters();
+            BaseFilterDescriptor[] filters = dynamicQuery.getFilters();
             Map<String, Object> whereQueryParamMap =
                     getWhereQueryParamMap(entityClass, whereExpressionPlaceholder, filters);
             result.putAll(whereQueryParamMap);
         }
 
         if (StringUtils.isNotBlank(sortExpressionPlaceholder)) {
-            SortDescriptorBase[] sorts = dynamicQuery.getSorts();
+            BaseSortDescriptor[] sorts = dynamicQuery.getSorts();
             Map<String, Object> sortQueryParamMap =
                     getSortQueryParamMap(entityClass, sortExpressionPlaceholder, sorts);
             result.putAll(sortQueryParamMap);
@@ -120,7 +120,7 @@ public class MybatisQueryProvider<T> {
     public static Map<String, Object> getWhereQueryParamMap(
             final Class entityClass,
             final String whereExpressionPlaceholder,
-            final FilterDescriptorBase... filters) {
+            final BaseFilterDescriptor... filters) {
 
         if (StringUtils.isBlank(whereExpressionPlaceholder)) {
             throw new NullPointerException("whereExpressionPlaceholder");
@@ -142,8 +142,8 @@ public class MybatisQueryProvider<T> {
      * @param filters     the filters
      * @return the where expression
      */
-    public static ParamExpression getWhereExpression(final Class entityClass, final FilterDescriptorBase... filters) {
-        return queryHelper.toWhereExpression(entityClass, filters);
+    public static ParamExpression getWhereExpression(final Class entityClass, final BaseFilterDescriptor... filters) {
+        return QUERY_HELPER.toWhereExpression(entityClass, filters);
     }
 
     /**
@@ -157,7 +157,7 @@ public class MybatisQueryProvider<T> {
     public static Map<String, Object> getSortQueryParamMap(
             final Class entityClass,
             final String sortExpressionPlaceholder,
-            final SortDescriptorBase... sorts) {
+            final BaseSortDescriptor... sorts) {
         if (StringUtils.isBlank(sortExpressionPlaceholder)) {
             throw new NullPointerException("sortExpressionPlaceholder");
         }
@@ -176,12 +176,12 @@ public class MybatisQueryProvider<T> {
      * @param sorts       the sorts
      * @return the sort expression
      */
-    public static ParamExpression getSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
-        return queryHelper.toSortExpression(entityClass, sorts);
+    public static ParamExpression getSortExpression(final Class entityClass, final BaseSortDescriptor... sorts) {
+        return QUERY_HELPER.toSortExpression(entityClass, sorts);
     }
 
     public static String getAllColumnsExpression(final Class entityClass) {
-        return queryHelper.toAllColumnsExpression(entityClass);
+        return QUERY_HELPER.toAllColumnsExpression(entityClass);
     }
     /// endregion
 }

@@ -9,5 +9,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = SortDescriptor.class, name = "SortDescriptor"),
         @JsonSubTypes.Type(value = CustomSortDescriptor.class, name = "CustomSortDescriptor")
 })
-public abstract class SortDescriptorBase {
+public abstract class BaseSortDescriptor {
 }

@@ -17,15 +17,15 @@ public class QueryHelper {
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
-    public ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase[] filters) {
+    public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
-        for (FilterDescriptorBase filterDescriptorBase : filters) {
-            ParamExpression paramExpression = toWhereExpression(entityClass, filterDescriptorBase);
+        for (BaseFilterDescriptor baseFilterDescriptor : filters) {
+            ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
             if (paramExpression != null) {
                 paramMap.putAll(paramExpression.getParamMap());
 
@@ -33,7 +33,7 @@ public class QueryHelper {
                     expression = paramExpression.getExpression();
                 } else {
                     expression = String.format("%s %s %s",
-                            expression, filterDescriptorBase.getCondition(), paramExpression.getExpression());
+                            expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
                 }
             }
         }
@@ -45,14 +45,14 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final FilterDescriptorBase filterDescriptorBase) {
-        if (filterDescriptorBase instanceof FilterDescriptor) {
-            return toWhereExpression(entityClass, (FilterDescriptor) filterDescriptorBase);
-        } else if (filterDescriptorBase instanceof FilterGroupDescriptor) {
-            FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) filterDescriptorBase;
+    ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor) {
+        if (baseFilterDescriptor instanceof FilterDescriptor) {
+            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor);
+        } else if (baseFilterDescriptor instanceof FilterGroupDescriptor) {
+            FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) baseFilterDescriptor;
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
-        } else if (filterDescriptorBase instanceof CustomFilterDescriptor) {
-            CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) filterDescriptorBase;
+        } else if (baseFilterDescriptor instanceof CustomFilterDescriptor) {
+            CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) baseFilterDescriptor;
             return toWhereExpression(customFilterDescriptor);
         } else {
             return new ParamExpression();
@@ -185,14 +185,14 @@ public class QueryHelper {
 
     // region sort
 
-    public ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase... sorts) {
+    public ParamExpression toSortExpression(final Class entityClass, final BaseSortDescriptor... sorts) {
         if (entityClass == null || sorts == null || sorts.length == 0) {
             return new ParamExpression();
         }
 
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
-        for (SortDescriptorBase sort : sorts) {
+        for (BaseSortDescriptor sort : sorts) {
             ParamExpression paramExpression = toSortExpression(entityClass, sort);
             if (paramExpression != null) {
                 paramMap.putAll(paramExpression.getParamMap());
@@ -210,11 +210,11 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toSortExpression(final Class entityClass, final SortDescriptorBase sortDescriptorBase) {
-        if (sortDescriptorBase instanceof SortDescriptor) {
-            return toSortExpression(entityClass, (SortDescriptor) sortDescriptorBase);
-        } else if (sortDescriptorBase instanceof CustomSortDescriptor) {
-            return toSortExpression((CustomSortDescriptor) sortDescriptorBase);
+    ParamExpression toSortExpression(final Class entityClass, final BaseSortDescriptor baseSortDescriptor) {
+        if (baseSortDescriptor instanceof SortDescriptor) {
+            return toSortExpression(entityClass, (SortDescriptor) baseSortDescriptor);
+        } else if (baseSortDescriptor instanceof CustomSortDescriptor) {
+            return toSortExpression((CustomSortDescriptor) baseSortDescriptor);
         } else {
             return new ParamExpression();
         }
@@ -302,13 +302,13 @@ public class QueryHelper {
      * @param filters     the filters
      * @throws PropertyNotFoundException the property not found exception
      */
-    void validFilters(final Class entityClass, final FilterDescriptorBase... filters)
+    void validFilters(final Class entityClass, final BaseFilterDescriptor... filters)
             throws PropertyNotFoundException {
         if (filters == null || filters.length == 0) {
             return;
         }
 
-        for (FilterDescriptorBase filter : filters) {
+        for (BaseFilterDescriptor filter : filters) {
             if (filter instanceof FilterDescriptor) {
                 FilterDescriptor useFilter = (FilterDescriptor) filter;
                 String propertyPath = useFilter.getPropertyPath();
@@ -330,13 +330,13 @@ public class QueryHelper {
      * @param sorts       the sorts
      * @throws PropertyNotFoundException the property not found exception
      */
-    void validSorts(final Class entityClass, final SortDescriptorBase... sorts)
+    void validSorts(final Class entityClass, final BaseSortDescriptor... sorts)
             throws PropertyNotFoundException {
         if (sorts == null || sorts.length == 0) {
             return;
         }
 
-        for (SortDescriptorBase sort : sorts) {
+        for (BaseSortDescriptor sort : sorts) {
             if (sort instanceof SortDescriptor) {
                 SortDescriptor useSort = (SortDescriptor) sort;
                 String propertyPath = useSort.getPropertyPath();

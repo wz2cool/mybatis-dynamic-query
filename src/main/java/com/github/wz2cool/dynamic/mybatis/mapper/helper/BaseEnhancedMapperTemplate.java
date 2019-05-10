@@ -17,11 +17,11 @@ import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class EnhancedMapperTemplate extends MapperTemplate {
+public abstract class BaseEnhancedMapperTemplate extends MapperTemplate {
 
     private static Map<Class, ResultMap> resultMapCache = new ConcurrentHashMap<>();
 
-    public EnhancedMapperTemplate(Class<?> mapperClass, MapperHelper mapperHelper) {
+    public BaseEnhancedMapperTemplate(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
     }
 

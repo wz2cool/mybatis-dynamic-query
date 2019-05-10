@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("customSortDescriptor")
-public class CustomSortDescriptor extends SortDescriptorBase implements Serializable {
+public class CustomSortDescriptor extends BaseSortDescriptor implements Serializable {
     private static final long serialVersionUID = -8776490725097358688L;
     private String expression;
     private Object[] params;

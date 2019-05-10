@@ -13,38 +13,38 @@ import java.util.List;
  */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("filterGroupDescriptor")
-public class FilterGroupDescriptor extends FilterDescriptorBase implements Serializable {
+public class FilterGroupDescriptor extends BaseFilterDescriptor implements Serializable {
 
     private static final long serialVersionUID = 503860190426402699L;
-    private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
+    private BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{};
 
-    public FilterDescriptorBase[] getFilters() {
+    public BaseFilterDescriptor[] getFilters() {
         return filters;
     }
 
-    public void setFilters(FilterDescriptorBase[] filters) {
+    public void setFilters(BaseFilterDescriptor[] filters) {
         this.filters = filters;
     }
 
     @SuppressWarnings("Duplicates")
-    public boolean addFilters(FilterDescriptorBase... newFilters) {
-        List<FilterDescriptorBase> filtersCopy =
+    public boolean addFilters(BaseFilterDescriptor... newFilters) {
+        List<BaseFilterDescriptor> filtersCopy =
                 filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
-        List<FilterDescriptorBase> newFilterList = Arrays.asList(newFilters);
+        List<BaseFilterDescriptor> newFilterList = Arrays.asList(newFilters);
         boolean result = filtersCopy.addAll(newFilterList);
         if (result) {
-            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+            this.setFilters(filtersCopy.toArray(new BaseFilterDescriptor[filtersCopy.size()]));
         }
         return result;
     }
 
     @SuppressWarnings("Duplicates")
-    public boolean removeFilter(FilterDescriptorBase removeFilter) {
-        List<FilterDescriptorBase> filtersCopy =
+    public boolean removeFilter(BaseFilterDescriptor removeFilter) {
+        List<BaseFilterDescriptor> filtersCopy =
                 filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
         boolean result = filtersCopy.remove(removeFilter);
         if (result) {
-            this.setFilters(filtersCopy.toArray(new FilterDescriptorBase[filtersCopy.size()]));
+            this.setFilters(filtersCopy.toArray(new BaseFilterDescriptor[filtersCopy.size()]));
         }
         return result;
     }

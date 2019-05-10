@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("customFilterDescriptor")
-public class CustomFilterDescriptor extends FilterDescriptorBase implements Serializable {
+public class CustomFilterDescriptor extends BaseFilterDescriptor implements Serializable {
     private static final long serialVersionUID = 7448086874396793224L;
 
     private String expression;

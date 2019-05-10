@@ -258,10 +258,10 @@ public class QueryHelperTest {
         assertEquals(40, values.get(2));
         assertEquals(50, values.get(3));
 
-        result = queryHelper.toWhereExpression(Student.class, (FilterDescriptorBase) null);
+        result = queryHelper.toWhereExpression(Student.class, (BaseFilterDescriptor) null);
         assertEquals("", result.getExpression());
 
-        result = queryHelper.toWhereExpression(Student.class, (FilterDescriptorBase[]) null);
+        result = queryHelper.toWhereExpression(Student.class, (BaseFilterDescriptor[]) null);
         assertEquals("", result.getExpression());
     }
 
@@ -354,7 +354,7 @@ public class QueryHelperTest {
         assertEquals(true, test);
         assertEquals("TEST_COLUMN", result.getParamMap().values().iterator().next());
 
-        SortDescriptorBase nullSortBase = null;
+        BaseSortDescriptor nullSortBase = null;
         result = queryHelper.toSortExpression(Student.class, nullSortBase);
         assertEquals("", result.getExpression());
     }

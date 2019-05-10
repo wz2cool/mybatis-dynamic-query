@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = FilterGroupDescriptor.class, name = "filterGroupDescriptor"),
         @JsonSubTypes.Type(value = CustomFilterDescriptor.class, name = "customFilterDescriptor")
 })
-public abstract class FilterDescriptorBase {
+public abstract class BaseFilterDescriptor {
     private FilterCondition condition = FilterCondition.AND;
 
     public FilterCondition getCondition() {

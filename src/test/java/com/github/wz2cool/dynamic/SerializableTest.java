@@ -18,9 +18,9 @@ public class SerializableTest {
         assertEquals(filterDescriptor.getPropertyPath(), copy.getPropertyPath());
         assertEquals(filterDescriptor.getValue(), copy.getValue());
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{filterDescriptor};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{filterDescriptor};
         byte[] arrayBtypes = pickle(filters);
-        FilterDescriptorBase[] filtersCopy = unpickle(arrayBtypes, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = unpickle(arrayBtypes, BaseFilterDescriptor[].class);
         copy = (FilterDescriptor) filtersCopy[0];
         assertEquals(filterDescriptor.getPropertyPath(), copy.getPropertyPath());
         assertEquals(filterDescriptor.getValue(), copy.getValue());
@@ -38,9 +38,9 @@ public class SerializableTest {
         assertEquals(ageFilter.getPropertyPath(), copy.getPropertyPath());
         assertEquals(ageFilter.getValue(), copy.getValue());
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{filterGroupDescriptor};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{filterGroupDescriptor};
         byte[] arrayBtypes = pickle(filters);
-        FilterDescriptorBase[] filtersCopy = unpickle(arrayBtypes, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = unpickle(arrayBtypes, BaseFilterDescriptor[].class);
         groupCopy = (FilterGroupDescriptor) filtersCopy[0];
         copy = (FilterDescriptor) groupCopy.getFilters()[0];
         assertEquals(ageFilter.getPropertyPath(), copy.getPropertyPath());
@@ -60,9 +60,9 @@ public class SerializableTest {
         assertEquals(customFilterDescriptor.getParams()[1], customCopy.getParams()[1]);
 
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{customFilterDescriptor};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{customFilterDescriptor};
         byte[] arrayBytes = pickle(filters);
-        FilterDescriptorBase[] filtersCopy = unpickle(arrayBytes, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = unpickle(arrayBytes, BaseFilterDescriptor[].class);
         customCopy = (CustomFilterDescriptor) filtersCopy[0];
         assertEquals(customFilterDescriptor.getExpression(), customCopy.getExpression());
         assertEquals(customFilterDescriptor.getParams()[0], customCopy.getParams()[0]);
@@ -85,9 +85,9 @@ public class SerializableTest {
         noteFilter.setExpression("note test expression");
         noteFilter.setParams(20, 30);
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{nameFilter, ageGroupFilter, noteFilter};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{nameFilter, ageGroupFilter, noteFilter};
         byte[] arrayBytes = pickle(filters);
-        FilterDescriptorBase[] filtersCopy = unpickle(arrayBytes, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = unpickle(arrayBytes, BaseFilterDescriptor[].class);
         assertEquals(true, filtersCopy[0] instanceof FilterDescriptor);
         assertEquals(true, filters[1] instanceof FilterGroupDescriptor);
         assertEquals(true, filters[2] instanceof CustomFilterDescriptor);

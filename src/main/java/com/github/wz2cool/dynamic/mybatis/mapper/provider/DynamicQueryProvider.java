@@ -1,13 +1,13 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
+import com.github.wz2cool.dynamic.BaseFilterDescriptor;
 import com.github.wz2cool.dynamic.DynamicQuery;
-import com.github.wz2cool.dynamic.FilterDescriptorBase;
-import com.github.wz2cool.dynamic.SortDescriptorBase;
+import com.github.wz2cool.dynamic.BaseSortDescriptor;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.EnhancedMapperTemplate;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTemplate;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
@@ -23,8 +23,8 @@ import java.util.Map;
  * \* Description:
  * \
  */
-public class DynamicQueryProvider extends EnhancedMapperTemplate {
-    private static final QueryHelper queryHelper = new QueryHelper();
+public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
+    private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
     public DynamicQueryProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
@@ -94,12 +94,12 @@ public class DynamicQueryProvider extends EnhancedMapperTemplate {
             final DynamicQuery dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
         Class<?> entityClass = dynamicQuery.getEntityClass();
-        FilterDescriptorBase[] filters = dynamicQuery.getFilters();
-        SortDescriptorBase[] sorts = dynamicQuery.getSorts();
+        BaseFilterDescriptor[] filters = dynamicQuery.getFilters();
+        BaseSortDescriptor[] sorts = dynamicQuery.getSorts();
         String[] selectedProperties = dynamicQuery.getSelectedProperties();
         String[] ignoredProperties = dynamicQuery.getIgnoredProperties();
 
-        ParamExpression whereParamExpression = queryHelper.toWhereExpression(entityClass, filters);
+        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
         for (Map.Entry<String, Object> param : paramMap.entrySet()) {
@@ -109,11 +109,11 @@ public class DynamicQueryProvider extends EnhancedMapperTemplate {
         }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        ParamExpression sortExpression = queryHelper.toSortExpression(entityClass, sorts);
+        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
 
-        String selectColumnExpression = queryHelper.toSelectColumnsExpression(
+        String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
                 entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;

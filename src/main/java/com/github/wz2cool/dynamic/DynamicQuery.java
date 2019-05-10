@@ -15,15 +15,15 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DynamicQuery<T> implements Serializable {
     private static final long serialVersionUID = -4044703018297658438L;
-    private static final QueryHelper queryHelper = new QueryHelper();
+    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private static final String COLUMN_EXPRESSION_PLACEHOLDER = "columnsExpression";
     private static final String WHERE_EXPRESSION_PLACEHOLDER = "whereExpression";
     private static final String SORT_EXPRESSION_PLACEHOLDER = "orderByExpression";
 
     private boolean distinct;
     private Class<T> entityClass;
-    private FilterDescriptorBase[] filters = new FilterDescriptorBase[]{};
-    private SortDescriptorBase[] sorts = new SortDescriptor[]{};
+    private BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{};
+    private BaseSortDescriptor[] sorts = new SortDescriptor[]{};
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
 
@@ -55,19 +55,19 @@ public class DynamicQuery<T> implements Serializable {
         this.entityClass = entityClass;
     }
 
-    public FilterDescriptorBase[] getFilters() {
+    public BaseFilterDescriptor[] getFilters() {
         return filters;
     }
 
-    public void setFilters(FilterDescriptorBase[] filters) {
+    public void setFilters(BaseFilterDescriptor[] filters) {
         this.filters = filters;
     }
 
-    public SortDescriptorBase[] getSorts() {
+    public BaseSortDescriptor[] getSorts() {
         return sorts;
     }
 
-    public void setSorts(SortDescriptorBase[] sorts) {
+    public void setSorts(BaseSortDescriptor[] sorts) {
         this.sorts = sorts;
     }
 
@@ -87,33 +87,33 @@ public class DynamicQuery<T> implements Serializable {
         this.ignoredProperties = ignoredProperties;
     }
 
-    public DynamicQuery<T> addFilter(FilterDescriptorBase newFilter) {
+    public DynamicQuery<T> addFilter(BaseFilterDescriptor newFilter) {
         return addFilters(newFilter);
     }
 
     @SuppressWarnings("Duplicates")
-    public DynamicQuery<T> addFilters(FilterDescriptorBase... newFilters) {
-        FilterDescriptorBase[] newAllFilters = ArrayUtils.addAll(this.filters, newFilters);
+    public DynamicQuery<T> addFilters(BaseFilterDescriptor... newFilters) {
+        BaseFilterDescriptor[] newAllFilters = ArrayUtils.addAll(this.filters, newFilters);
         this.setFilters(newAllFilters);
         return this;
     }
 
     @SuppressWarnings("Duplicates")
-    public DynamicQuery<T> removeFilter(FilterDescriptorBase removeFilter) {
-        FilterDescriptorBase[] newAllFilters = ArrayUtils.removeAllOccurences(this.filters, removeFilter);
+    public DynamicQuery<T> removeFilter(BaseFilterDescriptor removeFilter) {
+        BaseFilterDescriptor[] newAllFilters = ArrayUtils.removeAllOccurences(this.filters, removeFilter);
         this.setFilters(newAllFilters);
         return this;
     }
 
 
-    public DynamicQuery<T> addSorts(SortDescriptorBase... newSorts) {
-        SortDescriptorBase[] newAllSorts = ArrayUtils.addAll(this.sorts, newSorts);
+    public DynamicQuery<T> addSorts(BaseSortDescriptor... newSorts) {
+        BaseSortDescriptor[] newAllSorts = ArrayUtils.addAll(this.sorts, newSorts);
         this.setSorts(newAllSorts);
         return this;
     }
 
-    public DynamicQuery<T> removeSort(SortDescriptorBase sort) {
-        SortDescriptorBase[] newAllSorts = ArrayUtils.removeAllOccurences(this.sorts, sort);
+    public DynamicQuery<T> removeSort(BaseSortDescriptor sort) {
+        BaseSortDescriptor[] newAllSorts = ArrayUtils.removeAllOccurences(this.sorts, sort);
         this.setSorts(newAllSorts);
         return this;
     }
@@ -178,16 +178,16 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     private String getSelectColumnsExpression() {
-        return queryHelper.toSelectColumnsExpression(
+        return QUERY_HELPER.toSelectColumnsExpression(
                 this.entityClass, this.selectedProperties, this.ignoredProperties,
                 false);
     }
 
     private ParamExpression getWhereExpression() {
-        return queryHelper.toWhereExpression(this.entityClass, this.filters);
+        return QUERY_HELPER.toWhereExpression(this.entityClass, this.filters);
     }
 
     private ParamExpression getSortExpression() {
-        return queryHelper.toSortExpression(this.entityClass, this.sorts);
+        return QUERY_HELPER.toSortExpression(this.entityClass, this.sorts);
     }
 }

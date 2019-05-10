@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
@@ -29,9 +28,9 @@ public class JsonSerializeTest {
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
         assertEquals(ageFilter.getValue(), ageFilterCopy.getValue());
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{ageFilter};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{ageFilter};
         String jsonArrayStr = mapper.writeValueAsString(filters);
-        FilterDescriptorBase[] filtersCopy = mapper.readValue(jsonArrayStr, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = mapper.readValue(jsonArrayStr, BaseFilterDescriptor[].class);
         ageFilterCopy = (FilterDescriptor) filtersCopy[0];
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
         assertEquals(ageFilter.getValue(), ageFilterCopy.getValue());
@@ -55,9 +54,9 @@ public class JsonSerializeTest {
         assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
         assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{ageGroupFilter};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{ageGroupFilter};
         String arrayFiltersJson = mapper.writeValueAsString(filters);
-        FilterDescriptorBase[] filtersCopy = mapper.readValue(arrayFiltersJson, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = mapper.readValue(arrayFiltersJson, BaseFilterDescriptor[].class);
         ageGroupFilterCopy = (FilterGroupDescriptor) filtersCopy[0];
         ageFilterCopy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[0];
         ageFilter2Copy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[1];
@@ -78,9 +77,9 @@ public class JsonSerializeTest {
         assertEquals(ageFilter.getParams()[0], ageFilterCopy.getParams()[0]);
         assertEquals(ageFilter.getParams()[1], ageFilterCopy.getParams()[1]);
 
-        FilterDescriptorBase[] filters = new FilterDescriptorBase[]{ageFilter};
+        BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{ageFilter};
         String arrayFiltersJson = mapper.writeValueAsString(filters);
-        FilterDescriptorBase[] filtersCopy = mapper.readValue(arrayFiltersJson, FilterDescriptorBase[].class);
+        BaseFilterDescriptor[] filtersCopy = mapper.readValue(arrayFiltersJson, BaseFilterDescriptor[].class);
 
         ageFilterCopy = (CustomFilterDescriptor) filtersCopy[0];
         assertEquals(ageFilter.getExpression(), ageFilterCopy.getExpression());
@@ -119,9 +118,9 @@ public class JsonSerializeTest {
         assertEquals(ageSort.getParams()[0], ageSortCopy.getParams()[0]);
         assertEquals(ageSort.getParams()[1], ageSortCopy.getParams()[1]);
 
-        SortDescriptorBase[] sorts = new SortDescriptorBase[]{ageSort};
+        BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{ageSort};
         String arrayFiltersJson = mapper.writeValueAsString(sorts);
-        SortDescriptorBase[] sortCopy = mapper.readValue(arrayFiltersJson, SortDescriptorBase[].class);
+        BaseSortDescriptor[] sortCopy = mapper.readValue(arrayFiltersJson, BaseSortDescriptor[].class);
 
         ageSortCopy = (CustomSortDescriptor) sortCopy[0];
         assertEquals(ageSort.getExpression(), ageSortCopy.getExpression());

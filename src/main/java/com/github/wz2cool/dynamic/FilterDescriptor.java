@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("filterDescriptor")
-public class FilterDescriptor extends FilterDescriptorBase implements Serializable {
+public class FilterDescriptor extends BaseFilterDescriptor implements Serializable {
     private static final long serialVersionUID = -5311044437700352259L;
 
     private FilterOperator operator = FilterOperator.EQUAL;
