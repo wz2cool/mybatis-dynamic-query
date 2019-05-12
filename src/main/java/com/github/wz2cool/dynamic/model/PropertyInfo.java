@@ -1,5 +1,8 @@
 package com.github.wz2cool.dynamic.model;
 
+/**
+ * @author Frank
+ */
 public class PropertyInfo {
     private String propertyName;
     private Class ownerClass;

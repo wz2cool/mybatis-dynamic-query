@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * The type Filter descriptor.
+ * @author Frank
  */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("filterDescriptor")

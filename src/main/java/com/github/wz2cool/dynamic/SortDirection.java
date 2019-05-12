@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 /**
  * The enum Sort direction.
+ * @author Frank
  */
 public enum SortDirection implements Serializable {
     /**

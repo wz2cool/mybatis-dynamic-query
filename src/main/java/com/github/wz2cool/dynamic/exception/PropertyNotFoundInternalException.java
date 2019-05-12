@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.exception;
 
 /**
- * Created by Frank on 7/11/2017.
+ * @author Frank
  */
 public class PropertyNotFoundInternalException extends RuntimeException {
     public PropertyNotFoundInternalException(String message) {

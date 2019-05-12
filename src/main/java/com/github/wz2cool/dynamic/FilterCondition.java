@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * The enum Filter condition.
+ * @author Frank
  */
 public enum FilterCondition implements Serializable {
     /**

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.lang.reflect.Field;
 
 /**
- * Created by Frank on 7/10/2017.
+ * @author Frank
  */
 public class EntityHelper {
     private EntityHelper() {

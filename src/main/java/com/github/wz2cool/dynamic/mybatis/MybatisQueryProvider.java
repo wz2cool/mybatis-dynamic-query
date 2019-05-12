@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * The type Mybatis query provider.
+ * @author Frank
  */
 public class MybatisQueryProvider<T> {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
@@ -67,6 +68,7 @@ public class MybatisQueryProvider<T> {
     }
 
     /// region static method
+
     public static <T> String getQueryColumn(
             final GetPropertyFunction<T> getFieldFunc) {
         PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);

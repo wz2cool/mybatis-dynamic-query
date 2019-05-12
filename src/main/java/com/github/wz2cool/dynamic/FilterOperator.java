@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 /**
  * The enum Filter operator.
+ * @author Frank
  */
 public enum FilterOperator implements Serializable {
     /**

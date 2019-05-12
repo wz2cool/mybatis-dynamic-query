@@ -10,13 +10,14 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 /**
- * Created by Frank on 7/12/2017.
+ * @author Frank
  */
 public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region filter
+
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();

@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Frank
+ */
 @SuppressWarnings("squid:S1948")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DynamicQuery<T> implements Serializable {

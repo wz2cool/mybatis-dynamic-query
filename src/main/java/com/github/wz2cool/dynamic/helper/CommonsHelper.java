@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 /**
- * Created by Frank on 7/7/2017.
+ * @author Frank
  */
 public class CommonsHelper {
     private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
@@ -83,9 +84,11 @@ public class CommonsHelper {
             String methodName = serializedLambda.getImplMethodName();
             String className = serializedLambda.getImplClass();
             String propertyName;
-            if (methodName.startsWith("get")) {
+            String getString = "get";
+            String isString = "is";
+            if (methodName.startsWith(getString)) {
                 propertyName = java.beans.Introspector.decapitalize(methodName.substring(3));
-            } else if (methodName.startsWith("is")) {
+            } else if (methodName.startsWith(isString)) {
                 propertyName = java.beans.Introspector.decapitalize(methodName.substring(2));
             } else {
                 propertyName = methodName;

@@ -20,6 +20,7 @@ class EntityCache {
     private static final String ENTITY_CLASS = "entityClass";
 
     // region implement singleton.
+
     private EntityCache() {
     }
 

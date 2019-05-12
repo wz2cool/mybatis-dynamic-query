@@ -6,7 +6,17 @@ import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 
+/**
+ * @author Frank
+ */
 public interface UpdateByDynamicQueryMapper<T> {
+    /**
+     * update by dynamic query.
+     *
+     * @param record       record of item
+     * @param dynamicQuery dynamic query
+     * @return effect rows
+     */
     @UpdateProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
     int updateByDynamicQuery(
             @Param("record") T record,

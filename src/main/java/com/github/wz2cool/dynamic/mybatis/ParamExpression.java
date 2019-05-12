@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by Frank on 2017/7/9.
+ * @author Frank
  */
 public class ParamExpression {
     private String expression = "";

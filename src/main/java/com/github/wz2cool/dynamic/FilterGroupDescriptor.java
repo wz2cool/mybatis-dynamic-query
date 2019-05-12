@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * The type Filter group descriptor.
+ * @author Frank
  */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("filterGroupDescriptor")

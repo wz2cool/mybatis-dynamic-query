@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * The type Sort descriptor.
+ * @author Frank
  */
 public class SortDescriptor extends BaseSortDescriptor implements Serializable {
     private static final long serialVersionUID = 819843464658066502L;

@@ -15,13 +15,7 @@ import tk.mybatis.mapper.mapperhelper.SqlHelper;
 import java.util.Map;
 
 /**
- * \* Created with IntelliJ IDEA.
- * \* User: Frank
- * \* Date: 8/8/2017
- * \* Time: 3:13 PM
- * \* To change this template use File | Settings | File Templates.
- * \* Description:
- * \
+ * @author Frank
  */
 public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
@@ -88,8 +82,8 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
     }
 
 
-    /// region for xml query.
-    // add filterParams prefix
+    /// region for xml query
+
     public static Map<String, Object> getDynamicQueryParamInternal(
             final DynamicQuery dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {

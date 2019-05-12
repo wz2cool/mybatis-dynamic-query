@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by Frank on 7/7/2017.
+ * @author Frank
  */
 public class ReflectHelper {
     private ReflectHelper() {
@@ -97,7 +97,6 @@ public class ReflectHelper {
         return result;
     }
 
-    // both has get/set method,
     public static boolean isProperty(final Field field, final Method[] methods) {
         if (field == null || methods == null || methods.length == 0) {
             return false;

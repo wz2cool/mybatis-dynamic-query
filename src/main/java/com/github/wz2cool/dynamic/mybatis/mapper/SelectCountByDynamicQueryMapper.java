@@ -7,16 +7,16 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
 /**
- * \* Created with IntelliJ IDEA.
- * \* User: Frank
- * \* Date: 8/8/2017
- * \* Time: 5:39 PM
- * \* To change this template use File | Settings | File Templates.
- * \* Description:
- * \
+ * @author Frank
  */
 public interface SelectCountByDynamicQueryMapper<T> {
 
+    /**
+     * select count by dynamic query.
+     *
+     * @param dynamicQuery dynamic query
+     * @return the count of items
+     */
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
     int selectCountByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 }

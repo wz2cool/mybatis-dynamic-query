@@ -1,5 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.constant;
 
+/**
+ * @author Frank
+ */
 public class MapperConstants {
     private MapperConstants() {
         throw new UnsupportedOperationException();

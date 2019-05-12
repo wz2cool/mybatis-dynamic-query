@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.io.Serializable;
 
+/**
+ * @author Frank
+ */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("customFilterDescriptor")
 public class CustomFilterDescriptor extends BaseFilterDescriptor implements Serializable {

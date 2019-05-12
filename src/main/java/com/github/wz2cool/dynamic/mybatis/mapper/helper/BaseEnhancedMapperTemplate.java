@@ -17,6 +17,9 @@ import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author Frank
+ */
 public abstract class BaseEnhancedMapperTemplate extends MapperTemplate {
 
     private static Map<Class, ResultMap> resultMapCache = new ConcurrentHashMap<>();

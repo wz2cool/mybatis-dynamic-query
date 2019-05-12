@@ -2,6 +2,9 @@ package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 
+/**
+ * @author Frank
+ */
 public class DynamicQuerySqlHelper {
     private DynamicQuerySqlHelper() {
         throw new UnsupportedOperationException();

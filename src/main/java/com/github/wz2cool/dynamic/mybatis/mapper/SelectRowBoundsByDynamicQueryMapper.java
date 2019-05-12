@@ -9,8 +9,18 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
+/**
+ * @author Frank
+ */
 public interface SelectRowBoundsByDynamicQueryMapper<T> {
 
+    /**
+     * select row rounds by dynamic query.
+     *
+     * @param dynamicQuery dynamic query
+     * @param rowBounds    row bounds
+     * @return the list of items
+     */
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
     List<T> selectRowBoundsByDynamicQuery(
             @Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery,
