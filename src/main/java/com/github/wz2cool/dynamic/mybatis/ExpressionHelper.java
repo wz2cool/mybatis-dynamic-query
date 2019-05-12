@@ -105,7 +105,8 @@ class ExpressionHelper {
     }
 
     String getBetweenExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        if (paramPlaceholders.length != 2) {
+        int expectedSize = 2;
+        if (paramPlaceholders.length != expectedSize) {
             String errMsg = "if \"Between\" operator, the count of paramPlaceholders must be 2";
             throw new InvalidParameterException(errMsg);
         }

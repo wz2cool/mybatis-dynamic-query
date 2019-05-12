@@ -159,7 +159,8 @@ public class QueryHelper {
         if (operator == FilterOperator.BETWEEN) {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
                 Object[] filterValues = CommonsHelper.getCollectionValues(filterValue);
-                if (filterValues.length != 2) {
+                int expectedSize = 2;
+                if (filterValues.length != expectedSize) {
                     String errMsg = "if \"BETWEEN\" operator, the count of filter value must be 2";
                     throw new InvalidParameterException(errMsg);
                 }
