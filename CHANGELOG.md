@@ -59,3 +59,7 @@
 ## [v2.0.9](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.9) (2019-04-13)
 **Bug**
 - fix mapping issue
+
+## [v2.0.10](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.10) (2019-05-10)
+**Bug**
+- change selectCount result type from long to int
