@@ -155,7 +155,7 @@ public class DynamicQuery<T> implements Serializable {
     }
 
     public Map<String, Object> toQueryParamMap() {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>(10);
         String selectColumnsExpression = getSelectColumnsExpression();
         result.put(COLUMN_EXPRESSION_PLACEHOLDER, selectColumnsExpression);
 

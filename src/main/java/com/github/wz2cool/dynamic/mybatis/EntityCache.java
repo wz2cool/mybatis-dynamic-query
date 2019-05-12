@@ -92,7 +92,7 @@ class EntityCache {
         if (columnInfoCacheMap.containsKey(entityClass)) {
             propertyDbColumnMap = columnInfoCacheMap.get(entityClass);
         } else {
-            Map<String, ColumnInfo> map = new HashMap<>();
+            Map<String, ColumnInfo> map = new HashMap<>(10);
             Field[] properties = ReflectHelper.getProperties(entityClass);
 
             for (Field field : properties) {

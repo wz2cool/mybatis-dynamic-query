@@ -87,7 +87,7 @@ public class MybatisQueryProvider<T> {
             throw new NullPointerException("dynamicQuery");
         }
 
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>(10);
         Class<T> entityClass = dynamicQuery.getEntityClass();
         if (StringUtils.isNotBlank(whereExpressionPlaceholder)) {
             BaseFilterDescriptor[] filters = dynamicQuery.getFilters();

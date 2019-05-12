@@ -61,7 +61,7 @@ public class QueryHelper {
     }
 
     ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor) {
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>(10);
         Object[] params = customFilterDescriptor.getParams();
         String expression = customFilterDescriptor.getExpression();
         for (int i = 0; i < params.length; i++) {
@@ -235,7 +235,7 @@ public class QueryHelper {
             return new ParamExpression();
         }
 
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>(10);
         Object[] params = customSortDescriptor.getParams();
         String expression = customSortDescriptor.getExpression();
         for (int i = 0; i < params.length; i++) {
