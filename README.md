@@ -31,7 +31,7 @@ The MyBatis Dynamic Query framework makes it easier to generate "where" and "ord
 <dependency>
     <groupId>com.github.wz2cool</groupId>
     <artifactId>mybatis-dynamic-query</artifactId>
-    <version>2.0.9</version>
+    <version>2.0.11</version>
 </dependency>
 ```
 
