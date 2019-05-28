@@ -64,6 +64,10 @@
 **Bug**
 - change selectCount result type from long to int
 
-## [v2.0.11](https://github.com/wz2cool/mybatis-dynamic-query/tree/v2.0.10) (2019-05-10)
+## v2.0.11 (2019-05-10)
 **Bug**
 - fix sonar issue
+
+## v2.0.12 (2019-05-22)
+**feature**
+- add InsertList support
