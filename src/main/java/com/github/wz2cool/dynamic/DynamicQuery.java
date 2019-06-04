@@ -139,42 +139,42 @@ public class DynamicQuery<T> implements Serializable {
     public <R> DynamicQuery<T> addFilterDescriptor(
             FilterCondition condition, Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, R filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
     public <R> DynamicQuery<T> addFilterDescriptor(
             Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, R filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
     public <R> DynamicQuery<T> addFilterDescriptor(
             FilterCondition condition, Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, Iterable<R> filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
     public <R> DynamicQuery<T> addFilterDescriptor(
             Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, Iterable<R> filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
     public <R> DynamicQuery<T> addFilterDescriptor(
             FilterCondition condition, Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, R[] filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(condition, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
     public <R> DynamicQuery<T> addFilterDescriptor(
             Function<T, R> getPropertyFunc,
             FilterOperator operator, Class<R> filterValueType, R[] filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, (x) -> getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, x -> getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
