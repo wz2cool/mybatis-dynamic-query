@@ -16,7 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -150,7 +152,8 @@ public class DemoTest {
     @Test
     public void testGetBug() {
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, 1);
+                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, Integer.class, 1)
+                .addFilterDescriptor(Bug::getId, FilterOperator.IN, Integer.class, new Integer[]{1, 2});
 
         List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         for (Bug bug : bugs) {
