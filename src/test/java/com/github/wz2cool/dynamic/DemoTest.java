@@ -60,7 +60,7 @@ public class DemoTest {
                 .selectProperty(Product::getProductName)
                 .selectProperty(Product::getPrice)
                 .ignoreProperty(Product::getProductID) // set will not effect bse we already set selectProperty
-                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
         List<Product> products = PageHelper.startPage(0, 100, false)
@@ -79,7 +79,7 @@ public class DemoTest {
     public void testIgnoreFieldOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
                 .ignoreProperty(Product::getProductID)
-                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addFilterDescriptor(Product::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
                 .addSortDescriptor(Product::getPrice, SortDirection.DESC)
                 .addSortDescriptor(Product::getProductID, SortDirection.DESC);
         List<Product> products = PageHelper.startPage(0, 100, false)
@@ -96,7 +96,7 @@ public class DemoTest {
     public void testSelectByView() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignoreProperty(ProductView::getCategoryID)
-                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16)
+                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
                 .addSortDescriptor(ProductView::getPrice, SortDirection.DESC)
                 .addSortDescriptor(ProductView::getProductID, SortDirection.DESC);
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
@@ -135,7 +135,7 @@ public class DemoTest {
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignoreProperty(ProductView::getCategoryID)
-                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, 16);
+                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16));
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -152,8 +152,8 @@ public class DemoTest {
     @Test
     public void testGetBug() {
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, Integer.class, 1)
-                .addFilterDescriptor(Bug::getId, FilterOperator.IN, Integer.class, new Integer[]{1, 2});
+                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, 1)
+                .addFilterDescriptor(Bug::getId, FilterOperator.IN, new Integer[]{1, 2});
 
         List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         for (Bug bug : bugs) {
