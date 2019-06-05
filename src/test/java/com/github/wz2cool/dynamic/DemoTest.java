@@ -149,8 +149,7 @@ public class DemoTest {
     @Test
     public void testGetBug() {
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .addFilterDescriptor(Bug::getId, FilterOperator.GREATER_THAN, 1)
-                .addFilterDescriptor(Bug::getId, FilterOperator.IN, new Integer[]{1, 2});
+                .addFilterDescriptor(Bug::getId, FilterOperator.IN, new Integer[]{});
 
         List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         for (Bug bug : bugs) {

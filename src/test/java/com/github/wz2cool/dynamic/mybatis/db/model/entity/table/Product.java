@@ -15,15 +15,6 @@ public class Product {
     private String productName;
     private BigDecimal price;
     private Integer categoryID;
-    private Timestamp createTime;
-
-    public Timestamp getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
 
     public Integer getCategoryID() {
         return categoryID;
