@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * The type Sort descriptor.
+ *
  * @author Frank
  */
 public class SortDescriptor extends BaseSortDescriptor implements Serializable {
@@ -34,7 +35,7 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
         this.sortDirection = sortDirection;
     }
 
-    public <T> SortDescriptor(GetPropertyFunction<T> getFieldFunc, SortDirection sortDirection) {
+    public <T> SortDescriptor(GetPropertyFunction<T, Object> getFieldFunc, SortDirection sortDirection) {
         this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.sortDirection = sortDirection;
     }
@@ -57,7 +58,7 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
         this.propertyPath = propertyPath;
     }
 
-    public <T> void setPropertyPath(GetPropertyFunction<T> getFieldFunc) {
+    public <T> void setPropertyPath(GetPropertyFunction<T, Object> getFieldFunc) {
         this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
     }
 

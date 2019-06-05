@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageHelper;
-import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
@@ -16,9 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

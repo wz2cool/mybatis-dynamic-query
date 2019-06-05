@@ -76,7 +76,7 @@ public class CommonsHelper {
     }
 
     @SuppressWarnings("squid:S00112")
-    public static <T> PropertyInfo getPropertyInfo(GetPropertyFunction<T> fn) {
+    public static <T, R> PropertyInfo getPropertyInfo(GetPropertyFunction<T, R> fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(true);

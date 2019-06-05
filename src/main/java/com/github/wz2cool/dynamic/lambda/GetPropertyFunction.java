@@ -7,5 +7,6 @@ import java.util.function.Function;
  * @author Frank
  */
 @FunctionalInterface
-public interface GetPropertyFunction<T> extends Function<T, Object>, Serializable {
+public interface GetPropertyFunction<T, R> extends Function<T, R>, Serializable {
+
 }
