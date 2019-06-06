@@ -132,7 +132,7 @@ public class DemoTest {
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignoreProperty(ProductView::getCategoryID)
-                .addFilterDescriptor(ProductView::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16));
+                .addFilterDescriptor(ProductView::getPrice, FilterOperator.IN, new BigDecimal[]{BigDecimal.valueOf(16), BigDecimal.valueOf(18)});
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -149,7 +149,7 @@ public class DemoTest {
     @Test
     public void testGetBug() {
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .addFilterDescriptor(Bug::getId, FilterOperator.IN, new Integer[]{});
+                .addFilterDescriptor(Bug::getId, FilterOperator.NOT_IN, new Integer[]{});
 
         List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         for (Bug bug : bugs) {

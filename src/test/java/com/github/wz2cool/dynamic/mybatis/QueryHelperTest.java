@@ -191,7 +191,7 @@ public class QueryHelperTest {
         assertEquals("name IN (#{placeholder1},#{placeholder2})", result);
 
         result = queryHelper.generateFilterExpression(Student.class, filterDescriptor);
-        assertEquals("", result);
+        assertEquals("FALSE", result);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class QueryHelperTest {
         assertEquals("name NOT IN (#{placeholder1},#{placeholder2})", result);
 
         result = queryHelper.generateFilterExpression(Student.class, filterDescriptor);
-        assertEquals("", result);
+        assertEquals("TRUE", result);
     }
 
     @Test
