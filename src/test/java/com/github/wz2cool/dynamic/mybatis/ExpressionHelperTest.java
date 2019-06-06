@@ -111,7 +111,7 @@ public class ExpressionHelperTest {
                 EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getInExpression(queryColumnInfo);
-        assertEquals("", result);
+        assertEquals("FALSE", result);
 
         result = dbExpressionHelper.getInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property IN (#{p1},#{p2})", result);
@@ -124,7 +124,7 @@ public class ExpressionHelperTest {
                 EntityCache.getInstance().getColumnInfo(HelloWorld.class, "stringProperty");
 
         String result = dbExpressionHelper.getNotInExpression(queryColumnInfo);
-        assertEquals("", result);
+        assertEquals("TRUE", result);
 
         result = dbExpressionHelper.getNotInExpression(queryColumnInfo, "p1", "p2");
         assertEquals("string_property NOT IN (#{p1},#{p2})", result);

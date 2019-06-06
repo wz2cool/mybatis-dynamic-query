@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * Created by Frank on 2017/7/15.

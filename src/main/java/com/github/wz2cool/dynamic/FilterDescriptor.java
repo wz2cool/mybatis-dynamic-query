@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * The type Filter descriptor.
+ *
  * @author Frank
  */
 @SuppressWarnings("squid:S1948")
@@ -47,18 +48,40 @@ public class FilterDescriptor extends BaseFilterDescriptor implements Serializab
         this.value = value;
     }
 
-    public <T> FilterDescriptor(GetPropertyFunction<T> getFieldFunc,
-                                FilterOperator operator,
-                                Object value) {
+    public <T, R> FilterDescriptor(
+            GetPropertyFunction<T, R> getFieldFunc,
+            FilterOperator operator,
+            R value) {
         this.operator = operator;
         this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
-    public <T> FilterDescriptor(FilterCondition condition,
-                                GetPropertyFunction<T> getFieldFunc,
-                                FilterOperator operator,
-                                Object value) {
+    public <T, R> FilterDescriptor(
+            FilterCondition condition,
+            GetPropertyFunction<T, R> getFieldFunc,
+            FilterOperator operator,
+            R value) {
+        this.setCondition(condition);
+        this.operator = operator;
+        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.value = value;
+    }
+
+    public <T, R> FilterDescriptor(
+            GetPropertyFunction<T, R> getFieldFunc,
+            FilterOperator operator,
+            R[] value) {
+        this.operator = operator;
+        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.value = value;
+    }
+
+    public <T, R> FilterDescriptor(
+            FilterCondition condition,
+            GetPropertyFunction<T, R> getFieldFunc,
+            FilterOperator operator,
+            R[] value) {
         this.setCondition(condition);
         this.operator = operator;
         this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
@@ -101,7 +124,7 @@ public class FilterDescriptor extends BaseFilterDescriptor implements Serializab
         this.propertyPath = propertyPath;
     }
 
-    public <T> void setPropertyPath(GetPropertyFunction<T> getFieldFunc) {
+    public <T> void setPropertyPath(GetPropertyFunction<T, Object> getFieldFunc) {
         this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
     }
 

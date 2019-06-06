@@ -80,7 +80,7 @@ class ExpressionHelper {
 
     String getInExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
         if (paramPlaceholders.length == 0) {
-            return "";
+            return "FALSE";
         }
 
         String inStr = "%s IN (%s)";
@@ -93,7 +93,7 @@ class ExpressionHelper {
 
     String getNotInExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
         if (paramPlaceholders.length == 0) {
-            return "";
+            return "TRUE";
         }
 
         String notInStr = "%s NOT IN (%s)";
