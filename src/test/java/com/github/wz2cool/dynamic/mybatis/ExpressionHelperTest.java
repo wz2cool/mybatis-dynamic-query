@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis;
 
-import com.github.wz2cool.model.HelloWorld;
+import com.github.wz2cool.dynamic.model.HelloWorld;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

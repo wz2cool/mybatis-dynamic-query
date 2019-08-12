@@ -1,8 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.BaseFilterDescriptor;
-import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.BaseSortDescriptor;
+import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
@@ -71,7 +71,7 @@ public class MybatisQueryProvider<T> {
     /// region static method
 
     public static <T> String getQueryColumn(
-            final GetPropertyFunction<T, Object> getFieldFunc) {
+            final GetPropertyFunction<T, Comparable> getFieldFunc) {
         PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);
         String propertyName = propertyInfo.getPropertyName();
         Class ownerClass = propertyInfo.getOwnerClass();

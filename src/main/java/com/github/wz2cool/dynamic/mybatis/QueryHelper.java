@@ -77,7 +77,7 @@ public class QueryHelper {
     }
 
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
-        String propertyPath = filterDescriptor.getPropertyPath();
+        String propertyPath = filterDescriptor.getPropertyName();
         FilterOperator operator = filterDescriptor.getOperator();
         Object[] filterValues = getFilterValues(filterDescriptor);
 
@@ -137,7 +137,7 @@ public class QueryHelper {
 
     String generateFilterExpression(
             final Class entityClass, final FilterDescriptor filterDescriptor, final String... paramPlaceholders) {
-        String propertyPath = filterDescriptor.getPropertyPath();
+        String propertyPath = filterDescriptor.getPropertyName();
         Object value = filterDescriptor.getValue();
         ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, propertyPath);
 
@@ -224,7 +224,7 @@ public class QueryHelper {
 
     ParamExpression toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
         ParamExpression paramExpression = new ParamExpression();
-        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyPath());
+        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyName());
         String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
         paramExpression.setExpression(expression);
         return paramExpression;
@@ -313,7 +313,7 @@ public class QueryHelper {
         for (BaseFilterDescriptor filter : filters) {
             if (filter instanceof FilterDescriptor) {
                 FilterDescriptor useFilter = (FilterDescriptor) filter;
-                String propertyPath = useFilter.getPropertyPath();
+                String propertyPath = useFilter.getPropertyName();
                 if (!entityCache.hasProperty(entityClass, propertyPath)) {
                     String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
                     throw new PropertyNotFoundException(errMsg);
@@ -341,7 +341,7 @@ public class QueryHelper {
         for (BaseSortDescriptor sort : sorts) {
             if (sort instanceof SortDescriptor) {
                 SortDescriptor useSort = (SortDescriptor) sort;
-                String propertyPath = useSort.getPropertyPath();
+                String propertyPath = useSort.getPropertyName();
                 if (!entityCache.hasProperty(entityClass, propertyPath)) {
                     String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
                     throw new PropertyNotFoundException(errMsg);

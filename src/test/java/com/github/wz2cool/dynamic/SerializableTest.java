@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import java.io.*;
@@ -15,14 +15,14 @@ public class SerializableTest {
                 new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 1);
         byte[] bytes = pickle(filterDescriptor);
         FilterDescriptor copy = unpickle(bytes, FilterDescriptor.class);
-        assertEquals(filterDescriptor.getPropertyPath(), copy.getPropertyPath());
+        assertEquals(filterDescriptor.getPropertyName(), copy.getPropertyName());
         assertEquals(filterDescriptor.getValue(), copy.getValue());
 
         BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{filterDescriptor};
         byte[] arrayBtypes = pickle(filters);
         BaseFilterDescriptor[] filtersCopy = unpickle(arrayBtypes, BaseFilterDescriptor[].class);
         copy = (FilterDescriptor) filtersCopy[0];
-        assertEquals(filterDescriptor.getPropertyPath(), copy.getPropertyPath());
+        assertEquals(filterDescriptor.getPropertyName(), copy.getPropertyName());
         assertEquals(filterDescriptor.getValue(), copy.getValue());
     }
 
@@ -35,7 +35,7 @@ public class SerializableTest {
         byte[] bytes = pickle(filterGroupDescriptor);
         FilterGroupDescriptor groupCopy = unpickle(bytes, FilterGroupDescriptor.class);
         FilterDescriptor copy = (FilterDescriptor) groupCopy.getFilters()[0];
-        assertEquals(ageFilter.getPropertyPath(), copy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), copy.getPropertyName());
         assertEquals(ageFilter.getValue(), copy.getValue());
 
         BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{filterGroupDescriptor};
@@ -43,7 +43,7 @@ public class SerializableTest {
         BaseFilterDescriptor[] filtersCopy = unpickle(arrayBtypes, BaseFilterDescriptor[].class);
         groupCopy = (FilterGroupDescriptor) filtersCopy[0];
         copy = (FilterDescriptor) groupCopy.getFilters()[0];
-        assertEquals(ageFilter.getPropertyPath(), copy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), copy.getPropertyName());
         assertEquals(ageFilter.getValue(), copy.getValue());
     }
 
@@ -96,7 +96,7 @@ public class SerializableTest {
         FilterGroupDescriptor ageGroupFilterCopy = (FilterGroupDescriptor) filtersCopy[1];
         CustomFilterDescriptor noteFilterCopy = (CustomFilterDescriptor) filtersCopy[2];
 
-        assertEquals(nameFilter.getPropertyPath(), nameFilterCopy.getPropertyPath());
+        assertEquals(nameFilter.getPropertyName(), nameFilterCopy.getPropertyName());
         assertEquals(nameFilter.getValue(), nameFilterCopy.getValue());
         assertEquals(ageGroupFilter.getFilters().length, ageGroupFilterCopy.getFilters().length);
         assertEquals(noteFilter.getExpression(), noteFilterCopy.getExpression());

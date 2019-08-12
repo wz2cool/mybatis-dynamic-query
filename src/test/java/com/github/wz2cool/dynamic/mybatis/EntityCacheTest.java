@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

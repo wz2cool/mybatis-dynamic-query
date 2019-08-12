@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.helper;
 
-import com.github.wz2cool.model.ChildClass;
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.ChildClass;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;

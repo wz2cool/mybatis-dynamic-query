@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -74,7 +74,7 @@ public class DynamicQueryTest {
                 .filter(FilterCondition.OR, Student::getName, FilterOperator.EQUAL, "frank");
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.OR, filterDescriptor.getCondition());
-        assertEquals("name", filterDescriptor.getPropertyPath());
+        assertEquals("name", filterDescriptor.getPropertyName());
         assertEquals(FilterOperator.EQUAL, filterDescriptor.getOperator());
         assertEquals("frank", filterDescriptor.getValue());
     }
@@ -87,12 +87,12 @@ public class DynamicQueryTest {
 
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.AND, filterDescriptor.getCondition());
-        assertEquals("name", filterDescriptor.getPropertyPath());
+        assertEquals("name", filterDescriptor.getPropertyName());
         assertEquals(FilterOperator.EQUAL, filterDescriptor.getOperator());
         assertEquals("frank", filterDescriptor.getValue());
 
         SortDescriptor sortDescriptor = (SortDescriptor) query.getSorts()[0];
-        assertEquals("age", sortDescriptor.getPropertyPath());
+        assertEquals("age", sortDescriptor.getPropertyName());
         assertEquals(SortDirection.DESC, sortDescriptor.getSortDirection());
 
     }

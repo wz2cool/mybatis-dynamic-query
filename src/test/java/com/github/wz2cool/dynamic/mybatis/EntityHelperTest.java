@@ -2,9 +2,9 @@ package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
 import com.github.wz2cool.dynamic.helper.ReflectHelper;
-import com.github.wz2cool.model.ChildClass;
-import com.github.wz2cool.model.HelloWorld;
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.ChildClass;
+import com.github.wz2cool.dynamic.model.HelloWorld;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import javax.persistence.Column;

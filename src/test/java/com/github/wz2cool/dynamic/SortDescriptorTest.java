@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +21,7 @@ public class SortDescriptorTest {
         SortDescriptor filterDescriptor =
                 new SortDescriptor(Student::getAge, SortDirection.DESC);
 
-        assertEquals("age", filterDescriptor.getPropertyPath());
+        assertEquals("age", filterDescriptor.getPropertyName());
     }
 
 
@@ -29,6 +29,6 @@ public class SortDescriptorTest {
     public void lambdaSetPropertyTest() {
         SortDescriptor filterDescriptor = new SortDescriptor();
         filterDescriptor.setPropertyPath(Student::getAge);
-        assertEquals("age", filterDescriptor.getPropertyPath());
+        assertEquals("age", filterDescriptor.getPropertyName());
     }
 }

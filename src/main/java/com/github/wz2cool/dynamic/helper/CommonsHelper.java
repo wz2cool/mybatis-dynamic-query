@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.helper;
 
+import com.github.wz2cool.dynamic.exception.InternalRuntimeException;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
 
@@ -75,8 +76,12 @@ public class CommonsHelper {
         return obj.toString();
     }
 
+    public static <T, R extends Comparable> String getPropertyName(GetPropertyFunction<T, R> fn) {
+        return getPropertyInfo(fn).getPropertyName();
+    }
+
     @SuppressWarnings("squid:S00112")
-    public static <T, R> PropertyInfo getPropertyInfo(GetPropertyFunction<T, R> fn) {
+    public static <T, R extends Comparable> PropertyInfo getPropertyInfo(GetPropertyFunction<T, R> fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(true);
@@ -107,7 +112,7 @@ public class CommonsHelper {
             propertyInfo.setOwnerClass(ownerClass);
             return propertyInfo;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new InternalRuntimeException(e);
         }
     }
 }

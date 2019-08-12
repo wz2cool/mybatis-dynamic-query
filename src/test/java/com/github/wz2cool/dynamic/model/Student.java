@@ -1,4 +1,4 @@
-package com.github.wz2cool.model;
+package com.github.wz2cool.dynamic.model;
 
 import javax.persistence.Column;
 import javax.persistence.Table;

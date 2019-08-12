@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class SortDescriptor extends BaseSortDescriptor implements Serializable {
     private static final long serialVersionUID = 819843464658066502L;
 
-    private String propertyPath;
+    private String propertyName;
     private SortDirection sortDirection = SortDirection.ASC;
 
     /**
@@ -27,16 +27,16 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
     /**
      * Instantiates a new Sort descriptor.
      *
-     * @param propertyPath  the property path
+     * @param propertyName  the property path
      * @param sortDirection the sort direction
      */
-    public SortDescriptor(String propertyPath, SortDirection sortDirection) {
-        this.propertyPath = propertyPath;
+    public SortDescriptor(String propertyName, SortDirection sortDirection) {
+        this.propertyName = propertyName;
         this.sortDirection = sortDirection;
     }
 
-    public <T> SortDescriptor(GetPropertyFunction<T, Object> getFieldFunc, SortDirection sortDirection) {
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+    public <T> SortDescriptor(GetPropertyFunction<T, Comparable> getFieldFunc, SortDirection sortDirection) {
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.sortDirection = sortDirection;
     }
 
@@ -45,21 +45,21 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
      *
      * @return the property path
      */
-    public String getPropertyPath() {
-        return propertyPath;
+    public String getPropertyName() {
+        return propertyName;
     }
 
     /**
      * Sets property path.
      *
-     * @param propertyPath the property path
+     * @param propertyName the property path
      */
-    public void setPropertyPath(String propertyPath) {
-        this.propertyPath = propertyPath;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public <T> void setPropertyPath(GetPropertyFunction<T, Object> getFieldFunc) {
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+    public <T> void setPropertyPath(GetPropertyFunction<T, Comparable> getFieldFunc) {
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
     }
 
     /**

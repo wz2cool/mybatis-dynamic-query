@@ -356,14 +356,15 @@ public class DynamicQuery<T> implements Serializable {
         return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    private <R> DynamicQuery<T> filterInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(
+                FilterCondition.AND, getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> filterInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             FilterCondition condition,
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R filterValue) {
@@ -371,14 +372,14 @@ public class DynamicQuery<T> implements Serializable {
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> filterInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R[] filterValue) {
         FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> filterInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             FilterCondition condition,
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R[] filterValue) {
@@ -386,19 +387,19 @@ public class DynamicQuery<T> implements Serializable {
         return addFilter(filterDescriptor);
     }
 
-    public DynamicQuery<T> sort(GetPropertyFunction<T, Object> getPropertyFunc, SortDirection sortDirection) {
+    public DynamicQuery<T> sort(GetPropertyFunction<T, Comparable> getPropertyFunc, SortDirection sortDirection) {
         SortDescriptor sortDescriptor = new SortDescriptor(getPropertyFunc, sortDirection);
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> selectProperty(GetPropertyFunction<T, Object> getPropertyFunc) {
+    public DynamicQuery<T> selectProperty(GetPropertyFunction<T, Comparable> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
         String[] newSelectProperties = ArrayUtils.add(this.selectedProperties, propertyPath);
         this.setSelectedProperties(newSelectProperties);
         return this;
     }
 
-    public DynamicQuery<T> ignoreProperty(GetPropertyFunction<T, Object> getPropertyFunc) {
+    public DynamicQuery<T> ignoreProperty(GetPropertyFunction<T, Comparable> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
         String[] newIgnoreProperties = ArrayUtils.add(this.ignoredProperties, propertyPath);
         this.setIgnoredProperties(newIgnoreProperties);
