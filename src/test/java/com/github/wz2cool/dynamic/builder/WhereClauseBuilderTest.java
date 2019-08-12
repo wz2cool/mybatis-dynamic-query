@@ -19,12 +19,12 @@ public class WhereClauseBuilderTest {
         OrderByClauseBuilder<Student> orderByClauseBuilder = whereClauseBuilder.orderBy(Student::getAge);
         SortDescriptor sortDescriptor = (SortDescriptor) orderByClauseBuilder.getSorts()[0];
         Assert.assertEquals("age", sortDescriptor.getPropertyName());
-        Assert.assertEquals(SortDirection.ASC, sortDescriptor.getSortDirection());
+        Assert.assertEquals(SortDirection.ASC, sortDescriptor.getDirection());
 
         OrderByClauseBuilder<Student> orderByClauseBuilder1 = whereClauseBuilder.orderBy(Student::getAge, desc());
         SortDescriptor sortDescriptor1 = (SortDescriptor) orderByClauseBuilder1.getSorts()[0];
         Assert.assertEquals("age", sortDescriptor1.getPropertyName());
-        Assert.assertEquals(SortDirection.DESC, sortDescriptor1.getSortDirection());
+        Assert.assertEquals(SortDirection.DESC, sortDescriptor1.getDirection());
     }
 
     @Test

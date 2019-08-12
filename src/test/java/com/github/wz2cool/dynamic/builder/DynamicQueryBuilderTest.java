@@ -1,8 +1,6 @@
 package com.github.wz2cool.dynamic.builder;
 
-import com.github.wz2cool.dynamic.DynamicQuery;
-import com.github.wz2cool.dynamic.FilterCondition;
-import com.github.wz2cool.dynamic.FilterDescriptor;
+import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.model.ExampleModel;
 import org.junit.Assert;
@@ -14,6 +12,24 @@ import java.util.Date;
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 
 public class DynamicQueryBuilderTest {
+
+    @Test
+    public void testWhere() {
+        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+                .where(Bug::getId, isEqual(1)).build();
+        FilterDescriptor filter = (FilterDescriptor) dynamicQuery.getFilters()[0];
+        Assert.assertEquals(FilterCondition.AND, filter.getCondition());
+        Assert.assertEquals("id", filter.getPropertyName());
+    }
+
+    @Test
+    public void testOrderBy() {
+        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+                .orderBy(Bug::getId, desc()).build();
+        SortDescriptor sort = (SortDescriptor) dynamicQuery.getSorts()[0];
+        Assert.assertEquals(SortDirection.DESC, sort.getDirection());
+        Assert.assertEquals("id", sort.getPropertyName());
+    }
 
     @Test
     public void testBigDecimalAnd() {

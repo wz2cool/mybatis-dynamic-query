@@ -15,7 +15,7 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
     private static final long serialVersionUID = 819843464658066502L;
 
     private String propertyName;
-    private SortDirection sortDirection = SortDirection.ASC;
+    private SortDirection direction = SortDirection.ASC;
 
     /**
      * Instantiates a new Sort descriptor.
@@ -28,16 +28,16 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
      * Instantiates a new Sort descriptor.
      *
      * @param propertyName  the property path
-     * @param sortDirection the sort direction
+     * @param direction the sort direction
      */
-    public SortDescriptor(String propertyName, SortDirection sortDirection) {
+    public SortDescriptor(String propertyName, SortDirection direction) {
         this.propertyName = propertyName;
-        this.sortDirection = sortDirection;
+        this.direction = direction;
     }
 
-    public <T> SortDescriptor(GetPropertyFunction<T, Comparable> getFieldFunc, SortDirection sortDirection) {
+    public <T> SortDescriptor(GetPropertyFunction<T, Comparable> getFieldFunc, SortDirection direction) {
         this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
-        this.sortDirection = sortDirection;
+        this.direction = direction;
     }
 
     /**
@@ -67,16 +67,16 @@ public class SortDescriptor extends BaseSortDescriptor implements Serializable {
      *
      * @return the sort direction
      */
-    public SortDirection getSortDirection() {
-        return sortDirection;
+    public SortDirection getDirection() {
+        return direction;
     }
 
     /**
      * Sets sort direction.
      *
-     * @param sortDirection the sort direction
+     * @param direction the sort direction
      */
-    public void setSortDirection(SortDirection sortDirection) {
-        this.sortDirection = sortDirection;
+    public void setDirection(SortDirection direction) {
+        this.direction = direction;
     }
 }

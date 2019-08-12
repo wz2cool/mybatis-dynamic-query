@@ -225,7 +225,7 @@ public class QueryHelper {
     ParamExpression toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
         ParamExpression paramExpression = new ParamExpression();
         ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyName());
-        String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getSortDirection());
+        String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getDirection());
         paramExpression.setExpression(expression);
         return paramExpression;
     }

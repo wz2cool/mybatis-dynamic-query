@@ -38,7 +38,7 @@ public class MybatisQueryProviderTest {
     public void testGetSortQueryParamMap() throws Exception {
         SortDescriptor ageSort = new SortDescriptor();
         ageSort.setPropertyName("age");
-        ageSort.setSortDirection(SortDirection.DESC);
+        ageSort.setDirection(SortDirection.DESC);
         Map<String, Object> result = MybatisQueryProvider.getSortQueryParamMap(Student.class, "sortExpression", ageSort);
         assertEquals("age DESC", result.get("sortExpression"));
     }
@@ -47,7 +47,7 @@ public class MybatisQueryProviderTest {
     public void testGetSortQueryParamMapThrowNull() throws Exception {
         SortDescriptor ageSort = new SortDescriptor();
         ageSort.setPropertyName("age");
-        ageSort.setSortDirection(SortDirection.DESC);
+        ageSort.setDirection(SortDirection.DESC);
         MybatisQueryProvider.getSortQueryParamMap(Student.class, "", ageSort);
     }
 

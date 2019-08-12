@@ -27,12 +27,12 @@ public class OrderByClauseBuilderTest {
         SortDescriptor sort3 = (SortDescriptor) dynamicQuery.getSorts()[2];
 
         Assert.assertEquals("age", sort1.getPropertyName());
-        Assert.assertEquals(SortDirection.ASC, sort1.getSortDirection());
+        Assert.assertEquals(SortDirection.ASC, sort1.getDirection());
 
         Assert.assertEquals("name", sort2.getPropertyName());
-        Assert.assertEquals(SortDirection.DESC, sort2.getSortDirection());
+        Assert.assertEquals(SortDirection.DESC, sort2.getDirection());
 
         Assert.assertEquals("deleted", sort3.getPropertyName());
-        Assert.assertEquals(SortDirection.ASC, sort3.getSortDirection());
+        Assert.assertEquals(SortDirection.ASC, sort3.getDirection());
     }
 }

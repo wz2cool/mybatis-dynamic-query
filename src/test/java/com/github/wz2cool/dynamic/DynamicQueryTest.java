@@ -93,7 +93,7 @@ public class DynamicQueryTest {
 
         SortDescriptor sortDescriptor = (SortDescriptor) query.getSorts()[0];
         assertEquals("age", sortDescriptor.getPropertyName());
-        assertEquals(SortDirection.DESC, sortDescriptor.getSortDirection());
+        assertEquals(SortDirection.DESC, sortDescriptor.getDirection());
 
     }
 

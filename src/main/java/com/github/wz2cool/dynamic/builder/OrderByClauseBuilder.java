@@ -60,7 +60,7 @@ public class OrderByClauseBuilder<T> implements IDynamicQueryBuilder<T> {
         String propertyName = CommonsHelper.getPropertyName(getPropertyFunction);
         SortDescriptor sortDescriptor = new SortDescriptor();
         sortDescriptor.setPropertyName(propertyName);
-        sortDescriptor.setSortDirection(sortDirection.getDirection());
+        sortDescriptor.setDirection(sortDirection.getDirection());
         this.sortDescriptors.add(sortDescriptor);
     }
 }
