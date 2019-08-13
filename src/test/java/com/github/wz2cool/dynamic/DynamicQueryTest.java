@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.model.Student;
-import org.apache.commons.lang3.time.StopWatch;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -72,10 +71,10 @@ public class DynamicQueryTest {
     @Test
     public void testAddFilterDescriptor() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .addFilterDescriptor(FilterCondition.OR, Student::getName, FilterOperator.EQUAL, "frank");
+                .filter(FilterCondition.OR, Student::getName, FilterOperator.EQUAL, "frank");
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.OR, filterDescriptor.getCondition());
-        assertEquals("name", filterDescriptor.getPropertyPath());
+        assertEquals("name", filterDescriptor.getPropertyName());
         assertEquals(FilterOperator.EQUAL, filterDescriptor.getOperator());
         assertEquals("frank", filterDescriptor.getValue());
     }
@@ -83,18 +82,18 @@ public class DynamicQueryTest {
     @Test
     public void testLinkOperation() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .addFilterDescriptor(Student::getName, FilterOperator.EQUAL, "frank")
-                .addSortDescriptor(Student::getAge, SortDirection.DESC);
+                .filter(Student::getName, FilterOperator.EQUAL, "frank")
+                .sort(Student::getAge, SortDirection.DESC);
 
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.AND, filterDescriptor.getCondition());
-        assertEquals("name", filterDescriptor.getPropertyPath());
+        assertEquals("name", filterDescriptor.getPropertyName());
         assertEquals(FilterOperator.EQUAL, filterDescriptor.getOperator());
         assertEquals("frank", filterDescriptor.getValue());
 
         SortDescriptor sortDescriptor = (SortDescriptor) query.getSorts()[0];
-        assertEquals("age", sortDescriptor.getPropertyPath());
-        assertEquals(SortDirection.DESC, sortDescriptor.getSortDirection());
+        assertEquals("age", sortDescriptor.getPropertyName());
+        assertEquals(SortDirection.DESC, sortDescriptor.getDirection());
 
     }
 

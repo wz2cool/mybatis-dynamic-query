@@ -392,7 +392,7 @@ public class DbFilterTest {
     @Test
     public void testSelectColumns() {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
-                .addFilterDescriptor(User::getId, FilterOperator.EQUAL, 2)
+                .filter(User::getId, FilterOperator.EQUAL, 2)
                 // select 'Username' field(column)
                 .selectProperty(User::getUsername)
                 // select 'Id' field(column)

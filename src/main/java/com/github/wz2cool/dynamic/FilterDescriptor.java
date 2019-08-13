@@ -17,7 +17,7 @@ public class FilterDescriptor extends BaseFilterDescriptor implements Serializab
     private static final long serialVersionUID = -5311044437700352259L;
 
     private FilterOperator operator = FilterOperator.EQUAL;
-    private String propertyPath;
+    private String propertyName;
     private Object value;
 
     /**
@@ -31,60 +31,60 @@ public class FilterDescriptor extends BaseFilterDescriptor implements Serializab
      * Instantiates a new Filter descriptor.
      *
      * @param condition    the condition
-     * @param propertyPath the property path
+     * @param propertyName the property path
      * @param operator     the operator
      * @param value        the value
      */
-    public FilterDescriptor(FilterCondition condition, String propertyPath, FilterOperator operator, Object value) {
+    public FilterDescriptor(FilterCondition condition, String propertyName, FilterOperator operator, Object value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = propertyPath;
+        this.propertyName = propertyName;
         this.value = value;
     }
 
-    public FilterDescriptor(String propertyPath, FilterOperator operator, Object value) {
+    public FilterDescriptor(String propertyName, FilterOperator operator, Object value) {
         this.operator = operator;
-        this.propertyPath = propertyPath;
+        this.propertyName = propertyName;
         this.value = value;
     }
 
-    public <T, R> FilterDescriptor(
+    public <T, R extends Comparable> FilterDescriptor(
             GetPropertyFunction<T, R> getFieldFunc,
             FilterOperator operator,
             R value) {
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
-    public <T, R> FilterDescriptor(
+    public <T, R extends Comparable> FilterDescriptor(
             FilterCondition condition,
             GetPropertyFunction<T, R> getFieldFunc,
             FilterOperator operator,
             R value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
-    public <T, R> FilterDescriptor(
+    public <T, R extends Comparable> FilterDescriptor(
             GetPropertyFunction<T, R> getFieldFunc,
             FilterOperator operator,
             R[] value) {
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
-    public <T, R> FilterDescriptor(
+    public <T, R extends Comparable> FilterDescriptor(
             FilterCondition condition,
             GetPropertyFunction<T, R> getFieldFunc,
             FilterOperator operator,
             R[] value) {
         this.setCondition(condition);
         this.operator = operator;
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
         this.value = value;
     }
 
@@ -111,21 +111,21 @@ public class FilterDescriptor extends BaseFilterDescriptor implements Serializab
      *
      * @return the property path
      */
-    public String getPropertyPath() {
-        return propertyPath;
+    public String getPropertyName() {
+        return propertyName;
     }
 
     /**
      * Sets property path.
      *
-     * @param propertyPath the property path
+     * @param propertyName the property path
      */
-    public void setPropertyPath(String propertyPath) {
-        this.propertyPath = propertyPath;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public <T> void setPropertyPath(GetPropertyFunction<T, Object> getFieldFunc) {
-        this.propertyPath = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
+    public <T> void setPropertyPath(GetPropertyFunction<T, Comparable> getFieldFunc) {
+        this.propertyName = CommonsHelper.getPropertyInfo(getFieldFunc).getPropertyName();
     }
 
     /**

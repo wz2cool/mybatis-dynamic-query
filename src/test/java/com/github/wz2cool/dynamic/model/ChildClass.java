@@ -1,4 +1,4 @@
-package com.github.wz2cool.model;
+package com.github.wz2cool.dynamic.model;
 
 /**
  * Created by Frank on 7/11/2017.

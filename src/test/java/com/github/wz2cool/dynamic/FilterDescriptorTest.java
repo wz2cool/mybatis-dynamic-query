@@ -1,6 +1,6 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,13 +21,13 @@ public class FilterDescriptorTest {
                 new FilterDescriptor(FilterCondition.AND, Student::getAge,
                         FilterOperator.EQUAL, "3");
 
-        assertEquals("age", filterDescriptor.getPropertyPath());
+        assertEquals("age", filterDescriptor.getPropertyName());
     }
 
     @Test
     public void lambdaSetPropertyTest() {
         FilterDescriptor filterDescriptor = new FilterDescriptor();
         filterDescriptor.setPropertyPath(Student::getAge);
-        assertEquals("age", filterDescriptor.getPropertyPath());
+        assertEquals("age", filterDescriptor.getPropertyName());
     }
 }

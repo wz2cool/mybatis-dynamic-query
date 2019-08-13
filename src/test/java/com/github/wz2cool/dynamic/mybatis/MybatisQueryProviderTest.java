@@ -1,11 +1,10 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
+import com.github.wz2cool.dynamic.model.Student;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.model.Student;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -38,8 +37,8 @@ public class MybatisQueryProviderTest {
     @Test
     public void testGetSortQueryParamMap() throws Exception {
         SortDescriptor ageSort = new SortDescriptor();
-        ageSort.setPropertyPath("age");
-        ageSort.setSortDirection(SortDirection.DESC);
+        ageSort.setPropertyName("age");
+        ageSort.setDirection(SortDirection.DESC);
         Map<String, Object> result = MybatisQueryProvider.getSortQueryParamMap(Student.class, "sortExpression", ageSort);
         assertEquals("age DESC", result.get("sortExpression"));
     }
@@ -47,15 +46,15 @@ public class MybatisQueryProviderTest {
     @Test(expected = NullPointerException.class)
     public void testGetSortQueryParamMapThrowNull() throws Exception {
         SortDescriptor ageSort = new SortDescriptor();
-        ageSort.setPropertyPath("age");
-        ageSort.setSortDirection(SortDirection.DESC);
+        ageSort.setPropertyName("age");
+        ageSort.setDirection(SortDirection.DESC);
         MybatisQueryProvider.getSortQueryParamMap(Student.class, "", ageSort);
     }
 
     @Test(expected = NullPointerException.class)
     public void testGetWhereQueryParamMapThrowNull() throws Exception {
         FilterDescriptor nameFilter = new FilterDescriptor();
-        nameFilter.setPropertyPath("name");
+        nameFilter.setPropertyName("name");
         nameFilter.setOperator(FilterOperator.EQUAL);
         nameFilter.setValue("frank");
 

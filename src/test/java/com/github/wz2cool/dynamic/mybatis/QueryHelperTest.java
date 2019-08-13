@@ -1,10 +1,10 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.*;
-import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.junit.Assert;
 import org.junit.Test;
 

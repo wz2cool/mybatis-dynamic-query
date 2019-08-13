@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.wz2cool.model.Student;
+import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,14 +25,14 @@ public class JsonSerializeTest {
                 new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 2);
         String jsonStr = mapper.writeValueAsString(ageFilter);
         FilterDescriptor ageFilterCopy = mapper.readValue(jsonStr, FilterDescriptor.class);
-        assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), ageFilterCopy.getPropertyName());
         assertEquals(ageFilter.getValue(), ageFilterCopy.getValue());
 
         BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{ageFilter};
         String jsonArrayStr = mapper.writeValueAsString(filters);
         BaseFilterDescriptor[] filtersCopy = mapper.readValue(jsonArrayStr, BaseFilterDescriptor[].class);
         ageFilterCopy = (FilterDescriptor) filtersCopy[0];
-        assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), ageFilterCopy.getPropertyName());
         assertEquals(ageFilter.getValue(), ageFilterCopy.getValue());
     }
 
@@ -51,7 +51,7 @@ public class JsonSerializeTest {
         FilterGroupDescriptor ageGroupFilterCopy = mapper.readValue(jsonStr, FilterGroupDescriptor.class);
         FilterDescriptor ageFilterCopy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[0];
         FilterDescriptor ageFilter2Copy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[1];
-        assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), ageFilterCopy.getPropertyName());
         assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
 
         BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{ageGroupFilter};
@@ -60,7 +60,7 @@ public class JsonSerializeTest {
         ageGroupFilterCopy = (FilterGroupDescriptor) filtersCopy[0];
         ageFilterCopy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[0];
         ageFilter2Copy = (FilterDescriptor) ageGroupFilterCopy.getFilters()[1];
-        assertEquals(ageFilter.getPropertyPath(), ageFilterCopy.getPropertyPath());
+        assertEquals(ageFilter.getPropertyName(), ageFilterCopy.getPropertyName());
         assertEquals(ageFilter2Copy.getValue(), ageFilter2Copy.getValue());
     }
 

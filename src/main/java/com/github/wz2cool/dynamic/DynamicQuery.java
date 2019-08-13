@@ -122,248 +122,249 @@ public class DynamicQuery<T> implements Serializable {
         return this;
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Long> getPropertyFunc,
             FilterOperator operator, Long filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Byte> getPropertyFunc,
             FilterOperator operator, Byte filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Short> getPropertyFunc,
             FilterOperator operator, Short filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Integer> getPropertyFunc,
             FilterOperator operator, Integer filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Float> getPropertyFunc,
             FilterOperator operator, Float filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Double> getPropertyFunc,
             FilterOperator operator, Double filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, BigDecimal> getPropertyFunc,
             FilterOperator operator, BigDecimal filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, String> getPropertyFunc,
             FilterOperator operator, String filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, java.util.Date> getPropertyFunc,
             FilterOperator operator, java.util.Date filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Long> getPropertyFunc,
             FilterOperator operator, Long filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Byte> getPropertyFunc,
             FilterOperator operator, Byte filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Short> getPropertyFunc,
             FilterOperator operator, Short filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Integer> getPropertyFunc,
             FilterOperator operator, Integer filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Float> getPropertyFunc,
             FilterOperator operator, Float filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Double> getPropertyFunc,
             FilterOperator operator, Double filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, BigDecimal> getPropertyFunc,
             FilterOperator operator, BigDecimal filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, String> getPropertyFunc,
             FilterOperator operator, String filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, java.util.Date> getPropertyFunc,
             FilterOperator operator, java.util.Date filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Long> getPropertyFunc,
             FilterOperator operator, Long[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Byte> getPropertyFunc,
             FilterOperator operator, Byte[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Short> getPropertyFunc,
             FilterOperator operator, Short[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Integer> getPropertyFunc,
             FilterOperator operator, Integer[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Float> getPropertyFunc,
             FilterOperator operator, Float[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, Double> getPropertyFunc,
             FilterOperator operator, Double[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, BigDecimal> getPropertyFunc,
             FilterOperator operator, BigDecimal[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, String> getPropertyFunc,
             FilterOperator operator, String[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             GetPropertyFunction<T, java.util.Date> getPropertyFunc,
             FilterOperator operator, java.util.Date[] filterValue) {
-        return addFilterDescriptorInternal(getPropertyFunc, operator, filterValue);
+        return filterInternal(getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Long> getPropertyFunc,
             FilterOperator operator, Long[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Byte> getPropertyFunc,
             FilterOperator operator, Byte[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Short> getPropertyFunc,
             FilterOperator operator, Short[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Integer> getPropertyFunc,
             FilterOperator operator, Integer[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Float> getPropertyFunc,
             FilterOperator operator, Float[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, Double> getPropertyFunc,
             FilterOperator operator, Double[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, BigDecimal> getPropertyFunc,
             FilterOperator operator, BigDecimal[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, String> getPropertyFunc,
             FilterOperator operator, String[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    public DynamicQuery<T> addFilterDescriptor(
+    public DynamicQuery<T> filter(
             FilterCondition condition,
             GetPropertyFunction<T, java.util.Date> getPropertyFunc,
             FilterOperator operator, java.util.Date[] filterValue) {
-        return addFilterDescriptorInternal(condition, getPropertyFunc, operator, filterValue);
+        return filterInternal(condition, getPropertyFunc, operator, filterValue);
     }
 
-    private <R> DynamicQuery<T> addFilterDescriptorInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R filterValue) {
-        FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, getPropertyFunc, operator, filterValue);
+        FilterDescriptor filterDescriptor = new FilterDescriptor(
+                FilterCondition.AND, getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> addFilterDescriptorInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             FilterCondition condition,
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R filterValue) {
@@ -371,14 +372,14 @@ public class DynamicQuery<T> implements Serializable {
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> addFilterDescriptorInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R[] filterValue) {
         FilterDescriptor filterDescriptor = new FilterDescriptor(FilterCondition.AND, getPropertyFunc, operator, filterValue);
         return addFilter(filterDescriptor);
     }
 
-    private <R> DynamicQuery<T> addFilterDescriptorInternal(
+    private <R extends Comparable> DynamicQuery<T> filterInternal(
             FilterCondition condition,
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, R[] filterValue) {
@@ -386,19 +387,19 @@ public class DynamicQuery<T> implements Serializable {
         return addFilter(filterDescriptor);
     }
 
-    public DynamicQuery<T> addSortDescriptor(GetPropertyFunction<T, Object> getPropertyFunc, SortDirection sortDirection) {
+    public DynamicQuery<T> sort(GetPropertyFunction<T, Comparable> getPropertyFunc, SortDirection sortDirection) {
         SortDescriptor sortDescriptor = new SortDescriptor(getPropertyFunc, sortDirection);
         return addSorts(sortDescriptor);
     }
 
-    public DynamicQuery<T> selectProperty(GetPropertyFunction<T, Object> getPropertyFunc) {
+    public DynamicQuery<T> selectProperty(GetPropertyFunction<T, Comparable> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
         String[] newSelectProperties = ArrayUtils.add(this.selectedProperties, propertyPath);
         this.setSelectedProperties(newSelectProperties);
         return this;
     }
 
-    public DynamicQuery<T> ignoreProperty(GetPropertyFunction<T, Object> getPropertyFunc) {
+    public DynamicQuery<T> ignoreProperty(GetPropertyFunction<T, Comparable> getPropertyFunc) {
         String propertyPath = CommonsHelper.getPropertyInfo(getPropertyFunc).getPropertyName();
         String[] newIgnoreProperties = ArrayUtils.add(this.ignoredProperties, propertyPath);
         this.setIgnoredProperties(newIgnoreProperties);
