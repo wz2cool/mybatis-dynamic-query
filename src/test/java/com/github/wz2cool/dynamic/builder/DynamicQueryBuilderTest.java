@@ -14,6 +14,31 @@ import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 public class DynamicQueryBuilderTest {
 
     @Test
+    public void demo() {
+        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+                .select(Bug::getId, Bug::getTitle)
+                .where(Bug::getId, greaterThan(3))
+                .and(Bug::getAssignTo, isEqual("frank"))
+                .orderBy(Bug::getId, desc()).build();
+
+        String[] selectedProperties = dynamicQuery.getSelectedProperties();
+        BaseFilterDescriptor[] filters = dynamicQuery.getFilters();
+        BaseSortDescriptor[] sorts = dynamicQuery.getSorts();
+
+        Assert.assertEquals(2, selectedProperties.length);
+        Assert.assertEquals(2, filters.length);
+        Assert.assertEquals(1, sorts.length);
+        Assert.assertEquals("id", selectedProperties[0]);
+        Assert.assertEquals("title", selectedProperties[1]);
+        Assert.assertEquals("id", ((FilterDescriptor) filters[0]).getPropertyName());
+        Assert.assertEquals(FilterOperator.GREATER_THAN, ((FilterDescriptor) filters[0]).getOperator());
+        Assert.assertEquals(3, ((FilterDescriptor) filters[0]).getValue());
+        Assert.assertEquals("assignTo", ((FilterDescriptor) filters[1]).getPropertyName());
+        Assert.assertEquals(FilterOperator.EQUAL, ((FilterDescriptor) filters[1]).getOperator());
+        Assert.assertEquals("frank", ((FilterDescriptor) filters[1]).getValue());
+    }
+
+    @Test
     public void testWhere() {
         DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
                 .where(Bug::getId, isEqual(1)).build();
