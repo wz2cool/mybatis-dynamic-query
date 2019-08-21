@@ -15,7 +15,7 @@ public class DynamicQueryBuilderTest {
 
     @Test
     public void demo() {
-        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+        DynamicQuery<Bug> dynamicQuery = DynamicQueryBuilder.create(Bug.class)
                 .select(Bug::getId, Bug::getTitle)
                 .where(Bug::getId, greaterThan(3))
                 .and(Bug::getAssignTo, isEqual("frank"))
@@ -40,7 +40,7 @@ public class DynamicQueryBuilderTest {
 
     @Test
     public void testWhere() {
-        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+        DynamicQuery<Bug> dynamicQuery = DynamicQueryBuilder.create(Bug.class)
                 .where(Bug::getId, isEqual(1)).build();
         FilterDescriptor filter = (FilterDescriptor) dynamicQuery.getFilters()[0];
         Assert.assertEquals(FilterCondition.AND, filter.getCondition());
@@ -49,7 +49,7 @@ public class DynamicQueryBuilderTest {
 
     @Test
     public void testOrderBy() {
-        DynamicQuery<Bug> dynamicQuery = new DynamicQueryBuilder<Bug>()
+        DynamicQuery<Bug> dynamicQuery = DynamicQueryBuilder.create(Bug.class)
                 .orderBy(Bug::getId, desc()).build();
         SortDescriptor sort = (SortDescriptor) dynamicQuery.getSorts()[0];
         Assert.assertEquals(SortDirection.DESC, sort.getDirection());
@@ -58,7 +58,7 @@ public class DynamicQueryBuilderTest {
 
     @Test
     public void testBigDecimalAnd() {
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP1, isEqual(BigDecimal.TEN))
@@ -73,7 +73,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testByteAnd() {
         Byte filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP2, isEqual(filterValue))
@@ -88,7 +88,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testDateAnd() {
         Date filterValue = new Date();
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP3, isEqual(filterValue))
@@ -103,7 +103,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testDoubleAnd() {
         Double filterValue = 1.1d;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP4, isEqual(filterValue))
@@ -118,7 +118,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testFloatAnd() {
         Float filterValue = 1.1f;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP5, isEqual(filterValue))
@@ -133,7 +133,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testIntegerAnd() {
         Integer filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP6, isEqual(filterValue))
@@ -148,7 +148,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testLongAnd() {
         Long filterValue = 1L;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP7, isEqual(filterValue))
@@ -163,7 +163,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testShortAnd() {
         Short filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP8, isEqual(filterValue))
@@ -178,7 +178,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testStringAnd() {
         String filterValue = "1";
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP9, isEqual(filterValue))
@@ -192,7 +192,7 @@ public class DynamicQueryBuilderTest {
 
     @Test
     public void testBigDecimalOr() {
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP1, isEqual(BigDecimal.TEN))
@@ -207,7 +207,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testByteOr() {
         Byte filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP2, isEqual(filterValue))
@@ -222,7 +222,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testDateOr() {
         Date filterValue = new Date();
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP3, isEqual(filterValue))
@@ -237,7 +237,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testDoubleOr() {
         Double filterValue = 1.1d;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP4, isEqual(filterValue))
@@ -252,7 +252,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testFloatOr() {
         Float filterValue = 1.1f;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP5, isEqual(filterValue))
@@ -267,7 +267,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testIntegerOr() {
         Integer filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP6, isEqual(filterValue))
@@ -282,7 +282,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testLongOr() {
         Long filterValue = 1L;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP7, isEqual(filterValue))
@@ -297,7 +297,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testShortOr() {
         Short filterValue = 1;
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP8, isEqual(filterValue))
@@ -312,7 +312,7 @@ public class DynamicQueryBuilderTest {
     @Test
     public void testStringOr() {
         String filterValue = "1";
-        DynamicQuery<ExampleModel> dynamicQuery = new DynamicQueryBuilder<ExampleModel>()
+        DynamicQuery<ExampleModel> dynamicQuery = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, notEqual(BigDecimal.ONE))
                 .or(ExampleModel::getP9, isEqual(filterValue))

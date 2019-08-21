@@ -1,14 +1,17 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.wz2cool.dynamic.builder.DynamicQueryBuilder;
 import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Category;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -43,6 +48,19 @@ public class DbFilterTest {
 
     @Autowired
     private UserDao userDao;
+
+    @Resource
+    private ProductDao productDao;
+
+    @Test
+    public void testBuilderSearch() throws Exception {
+        DynamicQuery<Product> query = DynamicQueryBuilder.create(Product.class)
+                .selectAll()
+                .where(Product::getPrice, greaterThan(BigDecimal.valueOf(1)))
+                .build();
+        List<Product> productList = productDao.selectByDynamicQuery(query);
+        Assert.assertEquals(false, productList.isEmpty());
+    }
 
     @Test
     public void testDbInit() throws Exception {

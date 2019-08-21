@@ -12,7 +12,7 @@ public class WhereClauseBuilderTest {
 
     @Test
     public void testWhereClauseBuilder() {
-        WhereClauseBuilder<Student> whereClauseBuilder = new DynamicQueryBuilder<Student>()
+        WhereClauseBuilder<Student> whereClauseBuilder = DynamicQueryBuilder.create(Student.class)
                 .selectAll()
                 .where(Student::getName, isEqual("frank"));
 
@@ -29,7 +29,7 @@ public class WhereClauseBuilderTest {
 
     @Test
     public void buildTest() {
-        WhereClauseBuilder<Student> whereClauseBuilder = new DynamicQueryBuilder<Student>()
+        WhereClauseBuilder<Student> whereClauseBuilder = DynamicQueryBuilder.create(Student.class)
                 .selectAll()
                 .where(Student::getName, isEqual("frank"));
 

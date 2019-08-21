@@ -14,7 +14,7 @@ public class OrderByClauseBuilderTest {
 
     @Test
     public void thenByTest() {
-        DynamicQuery<Student> dynamicQuery = new DynamicQueryBuilder<Student>()
+        DynamicQuery<Student> dynamicQuery = DynamicQueryBuilder.create(Student.class)
                 .selectAll()
                 .where(Student::getName, isEqual("frank"))
                 .orderBy(Student::getAge)

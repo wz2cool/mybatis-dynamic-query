@@ -17,7 +17,7 @@ public class SelectClauseBuilderTest {
 
     @Test
     public void selectPropertiesTest() {
-        SelectClauseBuilder<Student> selectClauseBuilder = new DynamicQueryBuilder<Student>()
+        SelectClauseBuilder<Student> selectClauseBuilder = DynamicQueryBuilder.create(Student.class)
                 .select(Student::getName, Student::getAge);
         String[] properties = selectClauseBuilder.getSelectedProperties();
         Assert.assertArrayEquals(new String[]{"name", "age"}, properties);
@@ -25,7 +25,7 @@ public class SelectClauseBuilderTest {
 
     @Test
     public void selectAllTest() {
-        SelectClauseBuilder<Student> selectClauseBuilder = new DynamicQueryBuilder<Student>()
+        SelectClauseBuilder<Student> selectClauseBuilder = DynamicQueryBuilder.create(Student.class)
                 .selectAll();
         String[] properties = selectClauseBuilder.getSelectedProperties();
         Assert.assertArrayEquals(new String[]{}, properties);
@@ -33,7 +33,7 @@ public class SelectClauseBuilderTest {
 
     @Test
     public void buildTest() {
-        DynamicQuery<Student> dynamicQuery = new DynamicQueryBuilder<Student>()
+        DynamicQuery<Student> dynamicQuery = DynamicQueryBuilder.create(Student.class)
                 .select(Student::getName, Student::getAge)
                 .build();
 
@@ -43,7 +43,7 @@ public class SelectClauseBuilderTest {
 
     @Test
     public void selectTest() {
-        DynamicQuery<Student> dynamicQuery = new DynamicQueryBuilder<Student>()
+        DynamicQuery<Student> dynamicQuery = DynamicQueryBuilder.create(Student.class)
                 .select(Student::getName, Student::getAge)
                 .select(Student::getNote)
                 .build();
@@ -54,7 +54,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereBigDecimalTest() {
         BigDecimal filterValue = BigDecimal.valueOf(1);
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP1, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -66,7 +66,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereByteTest() {
         Byte filterValue = 1;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP2, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -78,7 +78,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereDateTest() {
         Date filterValue = new Date();
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP3, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -90,7 +90,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereDoubleTest() {
         Double filterValue = 1.1d;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP4, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -102,7 +102,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereFloatTest() {
         Float filterValue = 1.1f;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP5, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -114,7 +114,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereIntegerTest() {
         Integer filterValue = 1;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP6, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -126,7 +126,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereLongTest() {
         Long filterValue = 1L;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP7, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -138,7 +138,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereShortTest() {
         Short filterValue = 1;
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP8, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -150,7 +150,7 @@ public class SelectClauseBuilderTest {
     @Test
     public void whereStringTest() {
         String filterValue = "1";
-        WhereClauseBuilder<ExampleModel> whereClauseBuilder = new DynamicQueryBuilder<ExampleModel>()
+        WhereClauseBuilder<ExampleModel> whereClauseBuilder = DynamicQueryBuilder.create(ExampleModel.class)
                 .selectAll()
                 .where(ExampleModel::getP9, isEqual(filterValue));
         FilterDescriptor filter = (FilterDescriptor) whereClauseBuilder.getFilters()[0];
@@ -161,14 +161,14 @@ public class SelectClauseBuilderTest {
 
     @Test
     public void orderByTest() {
-        OrderByClauseBuilder<Student> orderByClauseBuilder = new DynamicQueryBuilder<Student>()
+        OrderByClauseBuilder<Student> orderByClauseBuilder = DynamicQueryBuilder.create(Student.class)
                 .selectAll()
                 .orderBy(Student::getAge);
         SortDescriptor sortDescriptor = (SortDescriptor) orderByClauseBuilder.getSorts()[0];
         Assert.assertEquals("age", sortDescriptor.getPropertyName());
         Assert.assertEquals(SortDirection.ASC, sortDescriptor.getDirection());
 
-        OrderByClauseBuilder<Student> orderByClauseBuilder1 = new DynamicQueryBuilder<Student>()
+        OrderByClauseBuilder<Student> orderByClauseBuilder1 = DynamicQueryBuilder.create(Student.class)
                 .selectAll()
                 .orderBy(Student::getAge, desc());
         SortDescriptor sortDescriptor1 = (SortDescriptor) orderByClauseBuilder1.getSorts()[0];

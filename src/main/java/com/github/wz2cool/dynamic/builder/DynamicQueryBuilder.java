@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class DynamicQueryBuilder<T> implements IDynamicQueryBuilder<T> {
 
+    private Class<T> entityClass;
     private SelectClauseBuilder<T> selectClauseBuilder;
     private WhereClauseBuilder<T> whereClauseBuilder;
     private OrderByClauseBuilder<T> orderByClauseBuilder;
@@ -31,6 +32,14 @@ public class DynamicQueryBuilder<T> implements IDynamicQueryBuilder<T> {
 
     public final SelectClauseBuilder<T> selectAll() {
         return new SelectClauseBuilder<>(this);
+    }
+
+    private DynamicQueryBuilder(Class<T> entityClass) {
+        this.entityClass = entityClass;
+    }
+
+    public static <T> DynamicQueryBuilder<T> create(Class<T> entityClass) {
+        return new DynamicQueryBuilder<>(entityClass);
     }
 
     @SafeVarargs
@@ -112,7 +121,7 @@ public class DynamicQueryBuilder<T> implements IDynamicQueryBuilder<T> {
 
     @Override
     public DynamicQuery<T> build() {
-        DynamicQuery<T> dynamicQuery = new DynamicQuery<>();
+        DynamicQuery<T> dynamicQuery = DynamicQuery.createQuery(this.entityClass);
         if (this.selectClauseBuilder != null) {
             dynamicQuery.setSelectedProperties(this.selectClauseBuilder.getSelectedProperties());
         }
