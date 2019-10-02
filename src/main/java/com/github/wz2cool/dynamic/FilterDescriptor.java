@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 
 /**
  * @author Frank

@@ -1,14 +1,11 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.wz2cool.dynamic.builder.SelectClauseBuilder;
 import com.github.wz2cool.dynamic.builder.direction.ISortDirection;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Arrays;
 
 /**
  * @author Frank
