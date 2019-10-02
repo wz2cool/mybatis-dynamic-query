@@ -9,8 +9,10 @@ import java.io.Serializable;
  */
 @SuppressWarnings("squid:S1948")
 @JsonTypeName("customFilterDescriptor")
-public class CustomFilterDescriptor extends BaseFilterDescriptor implements Serializable {
+public class CustomFilterDescriptor implements Serializable, BaseFilterDescriptor {
     private static final long serialVersionUID = 7448086874396793224L;
+
+    private FilterCondition condition = FilterCondition.AND;
 
     private String expression;
     private Object[] params;
@@ -44,5 +46,15 @@ public class CustomFilterDescriptor extends BaseFilterDescriptor implements Seri
         this.setCondition(condition);
         this.setExpression(expression);
         this.setParams(params);
+    }
+
+    @Override
+    public FilterCondition getCondition() {
+        return condition;
+    }
+
+    @Override
+    public void setCondition(FilterCondition condition) {
+        this.condition = condition;
     }
 }

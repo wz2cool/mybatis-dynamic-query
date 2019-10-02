@@ -8,11 +8,11 @@ import java.io.Serializable;
  */
 public enum FilterCondition implements Serializable {
     /**
-     * And filter condition.
+     * And and condition.
      */
     AND,
     /**
-     * Or filter condition.
+     * Or and condition.
      */
     OR
 }

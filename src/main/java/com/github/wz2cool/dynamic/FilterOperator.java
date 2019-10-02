@@ -9,51 +9,51 @@ import java.io.Serializable;
  */
 public enum FilterOperator implements Serializable {
     /**
-     * Less than filter operator.
+     * Less than and operator.
      */
     LESS_THAN,
     /**
-     * Less than or equal filter operator.
+     * Less than or equal and operator.
      */
     LESS_THAN_OR_EQUAL,
     /**
-     * Equal filter operator.
+     * Equal and operator.
      */
     EQUAL,
     /**
-     * Not equal filter operator.
+     * Not equal and operator.
      */
     NOT_EQUAL,
     /**
-     * Greater than or equal filter operator.
+     * Greater than or equal and operator.
      */
     GREATER_THAN_OR_EQUAL,
     /**
-     * Greater than filter operator.
+     * Greater than and operator.
      */
     GREATER_THAN,
     /**
-     * Start with filter operator.
+     * Start with and operator.
      */
     START_WITH,
     /**
-     * End with filter operator.
+     * End with and operator.
      */
     END_WITH,
     /**
-     * Contains filter operator.
+     * Contains and operator.
      */
     CONTAINS,
     /**
-     * In filter operator.
+     * In and operator.
      */
     IN,
     /**
-     * Not in filter operator.
+     * Not in and operator.
      */
     NOT_IN,
     /**
-     * Between filter operator.
+     * Between and operator.
      */
     BETWEEN
 }

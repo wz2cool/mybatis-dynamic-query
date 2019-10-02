@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
+
 import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
 
@@ -35,7 +37,7 @@ public class DynamicQueryTest {
         dynamicQuery.addFilters(filterDescriptor);
         assertEquals(1, dynamicQuery.getFilters().length);
 
-        dynamicQuery.removeFilter(filterDescriptor);
+        dynamicQuery.removeFilters(filterDescriptor);
         assertEquals(0, dynamicQuery.getFilters().length);
     }
 
@@ -58,7 +60,7 @@ public class DynamicQueryTest {
 
         assertEquals(1, dynamicQuery.getSorts().length);
 
-        dynamicQuery.removeSort(sort);
+        dynamicQuery.removeSorts(sort);
         assertEquals(0, dynamicQuery.getSorts().length);
     }
 
@@ -71,7 +73,7 @@ public class DynamicQueryTest {
     @Test
     public void testAddFilterDescriptor() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .filter(FilterCondition.OR, Student::getName, FilterOperator.EQUAL, "frank");
+                .or(Student::getName, isEqual("frank"));
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.OR, filterDescriptor.getCondition());
         assertEquals("name", filterDescriptor.getPropertyName());
@@ -82,8 +84,8 @@ public class DynamicQueryTest {
     @Test
     public void testLinkOperation() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .filter(Student::getName, FilterOperator.EQUAL, "frank")
-                .sort(Student::getAge, SortDirection.DESC);
+                .and(Student::getName, isEqual("frank"))
+                .orderBy(Student::getAge, desc());
 
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.AND, filterDescriptor.getCondition());
@@ -100,8 +102,7 @@ public class DynamicQueryTest {
     @Test
     public void testAddSelectProperty() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .selectProperty(Student::getAge)
-                .selectProperty(Student::getName);
+                .select(Student::getAge, Student::getName);
         String[] selectFields = query.getSelectedProperties();
         assertEquals("age", selectFields[0]);
         assertEquals("name", selectFields[1]);
@@ -110,8 +111,7 @@ public class DynamicQueryTest {
     @Test
     public void testAddIgnoredProperty() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .ignoreProperty(Student::getAge)
-                .ignoreProperty(Student::getName);
+                .ignore(Student::getAge, Student::getName);
         String[] ignoredProperties = query.getIgnoredProperties();
         assertEquals("age", ignoredProperties[0]);
         assertEquals("name", ignoredProperties[1]);

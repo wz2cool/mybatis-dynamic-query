@@ -16,7 +16,7 @@ public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
 
-    // region filter
+    // region and
 
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
         if (filters == null || filters.length == 0) {
@@ -151,7 +151,7 @@ public class QueryHelper {
             if (CommonsHelper.isArrayOrCollection(filterValue)) {
                 return CommonsHelper.getCollectionValues(filterValue);
             } else {
-                String errMsg = "filter value of \"IN\" or \"NOT_IN\" operator must be array or collection";
+                String errMsg = "and value of \"IN\" or \"NOT_IN\" operator must be array or collection";
                 throw new InvalidParameterException(errMsg);
             }
         }
@@ -161,18 +161,18 @@ public class QueryHelper {
                 Object[] filterValues = CommonsHelper.getCollectionValues(filterValue);
                 int expectedSize = 2;
                 if (filterValues.length != expectedSize) {
-                    String errMsg = "if \"BETWEEN\" operator, the count of filter value must be 2";
+                    String errMsg = "if \"BETWEEN\" operator, the count of and value must be 2";
                     throw new InvalidParameterException(errMsg);
                 }
                 return filterValues;
             } else {
-                String errMsg = "If \"BETWEEN\" operator, filter value must be array or collection";
+                String errMsg = "If \"BETWEEN\" operator, and value must be array or collection";
                 throw new InvalidParameterException(errMsg);
             }
         }
 
         if (CommonsHelper.isArrayOrCollection(filterValue)) {
-            String errMsg = "if not \"BETWEEN\", \"IN\" or \"NOT_IN\" operator, filter value can not be array or collection.";
+            String errMsg = "if not \"BETWEEN\", \"IN\" or \"NOT_IN\" operator, and value can not be array or collection.";
             throw new InvalidParameterException(errMsg);
         }
 

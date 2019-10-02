@@ -17,7 +17,7 @@ public class DynamicQueryBuilderHelper {
     private DynamicQueryBuilderHelper() {
     }
 
-    /// region filter operator
+    /// region and operator
 
     public static <R> LessThan<R> lessThan(R value) {
         return new LessThan<>(value);

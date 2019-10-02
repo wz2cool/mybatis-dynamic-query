@@ -97,7 +97,7 @@ class EntityCache {
 
             for (Field field : properties) {
                 field.setAccessible(true);
-                // filter Transient
+                // and Transient
                 if (field.isAnnotationPresent(Transient.class)) {
                     continue;
                 }
