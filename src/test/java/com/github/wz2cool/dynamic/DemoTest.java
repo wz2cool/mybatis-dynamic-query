@@ -37,25 +37,6 @@ public class DemoTest {
     private BugDao bugDao;
 
     @Test
-    public void testNewQuery() {
-        /// @formatter:off
-        DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .select(Product::getProductID, Product::getProductName, Product::getPrice)
-                .andGroupBegin()
-                    .and(Product::getPrice, greaterThan(BigDecimal.valueOf(10)))
-                    .and(Product::getPrice, lessThan(BigDecimal.valueOf(20)))
-                .groupEnd()
-                .orGroupBegin()
-                    .and(Product::getPrice, greaterThan(BigDecimal.valueOf(100)))
-                    .and(Product::getPrice, lessThan(BigDecimal.valueOf(200)))
-                .groupEnd()
-                .sort(Product::getProductID, desc());
-        /// @formatter:on
-        Assert.assertTrue(dynamicQuery.getSorts().length > 0);
-        Assert.assertTrue(dynamicQuery.getSelectedProperties().length > 0);
-    }
-
-    @Test
     public void testSelectFields() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
                 .select(Product::getProductID, Product::getProductName, Product::getPrice);
