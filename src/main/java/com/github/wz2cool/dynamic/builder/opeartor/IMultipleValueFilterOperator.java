@@ -7,9 +7,9 @@ import java.util.List;
  */
 public interface IMultipleValueFilterOperator<T> extends IFilterOperator<T> {
     /**
-     * Get filter value.
+     * Get and value.
      *
-     * @return filter value.
+     * @return and value.
      */
     @Override
     List<T> getValue();

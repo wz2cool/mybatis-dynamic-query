@@ -68,10 +68,10 @@ List<Product> getProductByDynamic(Map<String, Object> params);
 ```java
 @Test
 public void simpleDemo() throws Exception {
-    // create a filter descriptor.
+    and
     FilterDescriptor idFilter =
         new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
-    // generater expression and params base on filter descriptor.
+    and
     Map<String, Object> queryParams =
         mybatisQueryProvider.getWhereQueryParamMap(
             Product.class, "whereExpression", idFilter);

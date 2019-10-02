@@ -91,7 +91,7 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, User::getUsername,
+                FilterCondition.AND, "username",
                 FilterOperator.CONTAINS, "14");
         dynamicQuery.addFilters(nameFilter);
 
@@ -147,9 +147,9 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, User::getUsername,
+                FilterCondition.AND, "username",
                 FilterOperator.CONTAINS, "17");
-        dynamicQuery.addFilter(nameFilter);
+        dynamicQuery.addFilters(nameFilter);
 
         result = userDao.updateByDynamicQuery(updateUser, dynamicQuery);
         assertEquals(1, result);
@@ -170,9 +170,9 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, User::getUsername,
+                FilterCondition.AND, "username",
                 FilterOperator.CONTAINS, "18");
-        dynamicQuery.addFilter(nameFilter);
+        dynamicQuery.addFilters(nameFilter);
 
         result = userDao.updateSelectiveByDynamicQuery(updateUser, dynamicQuery);
         assertEquals(1, result);
@@ -223,7 +223,7 @@ public class DynamicMapperTest {
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         dynamicQuery.setDistinct(true);
         FilterDescriptor idFilter =
-                new FilterDescriptor(User::getId, FilterOperator.LESS_THAN, 100);
+                new FilterDescriptor("id", FilterOperator.LESS_THAN, 100);
         dynamicQuery.addFilters(idFilter);
 
         SortDescriptor idSort =

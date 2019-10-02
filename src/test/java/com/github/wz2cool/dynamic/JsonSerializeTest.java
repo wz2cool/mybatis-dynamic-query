@@ -10,19 +10,10 @@ import static org.junit.Assert.assertEquals;
 public class JsonSerializeTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
-    /* static {
-         SimpleModule module = new SimpleModule();
-         module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterGroupDescriptor.class);
-         module.addAbstractTypeMapping(FilterDescriptorBase.class, FilterDescriptor.class);
-
-        module.addAbstractTypeMapping(FilterDescriptorBase.class, CustomFilterDescriptor.class);*//*
-        mapper.registerModule(module);
-    }
-*/
     @Test
     public void testSerializeFilterDescriptor() throws Exception {
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student::getAge, FilterOperator.EQUAL, 2);
+                new FilterDescriptor("age", FilterOperator.EQUAL, 2);
         String jsonStr = mapper.writeValueAsString(ageFilter);
         FilterDescriptor ageFilterCopy = mapper.readValue(jsonStr, FilterDescriptor.class);
         assertEquals(ageFilter.getPropertyName(), ageFilterCopy.getPropertyName());
@@ -39,9 +30,9 @@ public class JsonSerializeTest {
     @Test
     public void testSerializeFilterGroupDescriptor() throws Exception {
         FilterDescriptor ageFilter =
-                new FilterDescriptor(Student::getAge, FilterOperator.GREATER_THAN, 20);
+                new FilterDescriptor("age", FilterOperator.GREATER_THAN, 20);
         FilterDescriptor ageFilter2 =
-                new FilterDescriptor(Student::getAge, FilterOperator.LESS_THAN, 30);
+                new FilterDescriptor("age", FilterOperator.LESS_THAN, 30);
 
         FilterGroupDescriptor ageGroupFilter = new FilterGroupDescriptor();
         ageGroupFilter.addFilters(ageFilter);
@@ -91,7 +82,7 @@ public class JsonSerializeTest {
     public void testSerializeDynamicQuery() throws Exception {
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
         FilterDescriptor nameFilter =
-                new FilterDescriptor(Student::getName, FilterOperator.EQUAL, "frank");
+                new FilterDescriptor("name", FilterOperator.EQUAL, "frank");
         dynamicQuery.addFilters(nameFilter);
 
         SortDescriptor ageSort =

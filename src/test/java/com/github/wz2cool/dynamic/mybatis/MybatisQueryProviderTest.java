@@ -65,7 +65,7 @@ public class MybatisQueryProviderTest {
     public void testGetQueryParamMap() throws Exception {
         DynamicQuery<Student> dynamicQuery = new DynamicQuery<>(Student.class);
         FilterDescriptor nameFilter =
-                new FilterDescriptor(FilterCondition.AND, Student::getName, FilterOperator.EQUAL, "frank");
+                new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
         SortDescriptor ageSort =
                 new SortDescriptor(Student::getAge, SortDirection.DESC);
         dynamicQuery.addFilters(nameFilter);

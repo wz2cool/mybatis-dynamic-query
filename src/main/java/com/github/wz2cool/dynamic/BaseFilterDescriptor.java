@@ -12,14 +12,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = FilterGroupDescriptor.class, name = "filterGroupDescriptor"),
         @JsonSubTypes.Type(value = CustomFilterDescriptor.class, name = "customFilterDescriptor")
 })
-public abstract class BaseFilterDescriptor {
-    private FilterCondition condition = FilterCondition.AND;
+public interface BaseFilterDescriptor {
+    /**
+     * get condition of and
+     *
+     * @return condition of and
+     */
+    FilterCondition getCondition();
 
-    public FilterCondition getCondition() {
-        return condition;
-    }
-
-    public void setCondition(FilterCondition condition) {
-        this.condition = condition;
-    }
+    /**
+     * set condition
+     *
+     * @param condition condition of and
+     */
+    void setCondition(FilterCondition condition);
 }

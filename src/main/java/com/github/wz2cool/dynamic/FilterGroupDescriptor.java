@@ -2,51 +2,24 @@ package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-
 /**
- * The type Filter group descriptor.
  * @author Frank
- */
-@SuppressWarnings("squid:S1948")
+ **/
+@SuppressWarnings("squid:S1172")
 @JsonTypeName("filterGroupDescriptor")
-public class FilterGroupDescriptor extends BaseFilterDescriptor implements Serializable {
+public class FilterGroupDescriptor<T>
+        extends BaseFilterGroup<T, FilterGroupDescriptor<T>>
+        implements BaseFilterDescriptor {
 
-    private static final long serialVersionUID = 503860190426402699L;
-    private BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{};
+    private FilterCondition condition = FilterCondition.AND;
 
-    public BaseFilterDescriptor[] getFilters() {
-        return filters;
+    @Override
+    public FilterCondition getCondition() {
+        return condition;
     }
 
-    public void setFilters(BaseFilterDescriptor[] filters) {
-        this.filters = filters;
-    }
-
-    @SuppressWarnings("Duplicates")
-    public boolean addFilters(BaseFilterDescriptor... newFilters) {
-        List<BaseFilterDescriptor> filtersCopy =
-                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
-        List<BaseFilterDescriptor> newFilterList = Arrays.asList(newFilters);
-        boolean result = filtersCopy.addAll(newFilterList);
-        if (result) {
-            this.setFilters(filtersCopy.toArray(new BaseFilterDescriptor[filtersCopy.size()]));
-        }
-        return result;
-    }
-
-    @SuppressWarnings("Duplicates")
-    public boolean removeFilter(BaseFilterDescriptor removeFilter) {
-        List<BaseFilterDescriptor> filtersCopy =
-                filters == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(filters));
-        boolean result = filtersCopy.remove(removeFilter);
-        if (result) {
-            this.setFilters(filtersCopy.toArray(new BaseFilterDescriptor[filtersCopy.size()]));
-        }
-        return result;
+    @Override
+    public void setCondition(FilterCondition condition) {
+        this.condition = condition;
     }
 }

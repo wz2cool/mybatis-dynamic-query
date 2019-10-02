@@ -8,16 +8,16 @@ import com.github.wz2cool.dynamic.FilterOperator;
 @SuppressWarnings("squid:S2326")
 public interface IFilterOperator<T> {
     /**
-     * Get filter operator.
+     * Get and operator.
      *
      * @return filterOperator enum.
      */
     FilterOperator getOperator();
 
     /**
-     * Get filter value.
+     * Get and value.
      *
-     * @return filter value.
+     * @return and value.
      */
     Object getValue();
 }

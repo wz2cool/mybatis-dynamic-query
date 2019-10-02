@@ -5,9 +5,9 @@ package com.github.wz2cool.dynamic.builder.opeartor;
  */
 public interface ISingleValueFilterOperator<T> extends IFilterOperator<T> {
     /**
-     * Get filter value.
+     * Get and value.
      *
-     * @return filter value.
+     * @return and value.
      */
     @Override
     T getValue();
