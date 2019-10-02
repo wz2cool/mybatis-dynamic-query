@@ -14,7 +14,6 @@ import java.util.Map;
 
 /**
  * @author Frank
- * @date 2019/10/01
  **/
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {

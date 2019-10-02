@@ -10,7 +10,6 @@ import java.util.Date;
 
 /**
  * @author Frank
- * @date 2019/10/01
  **/
 public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
 

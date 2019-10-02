@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * @author Frank
- * @date 2019/10/01
  **/
 @SuppressWarnings({"squid:S1172", "squid:S2326"})
 @JsonTypeName("filterDescriptor")

@@ -2,7 +2,6 @@ package com.github.wz2cool.dynamic;
 
 /**
  * @author Frank
- * @date 2019/10/01
  **/
 public class InternalFilterGroupBegin<T, S extends BaseFilterGroup<T, S>> extends BaseFilterGroup<T, InternalFilterGroupBegin<T, S>> {
 
