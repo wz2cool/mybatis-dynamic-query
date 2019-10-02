@@ -53,6 +53,12 @@ public class FilterDescriptor implements BaseFilterDescriptor {
         // for json
     }
 
+    public FilterDescriptor(String propertyName, FilterOperator operator, Object value) {
+        this.propertyName = propertyName;
+        this.operator = operator;
+        this.value = value;
+    }
+
     public FilterDescriptor(FilterCondition condition, String propertyName, FilterOperator operator, Object value) {
         this.condition = condition;
         this.propertyName = propertyName;

@@ -385,13 +385,13 @@ public class DbFilterTest {
     @Test
     public void testMultiTablesFilter() throws Exception {
         FilterDescriptor priceFilter1 =
-                new FilterDescriptor(ProductView::getPrice,
+                new FilterDescriptor("price",
                         FilterOperator.GREATER_THAN_OR_EQUAL, 6);
         FilterDescriptor priceFilter2 =
-                new FilterDescriptor(ProductView::getPrice,
+                new FilterDescriptor("price",
                         FilterOperator.LESS_THAN, 10);
         FilterDescriptor categoryNameFilter =
-                new FilterDescriptor(ProductView::getCategoryName,
+                new FilterDescriptor("categoryName",
                         FilterOperator.START_WITH, "Co");
 
         Map<String, Object> params =
@@ -410,11 +410,8 @@ public class DbFilterTest {
     @Test
     public void testSelectColumns() {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
-                .filter(User::getId, FilterOperator.EQUAL, 2)
-                // select 'Username' field(column)
-                .selectProperty(User::getUsername)
-                // select 'Id' field(column)
-                .selectProperty(User::getId);
+                .select(User::getUsername, User::getId)
+                .and(User::getId, isEqual(2));
         List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
 
         for (User user : userNames) {

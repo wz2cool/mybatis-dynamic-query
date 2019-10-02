@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -21,8 +22,8 @@ public class FilterGroupDescriptorTest {
                 new FilterDescriptor(FilterCondition.AND, "id", FilterOperator.EQUAL, 1);
 
         FilterGroupDescriptor groupDescriptor = new FilterGroupDescriptor();
-        boolean result = groupDescriptor.addFilters(idFilter);
-        assertEquals(true, result);
+        groupDescriptor.addFilters(idFilter);
+        assertTrue(groupDescriptor.getFilters().length > 0);
     }
 
     @Test
@@ -31,10 +32,10 @@ public class FilterGroupDescriptorTest {
                 new FilterDescriptor(FilterCondition.AND, "id", FilterOperator.EQUAL, 1);
 
         FilterGroupDescriptor groupDescriptor = new FilterGroupDescriptor();
-        boolean result = groupDescriptor.addFilters(idFilter);
-        assertEquals(true, result);
+        groupDescriptor.addFilters(idFilter);
+        assertTrue(groupDescriptor.getFilters().length > 0);
 
-        result = groupDescriptor.removeFilter(idFilter);
-        assertEquals(true, result);
+        groupDescriptor.removeFilters(idFilter);
+        assertTrue(groupDescriptor.getFilters().length == 0);
     }
 }

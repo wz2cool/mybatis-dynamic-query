@@ -8,6 +8,7 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.lessThan;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -34,12 +37,28 @@ public class DemoTest {
     private BugDao bugDao;
 
     @Test
+    public void testNewQuery() {
+        /// @formatter:off
+        DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
+                .select(Product::getProductID, Product::getProductName, Product::getPrice)
+                .andGroupBegin()
+                    .and(Product::getPrice, greaterThan(BigDecimal.valueOf(10)))
+                    .and(Product::getPrice, lessThan(BigDecimal.valueOf(20)))
+                .groupEnd()
+                .orGroupBegin()
+                    .and(Product::getPrice, greaterThan(BigDecimal.valueOf(100)))
+                    .and(Product::getPrice, lessThan(BigDecimal.valueOf(200)))
+                .groupEnd()
+                .sort(Product::getProductID, desc());
+        /// @formatter:on
+        Assert.assertTrue(dynamicQuery.getSorts().length > 0);
+        Assert.assertTrue(dynamicQuery.getSelectedProperties().length > 0);
+    }
+
+    @Test
     public void testSelectFields() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .selectProperty(Product::getProductID)
-                .selectProperty(Product::getProductName)
-                .selectProperty(Product::getPrice);
-        /*  dynamicQuery.setMapUnderscoreToCamelCase(true);*/
+                .select(Product::getProductID, Product::getProductName, Product::getPrice);
         List<Product> products = PageHelper.startPage(0, 3, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -53,13 +72,11 @@ public class DemoTest {
     @Test
     public void testLinkOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .selectProperty(Product::getProductID)
-                .selectProperty(Product::getProductName)
-                .selectProperty(Product::getPrice)
-                .ignoreProperty(Product::getProductID) // set will not effect bse we already set selectProperty
-                .filter(Product::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
-                .sort(Product::getPrice, SortDirection.DESC)
-                .sort(Product::getProductID, SortDirection.DESC);
+                .select(Product::getProductID, Product::getProductName, Product::getPrice)
+                .ignore(Product::getProductID)
+                .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
+                .sort(Product::getPrice, desc())
+                .sort(Product::getProductID, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -75,10 +92,10 @@ public class DemoTest {
     @Test
     public void testIgnoreFieldOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .ignoreProperty(Product::getProductID)
-                .filter(Product::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
-                .sort(Product::getPrice, SortDirection.DESC)
-                .sort(Product::getProductID, SortDirection.DESC);
+                .ignore(Product::getProductID)
+                .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
+                .sort(Product::getPrice, desc())
+                .sort(Product::getProductID, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -92,10 +109,10 @@ public class DemoTest {
     @Test
     public void testSelectByView() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
-                .ignoreProperty(ProductView::getCategoryID)
-                .filter(ProductView::getPrice, FilterOperator.GREATER_THAN, BigDecimal.valueOf(16))
-                .sort(ProductView::getPrice, SortDirection.DESC)
-                .sort(ProductView::getProductID, SortDirection.DESC);
+                .ignore(ProductView::getCategoryID)
+                .and(ProductView::getPrice, greaterThan(BigDecimal.valueOf(16)))
+                .sort(ProductView::getPrice, desc())
+                .sort(ProductView::getProductID, desc());
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -112,9 +129,9 @@ public class DemoTest {
     @Test
     public void testSelectByViewWithoutFilters() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
-                .ignoreProperty(ProductView::getCategoryID)
-                .sort(ProductView::getPrice, SortDirection.DESC)
-                .sort(ProductView::getProductID, SortDirection.DESC);
+                .ignore(ProductView::getCategoryID)
+                .sort(ProductView::getPrice, desc())
+                .sort(ProductView::getProductID, desc());
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -131,8 +148,8 @@ public class DemoTest {
     @Test
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
-                .ignoreProperty(ProductView::getCategoryID)
-                .filter(ProductView::getPrice, FilterOperator.IN, new BigDecimal[]{BigDecimal.valueOf(16), BigDecimal.valueOf(18)});
+                .ignore(ProductView::getCategoryID)
+                .and(ProductView::getPrice, in(BigDecimal.valueOf(16), BigDecimal.valueOf(18)));
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -149,7 +166,7 @@ public class DemoTest {
     @Test
     public void testGetBug() {
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .filter(Bug::getId, FilterOperator.NOT_IN, new Integer[]{});
+                .and(Bug::getId, notIn(1));
 
         List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         for (Bug bug : bugs) {

@@ -30,7 +30,7 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
 
     public void removeFilters(BaseFilterDescriptor... removeFilters) {
         for (BaseFilterDescriptor removeFilter : removeFilters) {
-            ArrayUtils.removeAllOccurences(filters, removeFilter);
+            setFilters(ArrayUtils.removeAllOccurences(filters, removeFilter));
         }
     }
 
@@ -142,9 +142,16 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue());
     }
 
-    public InternalFilterGroupBegin<T, S> filterGroupBegin(FilterCondition condition) {
+    public InternalFilterGroupBegin<T, S> andGroupBegin() {
         InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
-        internalFilterGroupBegin.setCondition(condition);
+        internalFilterGroupBegin.setCondition(FilterCondition.AND);
+        internalFilterGroupBegin.setOwner((S) this);
+        return internalFilterGroupBegin;
+    }
+
+    public InternalFilterGroupBegin<T, S> orGroupBegin() {
+        InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
+        internalFilterGroupBegin.setCondition(FilterCondition.OR);
         internalFilterGroupBegin.setOwner((S) this);
         return internalFilterGroupBegin;
     }

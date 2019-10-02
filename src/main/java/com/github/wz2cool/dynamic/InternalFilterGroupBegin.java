@@ -18,7 +18,7 @@ public class InternalFilterGroupBegin<T, S extends BaseFilterGroup<T, S>> extend
         this.condition = condition;
     }
 
-    public S filterGroupEnd() {
+    public S groupEnd() {
         FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
         filterGroupDescriptor.setCondition(condition);
         filterGroupDescriptor.setFilters(this.getFilters());

@@ -85,7 +85,7 @@ public class DynamicQueryTest {
     public void testLinkOperation() {
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
                 .and(Student::getName, isEqual("frank"))
-                .orderBy(Student::getAge, desc());
+                .sort(Student::getAge, desc());
 
         FilterDescriptor filterDescriptor = (FilterDescriptor) query.getFilters()[0];
         assertEquals(FilterCondition.AND, filterDescriptor.getCondition());
