@@ -9,19 +9,21 @@ public class InternalFilterGroupBegin<T, S extends BaseFilterGroup<T, S>> extend
 
     private FilterCondition condition;
 
-    public void setOwner(S owner) {
+    private boolean enable;
+
+    public InternalFilterGroupBegin(boolean enable, FilterCondition condition, S owner) {
+        this.enable = enable;
+        this.condition = condition;
         this.owner = owner;
     }
 
-    public void setCondition(FilterCondition condition) {
-        this.condition = condition;
-    }
-
     public S groupEnd() {
-        FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
-        filterGroupDescriptor.setCondition(condition);
-        filterGroupDescriptor.setFilters(this.getFilters());
-        owner.addFilters(filterGroupDescriptor);
+        if (enable) {
+            FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
+            filterGroupDescriptor.setCondition(condition);
+            filterGroupDescriptor.setFilters(this.getFilters());
+            owner.addFilters(filterGroupDescriptor);
+        }
         return owner;
     }
 }

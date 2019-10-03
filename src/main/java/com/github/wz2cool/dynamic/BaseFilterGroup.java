@@ -250,17 +250,19 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     }
 
     public InternalFilterGroupBegin<T, S> andGroupBegin() {
-        InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
-        internalFilterGroupBegin.setCondition(FilterCondition.AND);
-        internalFilterGroupBegin.setOwner((S) this);
-        return internalFilterGroupBegin;
+        return new InternalFilterGroupBegin<>(true, FilterCondition.AND, (S) this);
+    }
+
+    public InternalFilterGroupBegin<T, S> andGroupBegin(boolean enable) {
+        return new InternalFilterGroupBegin<>(enable, FilterCondition.AND, (S) this);
     }
 
     public InternalFilterGroupBegin<T, S> orGroupBegin() {
-        InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
-        internalFilterGroupBegin.setCondition(FilterCondition.OR);
-        internalFilterGroupBegin.setOwner((S) this);
-        return internalFilterGroupBegin;
+        return new InternalFilterGroupBegin<>(true, FilterCondition.OR, (S) this);
+    }
+
+    public InternalFilterGroupBegin<T, S> orGroupBegin(boolean enable) {
+        return new InternalFilterGroupBegin<>(enable, FilterCondition.OR, (S) this);
     }
 
     private <R extends Comparable> S filterInternal(
