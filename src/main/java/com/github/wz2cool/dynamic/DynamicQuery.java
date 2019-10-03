@@ -101,7 +101,7 @@ public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
         setIgnoredProperties(ArrayUtils.addAll(ignoredProperties, newIgnoreProperties));
     }
 
-    public DynamicQuery<T> sort(GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
+    public DynamicQuery<T> orderBy(GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
         String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
         SortDirection direction = sortDirection.getDirection();
         SortDescriptor sortDescriptor = new SortDescriptor();

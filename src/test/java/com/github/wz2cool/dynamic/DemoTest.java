@@ -56,8 +56,8 @@ public class DemoTest {
                 .select(Product::getProductID, Product::getProductName, Product::getPrice)
                 .ignore(Product::getProductID)
                 .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
-                .sort(Product::getPrice, desc())
-                .sort(Product::getProductID, desc());
+                .orderBy(Product::getPrice, desc())
+                .orderBy(Product::getProductID, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -75,8 +75,8 @@ public class DemoTest {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
                 .ignore(Product::getProductID)
                 .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
-                .sort(Product::getPrice, desc())
-                .sort(Product::getProductID, desc());
+                .orderBy(Product::getPrice, desc())
+                .orderBy(Product::getProductID, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
@@ -92,8 +92,8 @@ public class DemoTest {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignore(ProductView::getCategoryID)
                 .and(ProductView::getPrice, greaterThan(BigDecimal.valueOf(16)))
-                .sort(ProductView::getPrice, desc())
-                .sort(ProductView::getProductID, desc());
+                .orderBy(ProductView::getPrice, desc())
+                .orderBy(ProductView::getProductID, desc());
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
@@ -111,8 +111,8 @@ public class DemoTest {
     public void testSelectByViewWithoutFilters() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignore(ProductView::getCategoryID)
-                .sort(ProductView::getPrice, desc())
-                .sort(ProductView::getProductID, desc());
+                .orderBy(ProductView::getPrice, desc())
+                .orderBy(ProductView::getProductID, desc());
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
