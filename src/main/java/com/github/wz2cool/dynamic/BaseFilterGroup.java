@@ -7,6 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Frank
@@ -36,13 +37,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             IFilterOperator<BigDecimal> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             IFilterOperator<BigDecimal> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -60,13 +61,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetBytePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Byte> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetBytePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Byte> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -84,13 +85,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetDatePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Date> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetDatePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Date> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -108,13 +109,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetDoublePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Double> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetDoublePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Double> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -132,13 +133,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetFloatPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Float> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetFloatPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Float> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -156,13 +157,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetIntegerPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Integer> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetIntegerPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Integer> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -180,13 +181,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetLongPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Long> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetLongPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Long> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -204,13 +205,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetShortPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Short> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetShortPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Short> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -228,13 +229,13 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
     public S and(
             GetStringPropertyFunction<T> getPropertyFunc,
             IFilterOperator<String> filterOperator) {
-        return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return and(getPropertyFunc, filterOperator, true);
     }
 
     public S or(
             GetStringPropertyFunction<T> getPropertyFunc,
             IFilterOperator<String> filterOperator) {
-        return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), true);
+        return or(getPropertyFunc, filterOperator, true);
     }
 
     public S and(
@@ -249,18 +250,30 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
-    public InternalFilterGroupBegin<T, S> andGroupBegin() {
-        InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
-        internalFilterGroupBegin.setCondition(FilterCondition.AND);
-        internalFilterGroupBegin.setOwner((S) this);
-        return internalFilterGroupBegin;
+    public S and(UnaryOperator<FilterGroupDescriptor<T>> groupConsumer) {
+        return and(groupConsumer, true);
     }
 
-    public InternalFilterGroupBegin<T, S> orGroupBegin() {
-        InternalFilterGroupBegin<T, S> internalFilterGroupBegin = new InternalFilterGroupBegin<>();
-        internalFilterGroupBegin.setCondition(FilterCondition.OR);
-        internalFilterGroupBegin.setOwner((S) this);
-        return internalFilterGroupBegin;
+    public S or(UnaryOperator<FilterGroupDescriptor<T>> groupConsumer) {
+        return or(groupConsumer, true);
+    }
+
+    public S and(UnaryOperator<FilterGroupDescriptor<T>> groupConsumer, boolean enable) {
+        if (enable) {
+            FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
+            filterGroupDescriptor.setCondition(FilterCondition.AND);
+            this.addFilters(groupConsumer.apply(filterGroupDescriptor));
+        }
+        return (S) this;
+    }
+
+    public S or(UnaryOperator<FilterGroupDescriptor<T>> groupConsumer, boolean enable) {
+        if (enable) {
+            FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
+            filterGroupDescriptor.setCondition(FilterCondition.OR);
+            this.addFilters(groupConsumer.apply(filterGroupDescriptor));
+        }
+        return (S) this;
     }
 
     private <R extends Comparable> S filterInternal(

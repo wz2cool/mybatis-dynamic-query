@@ -281,9 +281,7 @@ public class FilterGroupDescriptorTest {
     public void testAndGroupBegin() {
         BigDecimal filterValue = BigDecimal.ONE;
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
-        filterGroupDescriptor.andGroupBegin()
-                .and(ExampleModel::getP1, isEqual(filterValue))
-                .groupEnd();
+        filterGroupDescriptor.and((group) -> group.and(ExampleModel::getP1, isEqual(filterValue)));
 
         FilterGroupDescriptor<ExampleModel> internalFilterGroup = (FilterGroupDescriptor<ExampleModel>) filterGroupDescriptor.getFilters()[0];
         FilterDescriptor filterDescriptor = (FilterDescriptor) internalFilterGroup.getFilters()[0];
@@ -297,9 +295,7 @@ public class FilterGroupDescriptorTest {
     public void testOrGroupBegin() {
         BigDecimal filterValue = BigDecimal.ONE;
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
-        filterGroupDescriptor.orGroupBegin()
-                .and(ExampleModel::getP1, isEqual(filterValue))
-                .groupEnd();
+        filterGroupDescriptor.or((group) -> group.and(ExampleModel::getP1, isEqual(filterValue)));
 
         FilterGroupDescriptor<ExampleModel> internalFilterGroup = (FilterGroupDescriptor<ExampleModel>) filterGroupDescriptor.getFilters()[0];
         FilterDescriptor filterDescriptor = (FilterDescriptor) internalFilterGroup.getFilters()[0];
@@ -315,6 +311,29 @@ public class FilterGroupDescriptorTest {
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
         filterGroupDescriptor.and(ExampleModel::getP1, isEqual(BigDecimal.ONE))
                 .and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN), false);
+        assertEquals(1, filterGroupDescriptor.getFilters().length);
+    }
+
+    @Test
+    public void testDisableAndFilterGroup() {
+        FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
+        filterGroupDescriptor.and((group) ->
+                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)), false);
+        assertEquals(0, filterGroupDescriptor.getFilters().length);
+    }
+
+    @Test
+    public void testDisableOrFilterGroup() {
+        FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
+        filterGroupDescriptor.or((group) ->
+                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)), false);
+        assertEquals(0, filterGroupDescriptor.getFilters().length);
+    }
+
+    @Test
+    public void testDisableOrFilterGroup2() {
+        FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
+        filterGroupDescriptor.and((group) -> group.and(ExampleModel::getP1, isEqual(BigDecimal.TEN)));
         assertEquals(1, filterGroupDescriptor.getFilters().length);
     }
 }
