@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.greaterThanOrEqual;
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -307,5 +308,13 @@ public class FilterGroupDescriptorTest {
         assertEquals("p1", filterDescriptor.getPropertyName());
         assertEquals(FilterOperator.EQUAL, filterDescriptor.getOperator());
         assertEquals(filterValue, filterDescriptor.getValue());
+    }
+
+    @Test
+    public void testDisableFilter() {
+        FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
+        filterGroupDescriptor.and(ExampleModel::getP1, isEqual(BigDecimal.ONE))
+                .and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN), false);
+        assertEquals(1, filterGroupDescriptor.getFilters().length);
     }
 }
