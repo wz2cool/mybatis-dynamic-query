@@ -102,12 +102,18 @@ public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
     }
 
     public DynamicQuery<T> orderBy(GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
-        String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        SortDirection direction = sortDirection.getDirection();
-        SortDescriptor sortDescriptor = new SortDescriptor();
-        sortDescriptor.setPropertyName(propertyName);
-        sortDescriptor.setDirection(direction);
-        addSorts(sortDescriptor);
+        return orderBy(true, getPropertyFunc, sortDirection);
+    }
+
+    public DynamicQuery<T> orderBy(boolean enable, GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
+        if (enable) {
+            String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            SortDirection direction = sortDirection.getDirection();
+            SortDescriptor sortDescriptor = new SortDescriptor();
+            sortDescriptor.setPropertyName(propertyName);
+            sortDescriptor.setDirection(direction);
+            addSorts(sortDescriptor);
+        }
         return this;
     }
 

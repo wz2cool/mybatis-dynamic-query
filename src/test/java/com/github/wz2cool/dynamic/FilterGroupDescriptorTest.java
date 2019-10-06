@@ -310,23 +310,23 @@ public class FilterGroupDescriptorTest {
     public void testDisableFilter() {
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
         filterGroupDescriptor.and(ExampleModel::getP1, isEqual(BigDecimal.ONE))
-                .and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN), false);
+                .and(false, ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN));
         assertEquals(1, filterGroupDescriptor.getFilters().length);
     }
 
     @Test
     public void testDisableAndFilterGroup() {
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
-        filterGroupDescriptor.and((group) ->
-                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)), false);
+        filterGroupDescriptor.and(false, (group) ->
+                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)));
         assertEquals(0, filterGroupDescriptor.getFilters().length);
     }
 
     @Test
     public void testDisableOrFilterGroup() {
         FilterGroupDescriptor<ExampleModel> filterGroupDescriptor = new FilterGroupDescriptor<>();
-        filterGroupDescriptor.or((group) ->
-                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)), false);
+        filterGroupDescriptor.or(false, (group) ->
+                group.and(ExampleModel::getP1, greaterThanOrEqual(BigDecimal.TEN)));
         assertEquals(0, filterGroupDescriptor.getFilters().length);
     }
 
