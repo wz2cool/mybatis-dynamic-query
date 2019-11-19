@@ -30,12 +30,12 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
             RowBounds rowBounds);
 
     /**
-     * select one record by dynamic query
+     * select first record by dynamic query
      *
      * @param dynamicQuery dynamic query
-     * @return match record
+     * @return matched first record
      */
-    default Optional<T> selectOneByDynamicQuery(DynamicQuery<T> dynamicQuery) {
+    default Optional<T> selectFirstByDynamicQuery(DynamicQuery<T> dynamicQuery) {
         RowBounds rowBounds = new RowBounds(0, 1);
         List<T> result = selectRowBoundsByDynamicQuery(dynamicQuery, rowBounds);
         if (result == null || result.isEmpty()) {

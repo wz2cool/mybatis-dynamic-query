@@ -50,16 +50,26 @@ public class DbFilterTest {
     private ProductDao productDao;
 
     @Test
-    public void testSelectOne() {
+    public void testSelectFirst() {
         DynamicQuery<Product> query = DynamicQuery.createQuery(Product.class)
                 .and(Product::getProductID, isEqual(1));
-        Optional<Product> productOptional = productDao.selectOneByDynamicQuery(query);
+        Optional<Product> productOptional = productDao.selectFirstByDynamicQuery(query);
         assertTrue(productOptional.isPresent());
 
         DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
                 .and(Product::getProductID, isEqual(100000));
-        Optional<Product> productOptional2 = productDao.selectOneByDynamicQuery(query2);
+        Optional<Product> productOptional2 = productDao.selectFirstByDynamicQuery(query2);
         Assert.assertFalse(productOptional2.isPresent());
+
+        // fetch max price
+        DynamicQuery<Product> query3 = DynamicQuery.createQuery(Product.class)
+                .select(Product::getPrice)
+                .orderBy(Product::getPrice, desc());
+        Optional<Product> productOptional3 = productDao.selectFirstByDynamicQuery(query3);
+        if (productOptional3.isPresent()) {
+            BigDecimal maxPrice = productOptional3.get().getPrice();
+            Assert.assertNotNull(maxPrice);
+        }
     }
 
     @Test
