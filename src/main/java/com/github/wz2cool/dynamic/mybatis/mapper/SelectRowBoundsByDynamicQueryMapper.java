@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.mapper.annotation.RegisterMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Frank
@@ -27,4 +28,20 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
     List<T> selectRowBoundsByDynamicQuery(
             @Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery,
             RowBounds rowBounds);
+
+    /**
+     * select one record by dynamic query
+     *
+     * @param dynamicQuery dynamic query
+     * @return match record
+     */
+    default Optional<T> selectOneByDynamicQuery(DynamicQuery<T> dynamicQuery) {
+        RowBounds rowBounds = new RowBounds(0, 1);
+        List<T> result = selectRowBoundsByDynamicQuery(dynamicQuery, rowBounds);
+        if (result == null || result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(result.get(0));
+        }
+    }
 }
