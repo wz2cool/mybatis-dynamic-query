@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class DbFilterTest {
     @Autowired
     private UserDao userDao;
 
-    @Resource
+    @Autowired
     private ProductDao productDao;
 
     @Test
