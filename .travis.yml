@@ -21,4 +21,4 @@ cache:
     - '$HOME/.sonar/cache'
 
 jdk:
-  - oraclejdk8
+  - openjdk8

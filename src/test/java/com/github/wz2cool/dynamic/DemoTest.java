@@ -8,20 +8,18 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
-import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.lessThan;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -29,11 +27,11 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = TestApplication.class)
 public class DemoTest {
 
-    @Resource
+    @Autowired
     private ProductDao productDao;
-    @Resource
+    @Autowired
     private NorthwindDao northwindDao;
-    @Resource
+    @Autowired
     private BugDao bugDao;
 
     @Test

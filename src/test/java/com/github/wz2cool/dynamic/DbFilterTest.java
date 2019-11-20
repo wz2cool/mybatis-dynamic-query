@@ -20,12 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
@@ -49,8 +45,31 @@ public class DbFilterTest {
     @Autowired
     private UserDao userDao;
 
-    @Resource
+    @Autowired
     private ProductDao productDao;
+
+    @Test
+    public void testSelectFirst() {
+        DynamicQuery<Product> query = DynamicQuery.createQuery(Product.class)
+                .and(Product::getProductID, isEqual(1));
+        Optional<Product> productOptional = productDao.selectFirstByDynamicQuery(query);
+        assertTrue(productOptional.isPresent());
+
+        DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
+                .and(Product::getProductID, isEqual(100000));
+        Optional<Product> productOptional2 = productDao.selectFirstByDynamicQuery(query2);
+        Assert.assertFalse(productOptional2.isPresent());
+
+        // fetch max price
+        DynamicQuery<Product> query3 = DynamicQuery.createQuery(Product.class)
+                .select(Product::getPrice)
+                .orderBy(Product::getPrice, desc());
+        Optional<Product> productOptional3 = productDao.selectFirstByDynamicQuery(query3);
+        if (productOptional3.isPresent()) {
+            BigDecimal maxPrice = productOptional3.get().getPrice();
+            Assert.assertNotNull(maxPrice);
+        }
+    }
 
     @Test
     public void testBuilderSearch() throws Exception {
@@ -59,16 +78,16 @@ public class DbFilterTest {
                 .where(Product::getPrice, greaterThan(BigDecimal.valueOf(1)))
                 .build();
         List<Product> productList = productDao.selectByDynamicQuery(query);
-        Assert.assertEquals(false, productList.isEmpty());
+        Assert.assertFalse(productList.isEmpty());
     }
 
     @Test
     public void testDbInit() throws Exception {
         List<Category> categories = northwindDao.getCategories();
-        assertEquals(true, categories.size() > 0);
+        assertTrue(categories.size() > 0);
 
         List<Product> products = northwindDao.getProducts();
-        assertEquals(true, products.size() > 0);
+        assertTrue(products.size() > 0);
     }
 
     @Test
