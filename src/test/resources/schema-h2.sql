@@ -54,7 +54,8 @@ VALUES
   (1, 1, 'Northwind Traders Chai', 18.0000),
   (2, 2, 'Northwind Traders Syrup', 7.5000),
   (3, 2, 'Northwind Traders Cajun Seasoning', 16.5000),
-  (4, 3, 'Northwind Traders Olive Oil', 16.5000);
+  (4, 3, 'Northwind Traders Olive Oil', 16.5000),
+  (5, 3, 'Northwind Traders xxxx Oil', 16.5000);;
 
 DELETE
 FROM bug;

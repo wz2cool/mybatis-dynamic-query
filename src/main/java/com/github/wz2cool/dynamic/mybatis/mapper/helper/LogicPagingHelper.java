@@ -5,10 +5,7 @@ import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetLongPropertyFunction;
 import com.github.wz2cool.dynamic.model.LogicPagingResult;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Frank
@@ -18,54 +15,66 @@ public final class LogicPagingHelper {
     private LogicPagingHelper() {
     }
 
-    public static <T> Optional<FilterDescriptor> getPagingFilter(
+    public static <T> Map.Entry<SortDescriptor, FilterDescriptor> getPagingSortFilterMap(
             GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, Long startPageId, Long endPageId, UpDown upDown) {
-        if (Objects.isNull(startPageId) && Objects.isNull(endPageId)) {
-            return Optional.empty();
-        }
         String propertyName = CommonsHelper.getPropertyName(pagingPropertyFunc);
+        SortDescriptor sortDescriptor = new SortDescriptor();
+        sortDescriptor.setPropertyName(propertyName);
+        sortDescriptor.setDirection(sortDirection);
+        Map.Entry<SortDescriptor, FilterDescriptor> resultMap = new AbstractMap.SimpleEntry<>(sortDescriptor, null);
+        if (Objects.isNull(startPageId) && Objects.isNull(endPageId)) {
+            return resultMap;
+        }
         UpDown useUpDown = UpDown.NONE.equals(upDown) ? UpDown.DOWN : upDown;
         if (UpDown.DOWN.equals(useUpDown) && SortDirection.ASC.equals(sortDirection)) {
             if (Objects.isNull(endPageId)) {
-                return Optional.empty();
+                return resultMap;
             }
             FilterDescriptor filterDescriptor = new FilterDescriptor();
             filterDescriptor.setPropertyName(propertyName);
             filterDescriptor.setOperator(FilterOperator.GREATER_THAN);
             filterDescriptor.setValue(endPageId);
-            return Optional.of(filterDescriptor);
-        }
-        if (UpDown.UP.equals(useUpDown) && SortDirection.ASC.equals(sortDirection)) {
-            if (Objects.isNull(startPageId)) {
-                return Optional.empty();
-            }
-            FilterDescriptor filterDescriptor = new FilterDescriptor();
-            filterDescriptor.setPropertyName(propertyName);
-            filterDescriptor.setOperator(FilterOperator.LESS_THAN);
-            filterDescriptor.setValue(startPageId);
-            return Optional.of(filterDescriptor);
-        }
-        if (UpDown.UP.equals(useUpDown) && SortDirection.DESC.equals(sortDirection)) {
-            if (Objects.isNull(startPageId)) {
-                return Optional.empty();
-            }
-            FilterDescriptor filterDescriptor = new FilterDescriptor();
-            filterDescriptor.setPropertyName(propertyName);
-            filterDescriptor.setOperator(FilterOperator.GREATER_THAN);
-            filterDescriptor.setValue(startPageId);
-            return Optional.of(filterDescriptor);
+            resultMap.setValue(filterDescriptor);
+            return resultMap;
         }
         if (UpDown.DOWN.equals(useUpDown) && SortDirection.DESC.equals(sortDirection)) {
             if (Objects.isNull(endPageId)) {
-                return Optional.empty();
+                return resultMap;
             }
             FilterDescriptor filterDescriptor = new FilterDescriptor();
             filterDescriptor.setPropertyName(propertyName);
             filterDescriptor.setOperator(FilterOperator.LESS_THAN);
             filterDescriptor.setValue(endPageId);
-            return Optional.of(filterDescriptor);
+            resultMap.setValue(filterDescriptor);
+            return resultMap;
         }
-        return Optional.empty();
+        if (UpDown.UP.equals(useUpDown) && SortDirection.ASC.equals(sortDirection)) {
+            if (Objects.isNull(startPageId)) {
+                return resultMap;
+            }
+            FilterDescriptor filterDescriptor = new FilterDescriptor();
+            filterDescriptor.setPropertyName(propertyName);
+            filterDescriptor.setOperator(FilterOperator.LESS_THAN);
+            filterDescriptor.setValue(startPageId);
+            // need change direction
+            resultMap.getKey().setDirection(SortDirection.DESC);
+            resultMap.setValue(filterDescriptor);
+            return resultMap;
+        }
+        if (UpDown.UP.equals(useUpDown) && SortDirection.DESC.equals(sortDirection)) {
+            if (Objects.isNull(startPageId)) {
+                return resultMap;
+            }
+            FilterDescriptor filterDescriptor = new FilterDescriptor();
+            filterDescriptor.setPropertyName(propertyName);
+            filterDescriptor.setOperator(FilterOperator.GREATER_THAN);
+            filterDescriptor.setValue(startPageId);
+            // need change direction
+            resultMap.getKey().setDirection(SortDirection.ASC);
+            resultMap.setValue(filterDescriptor);
+            return resultMap;
+        }
+        return resultMap;
     }
 
     public static <T> Optional<LogicPagingResult<T>> getPagingResult(
@@ -93,7 +102,7 @@ public final class LogicPagingHelper {
         }
         Long startPageId = 0L;
         Long endPageId = 0L;
-        List<T> pagingDataList = getLogicPagingData(dataList, pageSize, upDown);
+        List<T> pagingDataList = getLogicPagingData(dataList, pageSize);
         if (!pagingDataList.isEmpty()) {
             startPageId = pagingPropertyFunc.apply(pagingDataList.get(0));
             endPageId = pagingPropertyFunc.apply(pagingDataList.get(pagingDataList.size() - 1));
@@ -108,16 +117,13 @@ public final class LogicPagingHelper {
         return Optional.of(logicPagingResult);
     }
 
-    private static <T> List<T> getLogicPagingData(List<T> dataList, int pageSize, UpDown upDown) {
+    private static <T> List<T> getLogicPagingData(List<T> dataList, int pageSize) {
         if (dataList.isEmpty()) {
             return new ArrayList<>();
         }
-        if (dataList.size() <= pageSize) {
-            return new ArrayList<>(dataList);
-        }
         List<T> result;
-        if (UpDown.UP.equals(upDown)) {
-            result = dataList.subList(1, dataList.size());
+        if (dataList.size() <= pageSize) {
+            result = new ArrayList<>(dataList);
         } else {
             result = dataList.subList(0, dataList.size() - 1);
         }

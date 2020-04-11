@@ -11,8 +11,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.mapper.annotation.RegisterMapper;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Frank
@@ -58,31 +57,32 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
         int pageSize = logicPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
         DynamicQuery<T> dynamicQuery = DynamicQuery.createQuery(logicPagingQuery.getClazz());
-        dynamicQuery.addSorts(logicPagingQuery.getSortDescriptor());
         dynamicQuery.addFilters(logicPagingQuery.getFilters());
-        Optional<FilterDescriptor> pagingFilterOptional = LogicPagingHelper.getPagingFilter(
+        Map.Entry<SortDescriptor, FilterDescriptor> mapEntry = LogicPagingHelper.getPagingSortFilterMap(
                 logicPagingQuery.getPagingPropertyFunc(),
                 logicPagingQuery.getSortDescriptor().getDirection(),
                 logicPagingQuery.getLastStartPageId(),
                 logicPagingQuery.getLastEndPageId(),
                 logicPagingQuery.getUpDown());
-        pagingFilterOptional.ifPresent(dynamicQuery::addFilters);
-
+        dynamicQuery.addSorts(mapEntry.getKey());
+        if (Objects.nonNull(mapEntry.getValue())) {
+            dynamicQuery.addFilters(mapEntry.getValue());
+        }
         List<T> dataList = selectRowBoundsByDynamicQuery(dynamicQuery, new RowBounds(0, queryPageSize));
+        if (!logicPagingQuery.getSortDirection().equals(mapEntry.getKey().getDirection())) {
+            Collections.reverse(dataList);
+        }
         Optional<LogicPagingResult<T>> logicPagingResultOptional = LogicPagingHelper.getPagingResult(
                 logicPagingQuery.getPagingPropertyFunc(),
                 dataList, logicPagingQuery.getPageSize(), logicPagingQuery.getUpDown());
         if (logicPagingResultOptional.isPresent()) {
             return logicPagingResultOptional.get();
         }
-        if (!pagingFilterOptional.isPresent()) {
-            return new LogicPagingResult<>();
-        }
         LogicPagingQuery<T> resetPagingQuery = LogicPagingQuery.createQuery(
                 logicPagingQuery.getClazz(),
                 logicPagingQuery.getPagingPropertyFunc(),
                 logicPagingQuery.getSortDirection(),
-                logicPagingQuery.getUpDown());
+                UpDown.NONE);
         resetPagingQuery.setPageSize(logicPagingQuery.getPageSize());
         resetPagingQuery.setFilters(logicPagingQuery.getFilters());
         return selectByLogicPaging(resetPagingQuery);

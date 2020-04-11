@@ -23,10 +23,10 @@ public class LogicPagingTest {
     @Test
     public void testGetData() {
         LogicPagingQuery<Product> logicPagingQuery =
-                LogicPagingQuery.createQuery(Product.class, Product::getProductId, SortDirection.DESC, UpDown.DOWN);
+                LogicPagingQuery.createQuery(Product.class, Product::getProductId, SortDirection.ASC, UpDown.UP);
         logicPagingQuery.setPageSize(2);
-        logicPagingQuery.setLastStartPageId(4L);
-        logicPagingQuery.setLastEndPageId(3L);
+        logicPagingQuery.setLastStartPageId(3L);
+        logicPagingQuery.setLastEndPageId(4L);
         LogicPagingResult<Product> result = productDao.selectByLogicPaging(logicPagingQuery);
         System.out.println(result);
     }
