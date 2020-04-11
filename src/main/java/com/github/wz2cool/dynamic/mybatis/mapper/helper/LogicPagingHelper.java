@@ -25,7 +25,8 @@ public final class LogicPagingHelper {
             return Optional.empty();
         }
         String propertyName = CommonsHelper.getPropertyName(pagingPropertyFunc);
-        if (UpDown.DOWN.equals(upDown) && SortDirection.ASC.equals(sortDirection)) {
+        UpDown useUpDown = UpDown.NONE.equals(upDown) ? UpDown.DOWN : upDown;
+        if (UpDown.DOWN.equals(useUpDown) && SortDirection.ASC.equals(sortDirection)) {
             if (Objects.isNull(endPageId)) {
                 return Optional.empty();
             }
@@ -35,7 +36,7 @@ public final class LogicPagingHelper {
             filterDescriptor.setValue(endPageId);
             return Optional.of(filterDescriptor);
         }
-        if (UpDown.UP.equals(upDown) && SortDirection.ASC.equals(sortDirection)) {
+        if (UpDown.UP.equals(useUpDown) && SortDirection.ASC.equals(sortDirection)) {
             if (Objects.isNull(startPageId)) {
                 return Optional.empty();
             }
@@ -45,7 +46,7 @@ public final class LogicPagingHelper {
             filterDescriptor.setValue(startPageId);
             return Optional.of(filterDescriptor);
         }
-        if (UpDown.UP.equals(upDown) && SortDirection.DESC.equals(sortDirection)) {
+        if (UpDown.UP.equals(useUpDown) && SortDirection.DESC.equals(sortDirection)) {
             if (Objects.isNull(startPageId)) {
                 return Optional.empty();
             }
@@ -55,7 +56,7 @@ public final class LogicPagingHelper {
             filterDescriptor.setValue(startPageId);
             return Optional.of(filterDescriptor);
         }
-        if (UpDown.DOWN.equals(upDown) && SortDirection.DESC.equals(sortDirection)) {
+        if (UpDown.DOWN.equals(useUpDown) && SortDirection.DESC.equals(sortDirection)) {
             if (Objects.isNull(endPageId)) {
                 return Optional.empty();
             }
@@ -80,12 +81,15 @@ public final class LogicPagingHelper {
             hasNextPage = dataSize > pageSize;
             hasPreviousPage = true;
         } else {
+            if (dataSize < pageSize) {
+                return Optional.empty();
+            }
             if (dataSize > pageSize) {
                 hasPreviousPage = true;
                 hasNextPage = true;
             } else {
-                // need reset paging
-                return Optional.empty();
+                hasPreviousPage = false;
+                hasNextPage = true;
             }
         }
         Long startPageId = 0L;
