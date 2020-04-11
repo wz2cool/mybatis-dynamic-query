@@ -5,7 +5,6 @@ import com.github.wz2cool.dynamic.lambda.GetLongPropertyFunction;
 
 /**
  * @author Frank
- * @date 2020/04/11
  **/
 public class LogicPagingQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
 
