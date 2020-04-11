@@ -37,13 +37,13 @@ public class DemoTest {
     @Test
     public void testSelectFields() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .select(Product::getProductID, Product::getProductName, Product::getPrice);
+                .select(Product::getProductId, Product::getProductName, Product::getPrice);
         List<Product> products = PageHelper.startPage(0, 3, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
         for (Product p : products) {
             // categoryID ignore to select
-            assertEquals(null, p.getCategoryID());
+            assertEquals(null, p.getCategoryId());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
         }
     }
@@ -51,17 +51,17 @@ public class DemoTest {
     @Test
     public void testLinkOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .select(Product::getProductID, Product::getProductName, Product::getPrice)
-                .ignore(Product::getProductID)
+                .select(Product::getProductId, Product::getProductName, Product::getPrice)
+                .ignore(Product::getProductId)
                 .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
                 .orderBy(Product::getPrice, desc())
-                .orderBy(Product::getProductID, desc());
+                .orderBy(Product::getProductId, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
         for (Product p : products) {
             // categoryID ignore to select
-            assertEquals(null, p.getCategoryID());
+            assertEquals(null, p.getCategoryId());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
             // price > 16
             assertEquals(1, p.getPrice().compareTo(BigDecimal.valueOf(16)));
@@ -71,16 +71,15 @@ public class DemoTest {
     @Test
     public void testIgnoreFieldOperation() {
         DynamicQuery<Product> dynamicQuery = DynamicQuery.createQuery(Product.class)
-                .ignore(Product::getProductID)
+                .ignore(Product::getProductId)
                 .and(Product::getPrice, greaterThan(BigDecimal.valueOf(16)))
                 .orderBy(Product::getPrice, desc())
-                .orderBy(Product::getProductID, desc());
+                .orderBy(Product::getProductId, desc());
         List<Product> products = PageHelper.startPage(0, 100, false)
                 .doSelectPage(() -> productDao.selectByDynamicQuery(dynamicQuery));
 
         for (Product p : products) {
             // categoryID ignore to select
-            assertEquals(null, p.getCategoryID());
             assertEquals(true, StringUtils.isNotBlank(p.getProductName()));
         }
     }
