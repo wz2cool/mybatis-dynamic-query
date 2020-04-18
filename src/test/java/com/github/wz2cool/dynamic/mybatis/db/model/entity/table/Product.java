@@ -3,7 +3,6 @@ package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 /**
  * Created by Frank on 2017/7/15.
@@ -11,25 +10,25 @@ import java.sql.Timestamp;
 @Table(name = "product")
 public class Product {
     @Column(name = "product_id", insertable = false, updatable = false)
-    private Integer productID;
+    private Long productId;
     private String productName;
     private BigDecimal price;
-    private Integer categoryID;
+    private Integer categoryId;
 
-    public Integer getCategoryID() {
-        return categoryID;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategoryID(Integer categoryID) {
-        this.categoryID = categoryID;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public Integer getProductID() {
-        return productID;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProductID(Integer productID) {
-        this.productID = productID;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {

@@ -44,10 +44,10 @@ CREATE TABLE product (
 ```java
 public class Product {
     @Column(name = "product_id") // custom column name
-    private Integer productID;
+    private Integer productId;
     private String productName;
     private BigDecimal price;
-    private Integer categoryID;
+    private Integer categoryId;
 
     // get, set method.
 }
@@ -70,7 +70,7 @@ List<Product> getProductByDynamic(Map<String, Object> params);
 public void simpleDemo() throws Exception {
     and
     FilterDescriptor idFilter =
-        new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.EQUAL, 2);
+        new FilterDescriptor(FilterCondition.AND, "productId", FilterOperator.EQUAL, 2);
     and
     Map<String, Object> queryParams =
         mybatisQueryProvider.getWhereQueryParamMap(

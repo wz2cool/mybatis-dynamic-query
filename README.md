@@ -55,14 +55,14 @@ INSERT INTO product (product_id, category_id, product_name, price) VALUES
 ```java
 public class ProductView {
     @Column(name = "product_id", table = "product")
-    private Long productID;
+    private Long productId;
     @Column(name = "product_name", table = "product")
     private String productName;
     @Column(name = "price", table = "product")
     private BigDecimal price;
 
     @Column(name = "category_id", table = "category")
-    private Long categoryID;
+    private Long categoryId;
     @Column(name = "category_name", table = "category")
     private String categoryName;
     @Column(name = "description", table = "category")

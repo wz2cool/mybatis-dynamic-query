@@ -51,12 +51,12 @@ public class DbFilterTest {
     @Test
     public void testSelectFirst() {
         DynamicQuery<Product> query = DynamicQuery.createQuery(Product.class)
-                .and(Product::getProductID, isEqual(1));
+                .and(Product::getProductId, isEqual(1L));
         Optional<Product> productOptional = productDao.selectFirstByDynamicQuery(query);
         assertTrue(productOptional.isPresent());
 
         DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
-                .and(Product::getProductID, isEqual(100000));
+                .and(Product::getProductId, isEqual(100000L));
         Optional<Product> productOptional2 = productDao.selectFirstByDynamicQuery(query2);
         Assert.assertFalse(productOptional2.isPresent());
 
@@ -260,7 +260,7 @@ public class DbFilterTest {
     @Test
     public void simpleDemo() throws Exception {
         FilterDescriptor idFilter =
-                new FilterDescriptor(FilterCondition.AND, "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
+                new FilterDescriptor(FilterCondition.AND, "productId", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
         Map<String, Object> queryParams =
                 MybatisQueryProvider.getWhereQueryParamMap(
                         Product.class, "whereExpression", idFilter);
@@ -272,7 +272,7 @@ public class DbFilterTest {
     public void multiFilterDemo() throws Exception {
         FilterDescriptor idFilter =
                 new FilterDescriptor(
-                        "productID", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
+                        "productId", FilterOperator.GREATER_THAN_OR_EQUAL, 2);
         FilterDescriptor priceFilter =
                 new FilterDescriptor(
                         "price", FilterOperator.LESS_THAN, 15);
@@ -282,7 +282,7 @@ public class DbFilterTest {
                         Product.class, "whereExpression", idFilter, priceFilter);
         Product productView =
                 northwindDao.getProductByDynamic(queryParams).stream().findFirst().orElse(null);
-        assertEquals(Integer.valueOf(2), productView.getProductID());
+        assertEquals(Long.valueOf(2), productView.getProductId());
     }
 
     @Test
@@ -290,10 +290,10 @@ public class DbFilterTest {
         FilterGroupDescriptor groupIdFilter = new FilterGroupDescriptor();
         FilterDescriptor idFilter1 =
                 new FilterDescriptor(FilterCondition.AND,
-                        "productID", FilterOperator.GREATER_THAN, 1);
+                        "productId", FilterOperator.GREATER_THAN, 1);
         FilterDescriptor idFilter2 =
                 new FilterDescriptor(FilterCondition.AND,
-                        "productID", FilterOperator.LESS_THAN, 4);
+                        "productId", FilterOperator.LESS_THAN, 4);
         // 把两个 id 筛选当成一个放到同一个组
         groupIdFilter.addFilters(idFilter1, idFilter2);
         // 单独一个简单筛选。
@@ -328,14 +328,14 @@ public class DbFilterTest {
         SortDescriptor priceSort =
                 new SortDescriptor("price", SortDirection.DESC);
         SortDescriptor idSort =
-                new SortDescriptor("productID", SortDirection.DESC);
+                new SortDescriptor("productId", SortDirection.DESC);
 
         Map<String, Object> queryParams =
                 MybatisQueryProvider.getSortQueryParamMap(
                         Product.class, "orderExpression", priceSort, idSort);
         List<Product> products = northwindDao.getProductByDynamic(queryParams);
-        Integer value1 = products.get(1).getProductID();
-        Integer value2 = products.get(2).getProductID();
+        Long value1 = products.get(1).getProductId();
+        Long value2 = products.get(2).getProductId();
         assertTrue(value1 > value2);
     }
 
@@ -343,7 +343,7 @@ public class DbFilterTest {
     public void testFilterSort() {
         FilterDescriptor idFilter =
                 new FilterDescriptor(FilterCondition.AND,
-                        "productID", FilterOperator.NOT_EQUAL, 4);
+                        "productId", FilterOperator.NOT_EQUAL, 4);
         SortDescriptor priceSort =
                 new SortDescriptor("price", SortDirection.ASC);
 
@@ -360,7 +360,7 @@ public class DbFilterTest {
         List<Product> products = northwindDao.getProductByDynamic(queryParams);
 
         for (Product product : products) {
-            assertTrue(product.getProductID() != 4);
+            assertTrue(product.getProductId() != 4);
         }
     }
 

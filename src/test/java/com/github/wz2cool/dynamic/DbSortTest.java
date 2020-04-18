@@ -31,7 +31,7 @@ public class DbSortTest {
 
     @Test
     public void testIdDescSort() throws Exception {
-        SortDescriptor idSort = new SortDescriptor(Product::getProductID, SortDirection.DESC);
+        SortDescriptor idSort = new SortDescriptor(Product::getProductId, SortDirection.DESC);
         Map<String, Object> queryParam =
                 MybatisQueryProvider.createInstance(Product.class)
                         .addSorts("orderExpression", idSort)
@@ -45,7 +45,7 @@ public class DbSortTest {
 
             Product p1 = productList.get(i);
             Product p2 = productList.get(i + 1);
-            assertEquals(1, p1.getProductID().compareTo(p2.getCategoryID()));
+            assertEquals(1L, p1.getProductId().compareTo(p2.getProductId()));
         }
     }
 
