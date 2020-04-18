@@ -1,7 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.db.mapper;
 
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
-import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
+import com.github.wz2cool.dynamic.mybatis.mapper.SelectViewByDynamicQueryMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2020/04/18
  **/
 @Mapper
-public interface ProductViewMapper extends DynamicQueryMapper<ProductView> {
+public interface ProductViewMapper extends SelectViewByDynamicQueryMapper<ProductView> {
 }

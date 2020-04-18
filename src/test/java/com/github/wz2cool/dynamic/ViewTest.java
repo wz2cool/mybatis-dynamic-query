@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductViewMapper;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,6 @@ public class ViewTest {
     public void testSelect() {
         DynamicQuery<ProductView> query = DynamicQuery.createQuery(ProductView.class);
         List<ProductView> productViewList = productViewMapper.selectByDynamicQuery(query);
-        System.out.println(productViewList);
+        Assert.assertTrue(!productViewList.isEmpty());
     }
 }
