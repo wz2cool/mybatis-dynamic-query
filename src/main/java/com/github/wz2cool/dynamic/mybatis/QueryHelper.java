@@ -252,6 +252,10 @@ public class QueryHelper {
     }
     // endregion
 
+    public String getViewExpression(Class entityClass) {
+        return entityCache.getViewExpression(entityClass);
+    }
+
     public String toSelectColumnsExpression(final Class entityClass,
                                             final String[] selectedProperties,
                                             final String[] ignoredProperties,
