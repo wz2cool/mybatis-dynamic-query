@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author Frank
- * @date 2020/04/18
  **/
 @Mapper
 public interface ProductViewMapper extends SelectViewByDynamicQueryMapper<ProductView> {
