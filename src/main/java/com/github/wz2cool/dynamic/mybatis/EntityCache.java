@@ -6,11 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 class EntityCache {
@@ -18,6 +16,7 @@ class EntityCache {
     private final Map<Class, String[]> propertyNameCacheMap = new ConcurrentHashMap<>();
     private final Map<Class, Map<String, ColumnInfo>> columnInfoCacheMap = new ConcurrentHashMap<>();
     private static final String ENTITY_CLASS = "entityClass";
+    private final Map<Class, String> viewExpressionCacheMap = new ConcurrentHashMap<>();
 
     // region implement singleton.
 
@@ -29,6 +28,22 @@ class EntityCache {
     }
 
     // endregion
+
+    String getViewExpression(Class entityClass) {
+        String viewExpression = viewExpressionCacheMap.get(entityClass);
+        if (Objects.nonNull(viewExpression)) {
+            return viewExpression;
+        }
+
+        View view = (View) entityClass.getAnnotation(View.class);
+        if (Objects.nonNull(view)) {
+            viewExpression = view.value();
+            viewExpressionCacheMap.put(entityClass, viewExpression);
+        } else {
+            viewExpressionCacheMap.put(entityClass, "");
+        }
+        return viewExpression;
+    }
 
     String[] getPropertyNames(final Class entityClass) {
         if (entityClass == null) {

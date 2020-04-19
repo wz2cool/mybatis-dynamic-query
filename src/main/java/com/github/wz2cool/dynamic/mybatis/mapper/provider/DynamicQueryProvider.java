@@ -8,6 +8,7 @@ import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTemplate;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
@@ -22,6 +23,16 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
 
     public DynamicQueryProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
+    }
+
+    @Override
+    protected String tableName(Class<?> entityClass) {
+        String viewExpression = QUERY_HELPER.getViewExpression(entityClass);
+        if (StringUtils.isNoneBlank(viewExpression)) {
+            return viewExpression;
+        } else {
+            return super.tableName(entityClass);
+        }
     }
 
     public String selectCountByDynamicQuery(MappedStatement ms) {

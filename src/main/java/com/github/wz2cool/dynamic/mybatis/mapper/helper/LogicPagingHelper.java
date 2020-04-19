@@ -102,7 +102,7 @@ public final class LogicPagingHelper {
         }
         Long startPageId = 0L;
         Long endPageId = 0L;
-        List<T> pagingDataList = getLogicPagingData(dataList, pageSize);
+        List<T> pagingDataList = getLogicPagingData(dataList, pageSize, upDown);
         if (!pagingDataList.isEmpty()) {
             startPageId = pagingPropertyFunc.apply(pagingDataList.get(0));
             endPageId = pagingPropertyFunc.apply(pagingDataList.get(pagingDataList.size() - 1));
@@ -117,7 +117,7 @@ public final class LogicPagingHelper {
         return Optional.of(logicPagingResult);
     }
 
-    private static <T> List<T> getLogicPagingData(List<T> dataList, int pageSize) {
+    private static <T> List<T> getLogicPagingData(List<T> dataList, int pageSize, UpDown upDown) {
         if (dataList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -125,7 +125,11 @@ public final class LogicPagingHelper {
         if (dataList.size() <= pageSize) {
             result = new ArrayList<>(dataList);
         } else {
-            result = dataList.subList(0, dataList.size() - 1);
+            if (UpDown.UP == upDown) {
+                result = dataList.subList(1, dataList.size());
+            } else {
+                result = dataList.subList(0, dataList.size() - 1);
+            }
         }
         return result;
     }

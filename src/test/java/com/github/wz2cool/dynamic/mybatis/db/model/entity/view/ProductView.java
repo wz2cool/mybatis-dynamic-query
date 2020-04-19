@@ -1,11 +1,15 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.view;
 
+import com.github.wz2cool.dynamic.mybatis.View;
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.Column;
 import java.math.BigDecimal;
 
 /**
  * Created by Frank on 2017/7/15.
  */
+@View("product LEFT JOIN category ON product.category_id = category.category_id")
 public class ProductView {
     @Column(name = "product_id", table = "product")
     private Long productID;
