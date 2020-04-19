@@ -32,6 +32,8 @@ public class LogicPagingTest {
         LogicPagingResult<Product> result = productDao.selectByLogicPaging(logicPagingQuery);
         Assert.assertTrue(Long.valueOf(1).equals(result.getList().get(0).getProductId()));
         Assert.assertTrue(Long.valueOf(2).equals(result.getList().get(1).getProductId()));
+        Assert.assertTrue(Long.valueOf(1).equals(result.getStartPageId()));
+        Assert.assertTrue(Long.valueOf(2).equals(result.getEndPageId()));
     }
 
     @Test
@@ -44,6 +46,8 @@ public class LogicPagingTest {
         LogicPagingResult<Product> result = productDao.selectByLogicPaging(logicPagingQuery);
         Assert.assertTrue(Long.valueOf(3).equals(result.getList().get(0).getProductId()));
         Assert.assertTrue(Long.valueOf(4).equals(result.getList().get(1).getProductId()));
+        Assert.assertTrue(Long.valueOf(3).equals(result.getStartPageId()));
+        Assert.assertTrue(Long.valueOf(4).equals(result.getEndPageId()));
     }
 
     @Test
@@ -56,6 +60,8 @@ public class LogicPagingTest {
         LogicPagingResult<Product> result = productDao.selectByLogicPaging(logicPagingQuery);
         Assert.assertTrue(Long.valueOf(4).equals(result.getList().get(0).getProductId()));
         Assert.assertTrue(Long.valueOf(3).equals(result.getList().get(1).getProductId()));
+        Assert.assertTrue(Long.valueOf(4).equals(result.getStartPageId()));
+        Assert.assertTrue(Long.valueOf(3).equals(result.getEndPageId()));
     }
 
     @Test
@@ -68,5 +74,7 @@ public class LogicPagingTest {
         LogicPagingResult<Product> result = productDao.selectByLogicPaging(logicPagingQuery);
         Assert.assertTrue(Long.valueOf(3).equals(result.getList().get(0).getProductId()));
         Assert.assertTrue(Long.valueOf(2).equals(result.getList().get(1).getProductId()));
+        Assert.assertTrue(Long.valueOf(3).equals(result.getStartPageId()));
+        Assert.assertTrue(Long.valueOf(2).equals(result.getEndPageId()));
     }
 }
