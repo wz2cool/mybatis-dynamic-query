@@ -285,6 +285,11 @@ public class QueryHelper {
         return String.join(", ", columns);
     }
 
+    public String getQueryColumnByProperty(Class entityClass, String propertyName) {
+        ColumnInfo columnInfo = this.entityCache.getColumnInfo(entityClass, propertyName);
+        return columnInfo.getQueryColumn();
+    }
+
     String toAllColumnsExpression(final Class entityClass) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();

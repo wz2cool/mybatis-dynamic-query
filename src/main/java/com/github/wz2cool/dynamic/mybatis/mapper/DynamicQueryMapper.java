@@ -17,5 +17,7 @@ public interface DynamicQueryMapper<T> extends
         SelectByDynamicQueryMapper<T>,
         SelectRowBoundsByDynamicQueryMapper<T>,
         UpdateSelectiveByDynamicQueryMapper<T>,
-        UpdateByDynamicQueryMapper<T> {
+        UpdateByDynamicQueryMapper<T>,
+        SelectMaxByDynamicQueryMapper<T>,
+        SelectMinByDynamicQueryMapper<T> {
 }

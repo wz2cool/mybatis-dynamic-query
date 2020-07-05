@@ -9,5 +9,7 @@ import tk.mybatis.mapper.annotation.RegisterMapper;
 public interface SelectViewByDynamicQueryMapper<T> extends
         SelectCountByDynamicQueryMapper<T>,
         SelectByDynamicQueryMapper<T>,
-        SelectRowBoundsByDynamicQueryMapper<T> {
+        SelectRowBoundsByDynamicQueryMapper<T>,
+        SelectMaxByDynamicQueryMapper<T>,
+        SelectMinByDynamicQueryMapper<T> {
 }
