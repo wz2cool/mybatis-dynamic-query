@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.assertEquals;
@@ -33,6 +34,26 @@ public class DemoTest {
     private NorthwindDao northwindDao;
     @Autowired
     private BugDao bugDao;
+
+    @Test
+    public void testSelectMax() {
+        DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class);
+        Optional<BigDecimal> maxOptional = productDao.selectMaxByDynamicQuery(Product::getPrice, query1);
+        DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
+                .orderBy(Product::getPrice, desc());
+        Optional<Product> maxItem = productDao.selectFirstByDynamicQuery(query2);
+        assertEquals(maxItem.get().getPrice(), maxOptional.get());
+    }
+
+    @Test
+    public void testSelectMin() {
+        DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class);
+        Optional<BigDecimal> minOptional = productDao.selectMinByDynamicQuery(Product::getPrice, query1);
+        DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
+                .orderBy(Product::getPrice, asc());
+        Optional<Product> minItem = productDao.selectFirstByDynamicQuery(query2);
+        assertEquals(minItem.get().getPrice(), minOptional.get());
+    }
 
     @Test
     public void testSelectFields() {

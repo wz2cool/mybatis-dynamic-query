@@ -37,4 +37,12 @@ public class DynamicQuerySqlHelper {
         return String.format("<if test=\"%s != null and %s != ''\">ORDER BY ${%s}</if>",
                 newExpression, newExpression, newExpression);
     }
+
+    public static String getSelectMax() {
+        return String.format("SELECT MAX(${%s})", MapperConstants.COLUMN);
+    }
+
+    public static String getSelectMin() {
+        return String.format("SELECT MIN(${%s})", MapperConstants.COLUMN);
+    }
 }
