@@ -6,6 +6,14 @@ CREATE TABLE users
   password VARCHAR(64)
 );
 
+DROP TABLE IF EXISTS student;
+CREATE TABLE student
+(
+  id       INT PRIMARY KEY,
+  name     VARCHAR(64) NOT NULL
+);
+
+
 DROP TABLE IF EXISTS category;
 CREATE TABLE category
 (
@@ -63,3 +71,17 @@ INSERT INTO bug (id, title, assignTo)
 VALUES
   (1, 'TEST_1', 'FRANK'),
   (2, 'TEST_2', 'Jack');
+
+DELETE
+FROM student;
+INSERT INTO student (id, name)
+VALUES
+  (1, 'Ernest Emerson'),
+  (2, 'Rosemary Ernest'),
+  (3, 'Prima Ramsden'),
+  (4, 'Haley Noyes'),
+  (5, 'Mildred Juliet'),
+  (6, 'Elvira Daisy'),
+  (7, 'Monica Robeson'),
+  (8, 'Katherine Eliot'),
+  (9, 'Hamiltion Hamlet'),

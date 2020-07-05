@@ -1,9 +1,12 @@
 package com.github.wz2cool.dynamic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wz2cool.dynamic.model.LogicPagingResult;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.StudentMapper;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
-import org.apache.commons.lang3.time.StopWatch;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.StudentDO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +24,35 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class LogicPagingTest {
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Test
+    public void testLogicPaging1() throws JsonProcessingException {
+        // 用 student 表中的id 作为分页id，升序并且向下翻页
+        LogicPagingQuery<StudentDO> logicPagingQuery =
+                LogicPagingQuery.createQuery(StudentDO.class, StudentDO::getId, SortDirection.ASC, UpDown.DOWN);
+        logicPagingQuery.setPageSize(5);
+        LogicPagingResult<StudentDO> result = studentMapper.selectByLogicPaging(logicPagingQuery);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(result);
+        System.out.println(jsonStr);
+    }
+
+    @Test
+    public void testLogicPaging2() throws JsonProcessingException {
+        // 用 student 表中的id 作为分页id，升序并且向下翻页
+        LogicPagingQuery<StudentDO> logicPagingQuery =
+                LogicPagingQuery.createQuery(StudentDO.class, StudentDO::getId, SortDirection.ASC, UpDown.DOWN);
+        logicPagingQuery.setPageSize(5);
+        // 我们第二次翻页要填上上次 pageId 位置信息
+        logicPagingQuery.setLastStartPageId(1L);
+        logicPagingQuery.setLastEndPageId(5L);
+        LogicPagingResult<StudentDO> result = studentMapper.selectByLogicPaging(logicPagingQuery);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(result);
+        System.out.println(jsonStr);
+    }
 
     @Test
     public void testGetDataAscUp() {
