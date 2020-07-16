@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.greaterThan;
+
 /**
  * @author Frank
  **/
@@ -31,7 +33,10 @@ public class LogicPagingTest {
     public void testLogicPaging1() throws JsonProcessingException {
         // 用 student 表中的id 作为分页id，升序并且向下翻页
         LogicPagingQuery<StudentDO> logicPagingQuery =
-                LogicPagingQuery.createQuery(StudentDO.class, StudentDO::getId, SortDirection.ASC, UpDown.DOWN);
+                LogicPagingQuery.createQuery(StudentDO.class, StudentDO::getId, SortDirection.ASC, UpDown.DOWN)
+                        .select(StudentDO::getId, StudentDO::getName)
+                        .and(StudentDO::getId, greaterThan(2L));
+        logicPagingQuery.setDistinct(true);
         logicPagingQuery.setPageSize(5);
         LogicPagingResult<StudentDO> result = studentMapper.selectByLogicPaging(logicPagingQuery);
         ObjectMapper objectMapper = new ObjectMapper();

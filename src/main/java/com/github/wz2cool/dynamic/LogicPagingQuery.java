@@ -1,7 +1,9 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetLongPropertyFunction;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author Frank
@@ -17,6 +19,10 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
     private Long lastStartPageId;
     private Long lastEndPageId;
 
+    private String[] selectedProperties = new String[]{};
+    private String[] ignoredProperties = new String[]{};
+    private boolean distinct;
+
     private LogicPagingQuery(Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown) {
         this.clazz = clazz;
         this.upDown = upDown;
@@ -31,6 +37,31 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
     public static <T> LogicPagingQuery<T> createQuery(
             Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown) {
         return new LogicPagingQuery<>(clazz, pagingPropertyFunc, sortDirection, upDown);
+    }
+
+
+    public String[] getSelectedProperties() {
+        return selectedProperties;
+    }
+
+    public void setSelectedProperties(String[] selectedProperties) {
+        this.selectedProperties = selectedProperties;
+    }
+
+    public String[] getIgnoredProperties() {
+        return ignoredProperties;
+    }
+
+    public void setIgnoredProperties(String[] ignoredProperties) {
+        this.ignoredProperties = ignoredProperties;
+    }
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
     }
 
     public SortDescriptor getSortDescriptor() {
@@ -75,5 +106,33 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
 
     public void setLastEndPageId(Long lastEndPageId) {
         this.lastEndPageId = lastEndPageId;
+    }
+
+    public void addSelectedProperties(String... newSelectedProperties) {
+        setSelectedProperties(ArrayUtils.addAll(selectedProperties, newSelectedProperties));
+    }
+
+    public void ignoreSelectedProperties(String... newIgnoreProperties) {
+        setIgnoredProperties(ArrayUtils.addAll(ignoredProperties, newIgnoreProperties));
+    }
+
+    @SafeVarargs
+    public final LogicPagingQuery<T> select(GetCommonPropertyFunction<T>... getPropertyFunctions) {
+        String[] newSelectProperties = new String[getPropertyFunctions.length];
+        for (int i = 0; i < getPropertyFunctions.length; i++) {
+            newSelectProperties[i] = CommonsHelper.getPropertyName(getPropertyFunctions[i]);
+        }
+        this.addSelectedProperties(newSelectProperties);
+        return this;
+    }
+
+    @SafeVarargs
+    public final LogicPagingQuery<T> ignore(GetCommonPropertyFunction<T>... getPropertyFunctions) {
+        String[] newIgnoreProperties = new String[getPropertyFunctions.length];
+        for (int i = 0; i < getPropertyFunctions.length; i++) {
+            newIgnoreProperties[i] = CommonsHelper.getPropertyName(getPropertyFunctions[i]);
+        }
+        this.ignoreSelectedProperties(newIgnoreProperties);
+        return this;
     }
 }

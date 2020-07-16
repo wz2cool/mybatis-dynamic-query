@@ -69,8 +69,8 @@ public class DemoTest {
     @Test
     public void testSelectAvg() {
         DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class);
-        Optional<BigDecimal> sumOptional = productDao.selectAvgByDynamicQuery(Product::getPrice, query1);
-        BigDecimal sum = sumOptional.get();
+        Optional<BigDecimal> avgOptional = productDao.selectAvgByDynamicQuery(Product::getPrice, query1);
+        BigDecimal sum = avgOptional.get();
         List<Product> productList = productDao.selectAll();
         BigDecimal expectedValue = new BigDecimal(productList.stream().mapToDouble(x -> x.getPrice().doubleValue()).average().getAsDouble());
         assertEquals(0, expectedValue.compareTo(sum));

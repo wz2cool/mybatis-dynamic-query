@@ -58,6 +58,9 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
         int queryPageSize = pageSize + 1;
         DynamicQuery<T> dynamicQuery = DynamicQuery.createQuery(logicPagingQuery.getClazz());
         dynamicQuery.addFilters(logicPagingQuery.getFilters());
+        dynamicQuery.setDistinct(logicPagingQuery.isDistinct());
+        dynamicQuery.setSelectedProperties(logicPagingQuery.getSelectedProperties());
+        dynamicQuery.setIgnoredProperties(logicPagingQuery.getIgnoredProperties());
         Map.Entry<SortDescriptor, FilterDescriptor> mapEntry = LogicPagingHelper.getPagingSortFilterMap(
                 logicPagingQuery.getPagingPropertyFunc(),
                 logicPagingQuery.getSortDescriptor().getDirection(),
