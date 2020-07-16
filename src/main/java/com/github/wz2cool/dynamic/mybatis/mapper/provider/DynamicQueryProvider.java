@@ -45,7 +45,6 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
-
     public String selectMaxByDynamicQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
@@ -61,6 +60,26 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(DynamicQuerySqlHelper.getSelectMin());
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
+    public String selectSumByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getSelectSum());
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
+    public String selectAvgByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getSelectAvg());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();

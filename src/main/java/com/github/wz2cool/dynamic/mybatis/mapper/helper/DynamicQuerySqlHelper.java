@@ -45,4 +45,12 @@ public class DynamicQuerySqlHelper {
     public static String getSelectMin() {
         return String.format("SELECT MIN(${%s})", MapperConstants.COLUMN);
     }
+
+    public static String getSelectSum() {
+        return String.format("SELECT SUM(${%s})", MapperConstants.COLUMN);
+    }
+
+    public static String getSelectAvg() {
+        return String.format("SELECT AVG(${%s})", MapperConstants.COLUMN);
+    }
 }

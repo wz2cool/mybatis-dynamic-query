@@ -19,5 +19,7 @@ public interface DynamicQueryMapper<T> extends
         UpdateSelectiveByDynamicQueryMapper<T>,
         UpdateByDynamicQueryMapper<T>,
         SelectMaxByDynamicQueryMapper<T>,
-        SelectMinByDynamicQueryMapper<T> {
+        SelectMinByDynamicQueryMapper<T>,
+        SelectSumByDynamicQueryMapper<T>,
+        SelectAvgByDynamicQueryMapper<T> {
 }

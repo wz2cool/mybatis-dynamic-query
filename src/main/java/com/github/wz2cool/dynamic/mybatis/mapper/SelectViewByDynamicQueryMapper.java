@@ -11,5 +11,7 @@ public interface SelectViewByDynamicQueryMapper<T> extends
         SelectByDynamicQueryMapper<T>,
         SelectRowBoundsByDynamicQueryMapper<T>,
         SelectMaxByDynamicQueryMapper<T>,
-        SelectMinByDynamicQueryMapper<T> {
+        SelectMinByDynamicQueryMapper<T>,
+        SelectSumByDynamicQueryMapper<T>,
+        SelectAvgByDynamicQueryMapper<T> {
 }
