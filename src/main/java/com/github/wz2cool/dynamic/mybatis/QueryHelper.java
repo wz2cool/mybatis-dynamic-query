@@ -277,8 +277,9 @@ public class QueryHelper {
 
             if (needSelectColumn) {
                 // 这里我们需要判断一下，是否设置了 @column ,如果有的话，我们不做驼峰
-                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
-                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
+                String useColumnName = mapUnderscoreToCamelCase ?
+                        EntityHelper.camelCaseToUnderscore(columnInfo.getColumnName()) : columnInfo.getColumnName();
+                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useColumnName);
                 columns.add(column);
             }
         }
