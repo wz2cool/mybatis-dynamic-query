@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -170,7 +171,7 @@ public class DemoTest {
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignore(ProductView::getCategoryID)
-                .and(ProductView::getPrice, in(BigDecimal.valueOf(16), BigDecimal.valueOf(18)));
+                .and(ProductView::getPrice, in(Arrays.asList(BigDecimal.valueOf(16), BigDecimal.valueOf(18))));
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)

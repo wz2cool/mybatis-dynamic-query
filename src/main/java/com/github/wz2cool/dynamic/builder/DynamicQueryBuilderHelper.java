@@ -7,6 +7,7 @@ import com.github.wz2cool.dynamic.builder.opeartor.*;
 import com.github.wz2cool.dynamic.lambda.*;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -60,8 +61,16 @@ public class DynamicQueryBuilderHelper {
         return new In<>(values);
     }
 
+    public static <R> In<R> in(Collection<R> values) {
+        return new In<>(values);
+    }
+
     @SafeVarargs
     public static <R> NotIn<R> notIn(R... values) {
+        return new NotIn<>(values);
+    }
+
+    public static <R> NotIn<R> notIn(Collection<R> values) {
         return new NotIn<>(values);
     }
 
