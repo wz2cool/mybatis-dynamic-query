@@ -28,7 +28,8 @@ CREATE TABLE product
   product_id   INT PRIMARY KEY auto_increment,
   category_id  INT         NOT NULL,
   product_name VARCHAR(50) NOT NULL,
-  price        DECIMAL
+  price        DECIMAL,
+  description   VARCHAR(100)
 );
 
 DROP TABLE IF EXISTS bug;
@@ -57,13 +58,13 @@ VALUES
 
 DELETE
 FROM product;
-INSERT INTO product (product_id, category_id, product_name, price)
+INSERT INTO product (product_id, category_id, product_name, price, description)
 VALUES
-  (1, 1, 'Northwind Traders Chai', 18.0000),
-  (2, 2, 'Northwind Traders Syrup', 7.5000),
-  (3, 2, 'Northwind Traders Cajun Seasoning', 16.5000),
-  (4, 3, 'Northwind Traders Olive Oil', 16.5000),
-  (5, 3, 'Northwind Traders xxxx Oil', 16.5000);;
+  (1, 1, 'Northwind Traders Chai', 18.0000, 'p1'),
+  (2, 2, 'Northwind Traders Syrup', 7.5000, 'p2'),
+  (3, 2, 'Northwind Traders Cajun Seasoning', 16.5000, 'p3'),
+  (4, 3, 'Northwind Traders Olive Oil', 16.5000, 'p4'),
+  (5, 3, 'Northwind Traders xxxx Oil', 16.5000, 'p5');
 
 DELETE
 FROM bug;

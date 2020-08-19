@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.view;
 
 import com.github.wz2cool.dynamic.mybatis.View;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
@@ -24,6 +23,8 @@ public class ProductView {
     private String categoryName;
     @Column(name = "description", table = "category")
     private String description;
+    @Column(name = "description", table = "product")
+    private String productDescription;
 
     public Long getProductID() {
         return productID;
@@ -71,5 +72,13 @@ public class ProductView {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 }
