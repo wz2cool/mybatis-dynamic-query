@@ -67,7 +67,10 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
                 logicPagingQuery.getLastStartPageId(),
                 logicPagingQuery.getLastEndPageId(),
                 logicPagingQuery.getUpDown());
+        // 加上主要排序
         dynamicQuery.addSorts(mapEntry.getKey());
+        // 紧跟上次要排序
+        dynamicQuery.addSorts(logicPagingQuery.getSorts());
         if (Objects.nonNull(mapEntry.getValue())) {
             dynamicQuery.addFilters(mapEntry.getValue());
         }

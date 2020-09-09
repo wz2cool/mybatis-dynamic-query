@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.desc;
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.greaterThan;
 
 /**
@@ -35,7 +36,8 @@ public class LogicPagingTest {
         LogicPagingQuery<StudentDO> logicPagingQuery =
                 LogicPagingQuery.createQuery(StudentDO.class, StudentDO::getId, SortDirection.ASC, UpDown.DOWN)
                         .select(StudentDO::getId, StudentDO::getName)
-                        .and(StudentDO::getId, greaterThan(2L));
+                        .and(StudentDO::getId, greaterThan(2L))
+                        .thenBy(StudentDO::getName, desc());
         logicPagingQuery.setDistinct(true);
         logicPagingQuery.setPageSize(5);
         LogicPagingResult<StudentDO> result = studentMapper.selectByLogicPaging(logicPagingQuery);
