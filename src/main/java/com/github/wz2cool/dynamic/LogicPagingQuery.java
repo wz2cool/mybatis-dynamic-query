@@ -1,8 +1,10 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.wz2cool.dynamic.builder.direction.ISortDirection;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetLongPropertyFunction;
+import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -21,6 +23,7 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
 
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
+    private BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{};
     private boolean distinct;
 
     private LogicPagingQuery(Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown) {
@@ -39,6 +42,21 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
         return new LogicPagingQuery<>(clazz, pagingPropertyFunc, sortDirection, upDown);
     }
 
+    public LogicPagingQuery<T> thenBy(GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
+        return thenBy(true, getPropertyFunc, sortDirection);
+    }
+
+    public LogicPagingQuery<T> thenBy(boolean enable, GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
+        if (enable) {
+            String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            SortDirection direction = sortDirection.getDirection();
+            SortDescriptor sortDescriptor = new SortDescriptor();
+            sortDescriptor.setPropertyName(propertyName);
+            sortDescriptor.setDirection(direction);
+            addSorts(sortDescriptor);
+        }
+        return this;
+    }
 
     public String[] getSelectedProperties() {
         return selectedProperties;
@@ -66,6 +84,14 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
 
     public SortDescriptor getSortDescriptor() {
         return sortDescriptor;
+    }
+
+    public BaseSortDescriptor[] getSorts() {
+        return sorts;
+    }
+
+    public void setSorts(BaseSortDescriptor[] sorts) {
+        this.sorts = sorts;
     }
 
     public Class<T> getClazz() {
@@ -134,5 +160,9 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
         }
         this.ignoreSelectedProperties(newIgnoreProperties);
         return this;
+    }
+
+    public void addSorts(BaseSortDescriptor... newSorts) {
+        setSorts(ArrayUtils.addAll(sorts, newSorts));
     }
 }
