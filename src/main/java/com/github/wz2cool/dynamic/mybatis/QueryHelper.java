@@ -285,6 +285,18 @@ public class QueryHelper {
         return String.join(", ", columns);
     }
 
+    public String toGroupByColumnsExpression(final Class entityClass, final String[] groupByProperties) {
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : columnInfos) {
+            String fieldName = columnInfo.getField().getName();
+            if (ArrayUtils.contains(groupByProperties, fieldName)) {
+                columns.add(columnInfo.getQueryColumn());
+            }
+        }
+        return String.join(", ", columns);
+    }
+
     public String getQueryColumnByProperty(Class entityClass, String propertyName) {
         ColumnInfo columnInfo = this.entityCache.getColumnInfo(entityClass, propertyName);
         return columnInfo.getQueryColumn();
