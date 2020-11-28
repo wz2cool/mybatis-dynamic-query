@@ -70,6 +70,15 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
         return this;
     }
 
+    public GroupedQuery<TQuery, TSelect> orderByNull() {
+        // 增加性能
+        SortDescriptor sortDescriptor = new SortDescriptor();
+        sortDescriptor.setPropertyName(null);
+        sortDescriptor.setDirection(SortDirection.DESC);
+        addSorts(sortDescriptor);
+        return this;
+    }
+
     /// endregion
 
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {

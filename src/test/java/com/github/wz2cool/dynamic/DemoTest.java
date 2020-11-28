@@ -51,7 +51,7 @@ public class DemoTest {
                 .groupBy(Product::getCategoryId)
                 // 这里是having 对分组筛选
                 .and(CategoryGroupCount::getCount, greaterThan(1))
-                .orderBy(CategoryGroupCount::getCount, desc());
+                .orderByNull();
 
         List<CategoryGroupCount> categoryGroupCountList = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
         for (CategoryGroupCount categoryGroupCount : categoryGroupCountList) {
