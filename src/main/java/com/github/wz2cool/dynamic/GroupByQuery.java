@@ -69,6 +69,11 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
         this.tSelectClass = tSelectClass;
     }
 
+    public static <TQuery, TSelect> GroupByQuery<TQuery, TSelect> createQuery(
+            Class<TQuery> tQueryClass, Class<TSelect> tSelectClass) {
+        return new GroupByQuery<>(tQueryClass, tSelectClass);
+    }
+
     /// region group
 
     private String[] groupedProperties = new String[]{};
@@ -81,7 +86,8 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
         this.groupedProperties = groupedProperties;
     }
 
-    public GroupedQuery<TQuery, TSelect> groupBy(GetCommonPropertyFunction<TQuery>... getPropertyFunctions) {
+    @SafeVarargs
+    public final GroupedQuery<TQuery, TSelect> groupBy(GetCommonPropertyFunction<TQuery>... getPropertyFunctions) {
         String[] groupByProperties = new String[getPropertyFunctions.length];
         for (int i = 0; i < getPropertyFunctions.length; i++) {
             groupByProperties[i] = CommonsHelper.getPropertyName(getPropertyFunctions[i]);

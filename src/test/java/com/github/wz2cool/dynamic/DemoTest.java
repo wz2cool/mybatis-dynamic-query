@@ -5,6 +5,7 @@ import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,18 @@ public class DemoTest {
     private NorthwindDao northwindDao;
     @Autowired
     private BugDao bugDao;
+
+    public void testGroupBy() {
+        GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(1L))
+                .groupBy(Product::getCategoryId)
+                // 这里是having 对分组筛选
+                .and(CategoryGroupCount::getCount, greaterThan(2))
+                .orderBy(CategoryGroupCount::getCount, desc());
+
+    }
 
     @Test
     public void testSelectMax() {
