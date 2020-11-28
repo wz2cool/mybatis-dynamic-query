@@ -29,6 +29,14 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
         this.groupByQuery = groupByQuery;
     }
 
+    public Class<TQuery> getQueryClass() {
+        return this.groupByQuery.tQueryClass;
+    }
+
+    public Class<TSelect> getSelectClass() {
+        return this.groupByQuery.tSelectClass;
+    }
+
     /// region sort
 
     private BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{};

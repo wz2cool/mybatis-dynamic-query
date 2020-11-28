@@ -17,8 +17,8 @@
             resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
         SELECT
         <choose>
-            <when test="columnsExpression != null and columnsExpression !=''">
-                ${columnsExpression}
+            <when test="selectColumnsExpression != null and selectColumnsExpression !=''">
+                ${selectColumnsExpression}
             </when>
             <otherwise>
                 *
@@ -31,7 +31,7 @@
 
     <select id="getProductViewsByDynamic2" parameterType="java.util.Map"
             resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView">
-        SELECT ${columnsExpression}
+        SELECT ${selectColumnsExpression}
         FROM product
                  LEFT JOIN category ON
                 product.category_id = category.category_id

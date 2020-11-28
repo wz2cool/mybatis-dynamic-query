@@ -145,10 +145,9 @@ public class DemoTest {
     public void testSelectByView() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignore(ProductView::getCategoryID)
-                .and(ProductView::getPrice, greaterThan(BigDecimal.valueOf(16)))
                 .orderBy(ProductView::getPrice, desc())
                 .orderBy(ProductView::getProductID, desc());
-        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
+        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap(false);
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
@@ -183,8 +182,7 @@ public class DemoTest {
     @Test
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
-                .ignore(ProductView::getCategoryID)
-                .and(ProductView::getPrice, in(Arrays.asList(BigDecimal.valueOf(16), BigDecimal.valueOf(18))));
+                .ignore(ProductView::getCategoryID);
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
