@@ -39,8 +39,9 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     }
 
     public String selectByGroupedQuery(MappedStatement ms) {
+        Class<?> selectClass = getSelectClass(ms);
         Class<?> entityClass = getEntityClass(ms);
-        setResultType(ms, getSelectClass(ms));
+        setResultType(ms, selectClass);
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append("SELECT");
@@ -70,7 +71,7 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
      * @return
      */
     public Class<?> getSelectClass(MappedStatement ms) {
-        String msId = ms.getId();
+        String msId = ms.getId() + "_selectClass";
         if (entityClassMap.containsKey(msId)) {
             return entityClassMap.get(msId);
         } else {
