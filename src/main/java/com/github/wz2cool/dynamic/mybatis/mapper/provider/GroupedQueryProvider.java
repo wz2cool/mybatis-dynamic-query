@@ -6,10 +6,16 @@ import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTempla
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.GroupedQuerySqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
+import tk.mybatis.mapper.MapperException;
+import tk.mybatis.mapper.mapperhelper.EntityHelper;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
+
+import static tk.mybatis.mapper.util.MsUtil.getMapperClass;
 
 /**
  * @author Frank
@@ -34,7 +40,7 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
 
     public String selectByGroupedQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
-        setResultType(ms, entityClass);
+        setResultType(ms, getSelectClass(ms));
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append("SELECT");
@@ -56,4 +62,36 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         return groupedQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
     // endregion
+
+    /**
+     * 获取返回值类型 - 实体类型
+     *
+     * @param ms
+     * @return
+     */
+    public Class<?> getSelectClass(MappedStatement ms) {
+        String msId = ms.getId();
+        if (entityClassMap.containsKey(msId)) {
+            return entityClassMap.get(msId);
+        } else {
+            Class<?> mapperClass = getMapperClass(msId);
+            Type[] types = mapperClass.getGenericInterfaces();
+            for (Type type : types) {
+                if (type instanceof ParameterizedType) {
+                    ParameterizedType t = (ParameterizedType) type;
+                    if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
+                        if (t.getActualTypeArguments().length > 1) {
+                            Class<?> returnType = (Class<?>) t.getActualTypeArguments()[t.getActualTypeArguments().length - 1];
+                            //获取该类型后，第一次对该类型进行初始化
+                            EntityHelper.initEntityNameMap(returnType, mapperHelper.getConfig());
+                            entityClassMap.put(msId, returnType);
+                            return returnType;
+                        }
+
+                    }
+                }
+            }
+        }
+        throw new MapperException("无法获取 " + msId + " 方法的泛型信息!");
+    }
 }

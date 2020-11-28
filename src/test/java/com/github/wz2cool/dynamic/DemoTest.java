@@ -50,11 +50,13 @@ public class DemoTest {
                 .and(Product::getProductId, greaterThan(1L))
                 .groupBy(Product::getCategoryId)
                 // 这里是having 对分组筛选
-                .and(CategoryGroupCount::getCount, greaterThan(2))
+                .and(CategoryGroupCount::getCount, greaterThan(1))
                 .orderBy(CategoryGroupCount::getCount, desc());
 
         List<CategoryGroupCount> categoryGroupCountList = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
-
+        for (CategoryGroupCount categoryGroupCount : categoryGroupCountList) {
+            assertTrue(categoryGroupCount.getCount() > 1);
+        }
     }
 
     @Test
