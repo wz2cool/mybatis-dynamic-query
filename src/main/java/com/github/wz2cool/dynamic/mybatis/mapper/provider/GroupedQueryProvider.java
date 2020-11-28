@@ -19,7 +19,6 @@ import static tk.mybatis.mapper.util.MsUtil.getMapperClass;
 
 /**
  * @author Frank
- * @date 2020/11/28
  **/
 public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
@@ -55,6 +54,10 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
+    public String selectRowBoundsByGroupedQuery(MappedStatement ms) {
+        return selectByGroupedQuery(ms);
+    }
+
     /// region for xml query
 
     public static Map<String, Object> getGroupedQueryParamInternal(
@@ -64,12 +67,6 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     }
     // endregion
 
-    /**
-     * 获取返回值类型 - 实体类型
-     *
-     * @param ms
-     * @return
-     */
     public Class<?> getSelectClass(MappedStatement ms) {
         String msId = ms.getId() + "_selectClass";
         if (entityClassMap.containsKey(msId)) {

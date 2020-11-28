@@ -12,7 +12,6 @@ import java.util.Map;
 
 /**
  * @author Frank
- * @date 2020/11/28
  **/
 public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, GroupedQuery<TQuery, TSelect>> {
 

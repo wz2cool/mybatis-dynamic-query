@@ -10,6 +10,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCou
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,8 @@ public class DemoTest {
                 .and(CategoryGroupCount::getCount, greaterThan(1))
                 .orderByNull();
 
-        List<CategoryGroupCount> categoryGroupCountList = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
+        List<CategoryGroupCount> categoryGroupCountList =
+                categoryGroupCountMapper.selectRowBoundsByGroupedQuery(groupedQuery, new RowBounds(0, 10));
         for (CategoryGroupCount categoryGroupCount : categoryGroupCountList) {
             assertTrue(categoryGroupCount.getCount() > 1);
         }

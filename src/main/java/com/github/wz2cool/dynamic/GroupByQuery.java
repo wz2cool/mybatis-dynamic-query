@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author Frank
- * @date 2020/11/28
  **/
 public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, GroupByQuery<TQuery, TSelect>> {
 
