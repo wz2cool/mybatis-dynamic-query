@@ -96,6 +96,7 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
             String key = param.getKey();
             String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
             havingExpression = havingExpression.replace(key, newKey);
+            paramMap.put(key, param.getValue());
         }
         paramMap.put(MapperConstants.HAVING_EXPRESSION, havingExpression);
         // 排序

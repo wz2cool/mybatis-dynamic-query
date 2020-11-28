@@ -47,7 +47,7 @@ public class DemoTest {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
                 // 这里是Where 对数据筛选
-                .and(Product::getProductId, greaterThan(1L))
+                .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId)
                 // 这里是having 对分组筛选
                 .and(CategoryGroupCount::getCount, greaterThan(1))
