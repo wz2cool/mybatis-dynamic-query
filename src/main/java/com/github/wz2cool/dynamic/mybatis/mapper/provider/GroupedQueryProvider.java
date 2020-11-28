@@ -1,14 +1,9 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
-import com.github.wz2cool.dynamic.BaseFilterDescriptor;
-import com.github.wz2cool.dynamic.BaseSortDescriptor;
-import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.GroupedQuery;
-import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTemplate;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.GroupedQuerySqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
@@ -37,24 +32,28 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         }
     }
 
-    public String selectByDynamicQuery(MappedStatement ms) {
+    public String selectByGroupedQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         setResultType(ms, entityClass);
         StringBuilder sql = new StringBuilder();
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append("SELECT");
-        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
-                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
-        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
+        sql.append(GroupedQuerySqlHelper.getSelectColumnsClause());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
-        sql.append(DynamicQuerySqlHelper.getWhereClause());
-        sql.append(DynamicQuerySqlHelper.getSortClause());
+        sql.append(GroupedQuerySqlHelper.getWhereClause());
+        sql.append(GroupedQuerySqlHelper.getGroupByClause());
+        sql.append(GroupedQuerySqlHelper.getHavingClause());
+        sql.append(GroupedQuerySqlHelper.getSortClause());
         return sql.toString();
     }
 
     /// region for xml query
 
-
+    public static Map<String, Object> getGroupedQueryParamInternal(
+            final GroupedQuery groupedQuery,
+            final boolean isMapUnderscoreToCamelCase) {
+        return groupedQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
+    }
     // endregion
 }

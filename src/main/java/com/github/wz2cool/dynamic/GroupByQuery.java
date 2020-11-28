@@ -92,7 +92,7 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
         for (int i = 0; i < getPropertyFunctions.length; i++) {
             groupByProperties[i] = CommonsHelper.getPropertyName(getPropertyFunctions[i]);
         }
-        ArrayUtils.addAll(groupedProperties, groupByProperties);
+        this.groupedProperties = ArrayUtils.addAll(this.groupedProperties, groupByProperties);
         return new GroupedQuery<>(this);
     }
 

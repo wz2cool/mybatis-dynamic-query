@@ -168,18 +168,4 @@ public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
     }
-
-    private String getSelectColumnsExpression() {
-        return QUERY_HELPER.toSelectColumnsExpression(
-                this.entityClass, this.selectedProperties, this.ignoredProperties,
-                false);
-    }
-
-    private ParamExpression getWhereExpression() {
-        return QUERY_HELPER.toWhereExpression(this.entityClass, this.getFilters());
-    }
-
-    private ParamExpression getSortExpression() {
-        return QUERY_HELPER.toSortExpression(this.entityClass, this.sorts);
-    }
 }

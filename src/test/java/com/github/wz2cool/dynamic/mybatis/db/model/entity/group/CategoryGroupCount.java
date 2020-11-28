@@ -9,7 +9,7 @@ import javax.persistence.Column;
 public class CategoryGroupCount {
     public Integer categoryId;
 
-    @Column(name = "COUNT(productId)")
+    @Column(name = "COUNT(product_id)")
     private Integer count;
 
     public Integer getCategoryId() {

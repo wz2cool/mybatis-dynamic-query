@@ -15,6 +15,8 @@ public class MapperConstants {
     public static final String GROUPED_QUERY = "groupedQuery";
     public static final String GROUPED_QUERY_PARAMS = "groupedQueryParams";
     public static final String SELECT_COLUMNS_EXPRESSION = "selectColumnsExpression";
+    public static final String GROUP_COLUMNS_EXPRESSION = "groupColumnsExpression";
     public static final String WHERE_EXPRESSION = "whereExpression";
+    public static final String HAVING_EXPRESSION = "havingExpression";
     public static final String SORT_EXPRESSION = "sortExpression";
 }

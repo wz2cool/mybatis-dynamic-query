@@ -5,9 +5,9 @@ import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,12 +17,6 @@ import java.util.Map;
 public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, GroupedQuery<TQuery, TSelect>> {
 
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
-    private static final String COLUMN_EXPRESSION_PLACEHOLDER = "columnsExpression";
-    private static final String WHERE_EXPRESSION_PLACEHOLDER = "whereExpression";
-    private static final String GROUP_BY_EXPRESSION_PLACEHOLDER = "groupByExpression";
-    private static final String HAVING_EXPRESSION_PLACEHOLDER = "havingExpression";
-    private static final String SORT_EXPRESSION_PLACEHOLDER = "orderByExpression";
-
     private final GroupByQuery<TQuery, TSelect> groupByQuery;
 
     public GroupedQuery(GroupByQuery<TQuery, TSelect> groupByQuery) {
@@ -78,71 +72,42 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
 
     /// endregion
 
-    public Map<String, Object> toQueryParamMap() {
-        Map<String, Object> result = new HashMap<>(16);
-        String selectColumnsExpression = getSelectColumnsExpression();
-        result.put(COLUMN_EXPRESSION_PLACEHOLDER, selectColumnsExpression);
-        // 查询筛选
-        if (ArrayUtils.isNotEmpty(this.groupByQuery.getFilters())) {
-            ParamExpression whereExpression = getWhereExpression();
-            String whereString = String.format("WHERE %s ", whereExpression.getExpression());
-            result.put(WHERE_EXPRESSION_PLACEHOLDER, whereString);
-            result.putAll(whereExpression.getParamMap());
-        } else {
-            result.put(WHERE_EXPRESSION_PLACEHOLDER, "");
+    public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
+        // 筛选
+        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
+                this.getQueryClass(), this.groupByQuery.getFilters());
+        String whereExpression = whereParamExpression.getExpression();
+        Map<String, Object> paramMap = whereParamExpression.getParamMap();
+        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
+            String key = param.getKey();
+            String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
+            whereExpression = whereExpression.replace(key, newKey);
         }
+        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
         // 分组
-        if (ArrayUtils.isNotEmpty(this.groupByQuery.getGroupedProperties())) {
-            String groupByExpression = getGroupByExpression();
-            String groupByString = String.format("GROUP BY %s ", groupByExpression);
-            result.put(GROUP_BY_EXPRESSION_PLACEHOLDER, groupByString);
-        } else {
-            result.put(GROUP_BY_EXPRESSION_PLACEHOLDER, "");
+        String groupColumnExpression = QUERY_HELPER.toGroupByColumnsExpression(
+                this.groupByQuery.tQueryClass, this.groupByQuery.getGroupedProperties());
+        paramMap.put(MapperConstants.GROUP_COLUMNS_EXPRESSION, groupColumnExpression);
+        // having
+        ParamExpression havingParamExpression = QUERY_HELPER.toWhereExpression(
+                this.getSelectClass(), this.getFilters());
+        String havingExpression = havingParamExpression.getExpression();
+        for (Map.Entry<String, Object> param : havingParamExpression.getParamMap().entrySet()) {
+            String key = param.getKey();
+            String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
+            havingExpression = havingExpression.replace(key, newKey);
         }
-        // having 查询
-        if (ArrayUtils.isNotEmpty(this.getFilters())) {
-            ParamExpression havingExpression = getHavingExpression();
-            String havingString = String.format("HAVING %s ", havingExpression.getExpression());
-            result.put(HAVING_EXPRESSION_PLACEHOLDER, havingString);
-            result.putAll(havingExpression.getParamMap());
-        } else {
-            result.put(HAVING_EXPRESSION_PLACEHOLDER, "");
-        }
+        paramMap.put(MapperConstants.HAVING_EXPRESSION, havingExpression);
         // 排序
-        if (ArrayUtils.isNotEmpty(this.sorts)) {
-            ParamExpression sortExpression = getSortExpression();
-            String sortString = String.format("ORDER BY %s ", sortExpression.getExpression());
-            result.put(SORT_EXPRESSION_PLACEHOLDER, sortString);
-            result.putAll(sortExpression.getParamMap());
-        } else {
-            result.put(SORT_EXPRESSION_PLACEHOLDER, "");
-        }
-
-        return result;
-    }
-
-    private String getSelectColumnsExpression() {
-        return QUERY_HELPER.toSelectColumnsExpression(
+        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(this.getSelectClass(), sorts);
+        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
+        // 选择
+        String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
                 this.groupByQuery.tSelectClass,
                 this.groupByQuery.getSelectedProperties(),
-                this.groupByQuery.getIgnoredProperties(),
-                false);
-    }
+                this.groupByQuery.getIgnoredProperties(), isMapUnderscoreToCamelCase);
+        paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
+        return paramMap;
 
-    private ParamExpression getWhereExpression() {
-        return QUERY_HELPER.toWhereExpression(this.groupByQuery.tQueryClass, this.groupByQuery.getFilters());
-    }
-
-    private String getGroupByExpression() {
-        return QUERY_HELPER.toGroupByColumnsExpression(
-                this.groupByQuery.tQueryClass, this.groupByQuery.getGroupedProperties());
-    }
-
-    private ParamExpression getHavingExpression() {
-        return QUERY_HELPER.toWhereExpression(this.groupByQuery.tSelectClass, this.getFilters());
-    }
-
-    private ParamExpression getSortExpression() {
-        return QUERY_HELPER.toSortExpression(this.groupByQuery.tSelectClass, this.sorts);
     }
 }

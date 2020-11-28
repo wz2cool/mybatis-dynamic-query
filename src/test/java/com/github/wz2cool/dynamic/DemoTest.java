@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic;
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.CategoryGroupCountMapper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +39,12 @@ public class DemoTest {
     private NorthwindDao northwindDao;
     @Autowired
     private BugDao bugDao;
+    @Resource
+    private CategoryGroupCountMapper categoryGroupCountMapper;
 
+    @Test
     public void testGroupBy() {
-        GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+        GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(1L))
@@ -47,6 +52,8 @@ public class DemoTest {
                 // 这里是having 对分组筛选
                 .and(CategoryGroupCount::getCount, greaterThan(2))
                 .orderBy(CategoryGroupCount::getCount, desc());
+
+        List<CategoryGroupCount> categoryGroupCountList = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
 
     }
 
