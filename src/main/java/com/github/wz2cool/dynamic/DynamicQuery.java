@@ -7,6 +7,7 @@ import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
@@ -138,42 +139,33 @@ public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
     }
 
     public Map<String, Object> toQueryParamMap() {
-        Map<String, Object> result = new HashMap<>(16);
-        String selectColumnsExpression = getSelectColumnsExpression();
-        result.put(COLUMN_EXPRESSION_PLACEHOLDER, selectColumnsExpression);
+        return toQueryParamMap(false);
+    }
 
-        if (ArrayUtils.isNotEmpty(this.getFilters())) {
-            ParamExpression whereExpression = getWhereExpression();
-            String whereString = String.format("WHERE %s ", whereExpression.getExpression());
-            result.put(WHERE_EXPRESSION_PLACEHOLDER, whereString);
-            result.putAll(whereExpression.getParamMap());
-        } else {
-            result.put(WHERE_EXPRESSION_PLACEHOLDER, "");
+    public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
+        Class<?> entityClass = this.getEntityClass();
+        BaseFilterDescriptor[] filters = this.getFilters();
+        BaseSortDescriptor[] sorts = this.getSorts();
+        String[] selectedProperties = this.getSelectedProperties();
+        String[] ignoredProperties = this.getIgnoredProperties();
+
+        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
+        String whereExpression = whereParamExpression.getExpression();
+        Map<String, Object> paramMap = whereParamExpression.getParamMap();
+        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
+            String key = param.getKey();
+            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
+            whereExpression = whereExpression.replace(key, newKey);
         }
+        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        if (ArrayUtils.isNotEmpty(this.sorts)) {
-            ParamExpression sortExpression = getSortExpression();
-            String sortString = String.format("ORDER BY %s ", sortExpression.getExpression());
-            result.put(SORT_EXPRESSION_PLACEHOLDER, sortString);
-            result.putAll(sortExpression.getParamMap());
-        } else {
-            result.put(SORT_EXPRESSION_PLACEHOLDER, "");
-        }
+        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);
+        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
+        paramMap.put(MapperConstants.DISTINCT, this.isDistinct());
 
-        return result;
-    }
-
-    private String getSelectColumnsExpression() {
-        return QUERY_HELPER.toSelectColumnsExpression(
-                this.entityClass, this.selectedProperties, this.ignoredProperties,
-                false);
-    }
-
-    private ParamExpression getWhereExpression() {
-        return QUERY_HELPER.toWhereExpression(this.entityClass, this.getFilters());
-    }
-
-    private ParamExpression getSortExpression() {
-        return QUERY_HELPER.toSortExpression(this.entityClass, this.sorts);
+        String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase);
+        paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
+        return paramMap;
     }
 }

@@ -3,11 +3,14 @@ package com.github.wz2cool.dynamic;
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.CategoryGroupCountMapper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +40,26 @@ public class DemoTest {
     private NorthwindDao northwindDao;
     @Autowired
     private BugDao bugDao;
+    @Resource
+    private CategoryGroupCountMapper categoryGroupCountMapper;
+
+    @Test
+    public void testGroupBy() {
+        GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId)
+                // 这里是having 对分组筛选
+                .and(CategoryGroupCount::getCount, greaterThan(1))
+                .orderByNull();
+
+        List<CategoryGroupCount> categoryGroupCountList =
+                categoryGroupCountMapper.selectRowBoundsByGroupedQuery(groupedQuery, new RowBounds(0, 10));
+        for (CategoryGroupCount categoryGroupCount : categoryGroupCountList) {
+            assertTrue(categoryGroupCount.getCount() > 1);
+        }
+    }
 
     @Test
     public void testSelectMax() {
@@ -132,10 +156,9 @@ public class DemoTest {
     public void testSelectByView() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
                 .ignore(ProductView::getCategoryID)
-                .and(ProductView::getPrice, greaterThan(BigDecimal.valueOf(16)))
                 .orderBy(ProductView::getPrice, desc())
                 .orderBy(ProductView::getProductID, desc());
-        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
+        Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap(false);
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)
                 .doSelectPage(() -> northwindDao.getProductViewsByDynamic2(queryParamMap));
@@ -170,8 +193,7 @@ public class DemoTest {
     @Test
     public void testSelectByViewWithoutSorts() {
         DynamicQuery<ProductView> dynamicQuery = DynamicQuery.createQuery(ProductView.class)
-                .ignore(ProductView::getCategoryID)
-                .and(ProductView::getPrice, in(Arrays.asList(BigDecimal.valueOf(16), BigDecimal.valueOf(18))));
+                .ignore(ProductView::getCategoryID);
         Map<String, Object> queryParamMap = dynamicQuery.toQueryParamMap();
 
         List<ProductView> productViews = PageHelper.startPage(0, 2, false)

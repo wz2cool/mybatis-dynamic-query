@@ -224,6 +224,10 @@ public class QueryHelper {
 
     ParamExpression toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
         ParamExpression paramExpression = new ParamExpression();
+        if (Objects.isNull(sortDescriptor.getPropertyName())) {
+            paramExpression.setExpression("NULL");
+            return paramExpression;
+        }
         ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyName());
         String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getDirection());
         paramExpression.setExpression(expression);
@@ -280,6 +284,18 @@ public class QueryHelper {
                 String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
                 String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
                 columns.add(column);
+            }
+        }
+        return String.join(", ", columns);
+    }
+
+    public String toGroupByColumnsExpression(final Class entityClass, final String[] groupByProperties) {
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : columnInfos) {
+            String fieldName = columnInfo.getField().getName();
+            if (ArrayUtils.contains(groupByProperties, fieldName)) {
+                columns.add(columnInfo.getQueryColumn());
             }
         }
         return String.join(", ", columns);

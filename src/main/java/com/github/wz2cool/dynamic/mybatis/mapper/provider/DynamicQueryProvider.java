@@ -138,30 +138,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
     public static Map<String, Object> getDynamicQueryParamInternal(
             final DynamicQuery dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
-        Class<?> entityClass = dynamicQuery.getEntityClass();
-        BaseFilterDescriptor[] filters = dynamicQuery.getFilters();
-        BaseSortDescriptor[] sorts = dynamicQuery.getSorts();
-        String[] selectedProperties = dynamicQuery.getSelectedProperties();
-        String[] ignoredProperties = dynamicQuery.getIgnoredProperties();
-
-        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
-        String whereExpression = whereParamExpression.getExpression();
-        Map<String, Object> paramMap = whereParamExpression.getParamMap();
-        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
-            whereExpression = whereExpression.replace(key, newKey);
-        }
-        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
-
-        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);
-        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
-        paramMap.put(MapperConstants.DISTINCT, dynamicQuery.isDistinct());
-
-        String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase);
-        paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
-        return paramMap;
+        return dynamicQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
     // endregion
 }
