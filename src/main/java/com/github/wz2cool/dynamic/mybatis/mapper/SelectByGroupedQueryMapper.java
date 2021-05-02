@@ -1,9 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper;
 
-import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.GroupedQuery;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.GroupedQueryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -17,6 +15,7 @@ import java.util.Optional;
  * @author Frank
  **/
 @RegisterMapper
+@SuppressWarnings("java:S119")
 public interface SelectByGroupedQueryMapper<TQuery, TSelect> {
 
     /**
