@@ -61,7 +61,7 @@ public class DemoTest {
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId);
-        List<Long> longs = categoryGroupCountMapper.selectMaxByGroupedQuery(Product::getProductId, groupedQuery);
+        List<Long> longs = categoryGroupCountMapper.selectMaxByGroupedQuery(Product::getProductId, groupedQuery, new RowBounds(0, 2));
         for (Long aLong : longs) {
             assertTrue(aLong > 0);
         }

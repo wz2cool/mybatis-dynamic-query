@@ -72,6 +72,10 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
+    public String selectMaxRowBoundsByGroupedQuery(MappedStatement ms) {
+        return selectMaxByGroupedQuery(ms);
+    }
+
     public String selectMinByGroupedQuery(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
@@ -84,6 +88,10 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(GroupedQuerySqlHelper.getHavingClause());
         sql.append(GroupedQuerySqlHelper.getSortClause());
         return sql.toString();
+    }
+
+    public String selectMinRowBoundsByGroupedQuery(MappedStatement ms) {
+        return selectMinByGroupedQuery(ms);
     }
 
     /// region for xml query
