@@ -58,6 +58,38 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         return selectByGroupedQuery(ms);
     }
 
+    public String selectMaxByGroupedQuery(MappedStatement ms) {
+        Class<?> selectClass = getSelectClass(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        setResultType(ms, selectClass);
+        StringBuilder sql = new StringBuilder();
+        sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        //支持查询指定列
+        sql.append(GroupedQuerySqlHelper.getSelectMax());
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(GroupedQuerySqlHelper.getWhereClause());
+        sql.append(GroupedQuerySqlHelper.getGroupByClause());
+        sql.append(GroupedQuerySqlHelper.getHavingClause());
+        sql.append(GroupedQuerySqlHelper.getSortClause());
+        return sql.toString();
+    }
+
+    public String selectMinByGroupedQuery(MappedStatement ms) {
+        Class<?> selectClass = getSelectClass(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        setResultType(ms, selectClass);
+        StringBuilder sql = new StringBuilder();
+        sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        //支持查询指定列
+        sql.append(GroupedQuerySqlHelper.getSelectMin());
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(GroupedQuerySqlHelper.getWhereClause());
+        sql.append(GroupedQuerySqlHelper.getGroupByClause());
+        sql.append(GroupedQuerySqlHelper.getHavingClause());
+        sql.append(GroupedQuerySqlHelper.getSortClause());
+        return sql.toString();
+    }
+
     /// region for xml query
 
     public static Map<String, Object> getGroupedQueryParamInternal(
