@@ -2,7 +2,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 
 import com.github.wz2cool.dynamic.GroupedQuery;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
-import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
