@@ -4,8 +4,7 @@ import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCou
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.mapper.SelectByGroupedQueryMapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.SelectMaxByGroupedQueryMapper;
-
-import java.math.BigDecimal;
+import com.github.wz2cool.dynamic.mybatis.mapper.SelectMinByGroupedQueryMapper;
 
 /**
  * @author Frank
@@ -13,5 +12,6 @@ import java.math.BigDecimal;
  **/
 public interface CategoryGroupCountMapper extends
         SelectByGroupedQueryMapper<Product, CategoryGroupCount>,
-        SelectMaxByGroupedQueryMapper<Product> {
+        SelectMaxByGroupedQueryMapper<Product>,
+        SelectMinByGroupedQueryMapper<Product> {
 }
