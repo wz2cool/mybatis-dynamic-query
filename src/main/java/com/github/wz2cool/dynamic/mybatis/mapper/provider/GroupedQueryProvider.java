@@ -59,9 +59,7 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     }
 
     public String selectMaxByGroupedQuery(MappedStatement ms) {
-        Class<?> selectClass = getSelectClass(ms);
         Class<?> entityClass = getEntityClass(ms);
-        setResultType(ms, selectClass);
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         //支持查询指定列
@@ -75,9 +73,7 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     }
 
     public String selectMinByGroupedQuery(MappedStatement ms) {
-        Class<?> selectClass = getSelectClass(ms);
         Class<?> entityClass = getEntityClass(ms);
-        setResultType(ms, selectClass);
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         //支持查询指定列
