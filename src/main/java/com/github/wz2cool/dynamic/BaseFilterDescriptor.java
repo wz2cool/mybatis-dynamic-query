@@ -12,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = FilterGroupDescriptor.class, name = "filterGroupDescriptor"),
         @JsonSubTypes.Type(value = CustomFilterDescriptor.class, name = "customFilterDescriptor")
 })
-public interface BaseFilterDescriptor {
+@SuppressWarnings("java:S2326")
+public interface BaseFilterDescriptor<T> {
     /**
      * get condition of and
      *

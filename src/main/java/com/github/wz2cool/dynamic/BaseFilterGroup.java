@@ -12,24 +12,27 @@ import java.util.function.UnaryOperator;
 /**
  * @author Frank
  **/
+@SuppressWarnings("unchecked")
 public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
 
-    private BaseFilterDescriptor[] filters = new BaseFilterDescriptor[]{};
+    private BaseFilterDescriptor<T>[] filters = new BaseFilterDescriptor[0];
 
-    public BaseFilterDescriptor[] getFilters() {
+    public BaseFilterDescriptor<T>[] getFilters() {
         return filters;
     }
 
-    public void setFilters(BaseFilterDescriptor[] filters) {
+    public void setFilters(BaseFilterDescriptor<T>[] filters) {
         this.filters = filters;
     }
 
-    public void addFilters(BaseFilterDescriptor... newFilters) {
+    @SafeVarargs
+    public final void addFilters(BaseFilterDescriptor<T>... newFilters) {
         setFilters(ArrayUtils.addAll(filters, newFilters));
     }
 
-    public void removeFilters(BaseFilterDescriptor... removeFilters) {
-        for (BaseFilterDescriptor removeFilter : removeFilters) {
+    @SafeVarargs
+    public final void removeFilters(BaseFilterDescriptor<T>... removeFilters) {
+        for (BaseFilterDescriptor<T> removeFilter : removeFilters) {
             setFilters(ArrayUtils.removeAllOccurences(filters, removeFilter));
         }
     }
@@ -294,12 +297,43 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
         return (S) this;
     }
 
+    @SafeVarargs
+    public final S and(boolean enable, BaseFilterDescriptor<T>... filters) {
+        if (enable) {
+            FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
+            filterGroupDescriptor.setCondition(FilterCondition.AND);
+            filterGroupDescriptor.setFilters(filters);
+            this.addFilters(filterGroupDescriptor);
+        }
+        return (S) this;
+    }
+
+    @SafeVarargs
+    public final S and(BaseFilterDescriptor<T>... filters) {
+        return and(true, filters);
+    }
+
+    @SafeVarargs
+    public final S or(boolean enable, BaseFilterDescriptor<T>... filters) {
+        if (enable) {
+            FilterGroupDescriptor<T> filterGroupDescriptor = new FilterGroupDescriptor<>();
+            filterGroupDescriptor.setCondition(FilterCondition.OR);
+            filterGroupDescriptor.setFilters(filters);
+            this.addFilters(filterGroupDescriptor);
+        }
+        return (S) this;
+    }
+
+    public S or(BaseFilterDescriptor<T>... filters) {
+        return or(true, filters);
+    }
+
     private <R extends Comparable> S filterInternal(
             FilterCondition condition,
             GetPropertyFunction<T, R> getPropertyFunc,
             FilterOperator operator, Object filterValue, boolean enable) {
         if (enable) {
-            FilterDescriptor filterDescriptor = new FilterDescriptor();
+            FilterDescriptor<T> filterDescriptor = new FilterDescriptor<>();
             String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
             filterDescriptor.setCondition(condition);
             filterDescriptor.setPropertyName(propertyName);
