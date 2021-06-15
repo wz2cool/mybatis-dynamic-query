@@ -44,6 +44,30 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
 
     @Test
+    public void testMinGroupBy() {
+        GroupedQuery<Product, Long> groupedQuery = GroupByQuery.createQuery(Product.class, Long.class)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId);
+        List<Long> longs = categoryGroupCountMapper.selectMinByGroupedQuery(Product::getProductId, groupedQuery);
+        for (Long aLong : longs) {
+            assertTrue(aLong > 0);
+        }
+    }
+
+    @Test
+    public void testMaxGroupBy() {
+        GroupedQuery<Product, Long> groupedQuery = GroupByQuery.createQuery(Product.class, Long.class)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId);
+        List<Long> longs = categoryGroupCountMapper.selectMaxByGroupedQuery(Product::getProductId, groupedQuery, new RowBounds(0, 2));
+        for (Long aLong : longs) {
+            assertTrue(aLong > 0);
+        }
+    }
+
+    @Test
     public void testGroupBy() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
@@ -53,6 +77,8 @@ public class DemoTest {
                 // 这里是having 对分组筛选
                 .and(CategoryGroupCount::getCount, greaterThan(1))
                 .orderByNull();
+
+        categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
 
         List<CategoryGroupCount> categoryGroupCountList =
                 categoryGroupCountMapper.selectRowBoundsByGroupedQuery(groupedQuery, new RowBounds(0, 10));
