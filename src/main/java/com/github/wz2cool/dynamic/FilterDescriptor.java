@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
  **/
 @SuppressWarnings({"squid:S1172", "squid:S2326"})
 @JsonTypeName("filterDescriptor")
-public class FilterDescriptor implements BaseFilterDescriptor {
+public class FilterDescriptor<T> implements BaseFilterDescriptor<T> {
 
     private FilterCondition condition = FilterCondition.AND;
     private FilterOperator operator = FilterOperator.EQUAL;
