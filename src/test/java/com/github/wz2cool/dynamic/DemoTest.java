@@ -65,6 +65,7 @@ public class DemoTest {
         for (int i = 0; i < 10; i++) {
             UpdateQuery<Bug> updateQuery = UpdateQuery.createQuery(Bug.class)
                     .set(Bug::getAssignTo, "Marry")
+                    .set(i % 2 ==0 , Bug::getTitle, "title2")
                     .and(Bug::getId, isEqual(10000 + i));
             updateBatchAction.addAction((b) -> b.updateByUpdateQuery(updateQuery));
         }
