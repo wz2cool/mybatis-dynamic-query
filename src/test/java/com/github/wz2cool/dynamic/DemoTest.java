@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,28 +49,50 @@ public class DemoTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
-    @Transactional
     public void testBatchAction() {
-        MapperBatchAction<BugDao> insertBatchAction = new MapperBatchAction<>(this.sqlSessionFactory, BugDao.class, 5);
+        MapperBatchAction<BugDao> insertBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 5);
         for (int i = 0; i < 10; i++) {
             Bug newBug = new Bug();
             newBug.setId(10000 + i);
             newBug.setAssignTo("frank");
             newBug.setTitle("title");
-            insertBatchAction.addAction((b) -> b.insertSelective(newBug));
+            insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
         }
-        final List<BatchResult> batchResults = insertBatchAction.batchDoActions();
-        MapperBatchAction<BugDao> updateBatchAction = new MapperBatchAction<>(this.sqlSessionFactory, BugDao.class, 5);
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        MapperBatchAction<BugDao> updateBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
         for (int i = 0; i < 10; i++) {
             UpdateQuery<Bug> updateQuery = UpdateQuery.createQuery(Bug.class)
                     .set(Bug::getAssignTo, "Marry")
-                    .set(i % 2 ==0 , Bug::getTitle, "title2")
+                    .set(i % 2 == 0, Bug::getTitle, "title2")
                     .and(Bug::getId, isEqual(10000 + i));
-            updateBatchAction.addAction((b) -> b.updateByUpdateQuery(updateQuery));
+            updateBatchAction.addAction((mapper) -> mapper.updateByUpdateQuery(updateQuery));
         }
-
-        final List<BatchResult> batchResults1 = updateBatchAction.batchDoActions();
+        final List<BatchResult> batchResults1 = updateBatchAction.doBatchActions();
         assertTrue(batchResults.size() > 0);
+        DynamicQuery<Bug> dynamicQuery = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, greaterThanOrEqual(10000));
+        List<Bug> bugs = bugDao.selectByDynamicQuery(dynamicQuery);
+
+        // delete all after verify
+        MapperBatchAction<BugDao> deleteBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
+        for (int i = 0; i < bugs.size(); i++) {
+            final int id = 10000 + i;
+            Bug bug = bugs.get(i);
+            assertEquals(10000 + i, (int) bug.getId());
+            assertEquals("Marry", bug.getAssignTo());
+            if (i % 2 == 0) {
+                assertEquals("title2", bug.getTitle());
+            } else {
+                assertEquals("title", bug.getTitle());
+            }
+            DynamicQuery<Bug> deleteQuery = DynamicQuery.createQuery(Bug.class)
+                    .and(Bug::getId, isEqual(id));
+            deleteBatchAction.addAction((mapper) -> mapper.deleteByDynamicQuery(deleteQuery));
+        }
+        deleteBatchAction.doBatchActions();
+
+        bugs = bugDao.selectByDynamicQuery(dynamicQuery);
+        assertEquals(0, bugs.size());
     }
 
     @Test
