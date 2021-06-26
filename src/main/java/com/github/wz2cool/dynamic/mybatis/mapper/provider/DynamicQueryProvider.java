@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 import com.github.wz2cool.dynamic.BaseFilterDescriptor;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.BaseSortDescriptor;
+import com.github.wz2cool.dynamic.UpdateQuery;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
@@ -122,6 +123,16 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         return updateByDynamicQuery(ms, false);
     }
 
+    public String updateByUpdateQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getUpdateBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
+        sql.append(DynamicQuerySqlHelper.getSetClause());
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
     private String updateByDynamicQuery(MappedStatement ms, boolean noNull) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
@@ -132,13 +143,18 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
-
     /// region for xml query
 
     public static Map<String, Object> getDynamicQueryParamInternal(
             final DynamicQuery dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
         return dynamicQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
+    }
+
+    public static Map<String, Object> getUpdateQueryParamInternal(
+            final UpdateQuery updateQuery,
+            final boolean isMapUnderscoreToCamelCase) {
+        return updateQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
     // endregion
 }
