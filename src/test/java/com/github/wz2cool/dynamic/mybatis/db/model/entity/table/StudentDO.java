@@ -5,7 +5,6 @@ import javax.persistence.Table;
 
 /**
  * @author Frank
- * @date 2020/05/02
  **/
 @Table(name = "student")
 public class StudentDO {

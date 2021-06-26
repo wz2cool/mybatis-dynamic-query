@@ -9,7 +9,6 @@ import tk.mybatis.mapper.annotation.RegisterMapper;
 
 /**
  * @author Frank
- * @date 2021/06/26
  **/
 @RegisterMapper
 public interface UpdateByUpdateQueryMapper<T> {

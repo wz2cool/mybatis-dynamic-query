@@ -8,7 +8,6 @@ import com.github.wz2cool.dynamic.mybatis.mapper.SelectMinByGroupedQueryMapper;
 
 /**
  * @author Frank
- * @date 2020/11/28
  **/
 public interface CategoryGroupCountMapper extends
         SelectByGroupedQueryMapper<Product, CategoryGroupCount>,
