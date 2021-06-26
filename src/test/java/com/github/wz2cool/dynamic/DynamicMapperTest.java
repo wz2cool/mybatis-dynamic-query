@@ -12,7 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -176,6 +178,30 @@ public class DynamicMapperTest {
 
         result = userDao.updateSelectiveByDynamicQuery(updateUser, dynamicQuery);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testUpdateByUpdateQuery() {
+        User user = new User();
+        user.setId(19);
+        user.setUsername("frank19");
+        user.setPassword("frank");
+
+        int result = userDao.insert(user);
+        assertEquals(1, result);
+
+        UpdateQuery<User> userUpdateQuery = UpdateQuery.createQuery(User.class)
+                .set(User::getUsername, "Marry")
+                .set(User::getPassword, null)
+                .and(User::getId, isEqual(19));
+        result = userDao.updateByUpdateQuery(userUpdateQuery);
+        assertEquals(1, result);
+
+        final User user1 = userDao.selectByPrimaryKey(19);
+        assertEquals("Marry", user1.getUsername());
+        assertNull(user1.getPassword());
+
+        userDao.deleteByPrimaryKey(19);
     }
 
     @Test

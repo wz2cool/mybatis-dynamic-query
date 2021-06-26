@@ -19,4 +19,5 @@ public class MapperConstants {
     public static final String WHERE_EXPRESSION = "whereExpression";
     public static final String HAVING_EXPRESSION = "havingExpression";
     public static final String SORT_EXPRESSION = "sortExpression";
+    public static final String SET_EXPRESSION = "setExpression";
 }

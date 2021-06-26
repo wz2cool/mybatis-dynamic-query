@@ -10,7 +10,6 @@ import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,9 +20,6 @@ public class DynamicQuery<T> extends BaseFilterGroup<T, DynamicQuery<T>> {
 
     private static final long serialVersionUID = -4044703018297658438L;
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
-    private static final String COLUMN_EXPRESSION_PLACEHOLDER = "columnsExpression";
-    private static final String WHERE_EXPRESSION_PLACEHOLDER = "whereExpression";
-    private static final String SORT_EXPRESSION_PLACEHOLDER = "orderByExpression";
 
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};

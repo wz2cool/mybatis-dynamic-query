@@ -4,7 +4,6 @@ import javax.persistence.Column;
 
 /**
  * @author Frank
- * @date 2020/11/28
  **/
 public class CategoryGroupCount {
     public Integer categoryId;
