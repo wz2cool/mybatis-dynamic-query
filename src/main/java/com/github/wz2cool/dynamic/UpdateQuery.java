@@ -36,56 +36,110 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
     }
 
     public UpdateQuery<T> set(GetBigDecimalPropertyFunction<T> getPropertyFunc, BigDecimal value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetBytePropertyFunction<T> getPropertyFunc, Byte value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDatePropertyFunction<T> getPropertyFunc, Date value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDoublePropertyFunction<T> getPropertyFunc, Double value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetFloatPropertyFunction<T> getPropertyFunc, Float value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetIntegerPropertyFunction<T> getPropertyFunc, Integer value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetLongPropertyFunction<T> getPropertyFunc, Long value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetShortPropertyFunction<T> getPropertyFunc, Short value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
-        return this;
+        return set(getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetStringPropertyFunction<T> getPropertyFunc, String value) {
-        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
-        setColumnValueMap.put(propertyName, value);
+        return set(true, getPropertyFunc, value);
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetBigDecimalPropertyFunction<T> getPropertyFunc, BigDecimal value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetBytePropertyFunction<T> getPropertyFunc, Byte value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetDatePropertyFunction<T> getPropertyFunc, Date value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetDoublePropertyFunction<T> getPropertyFunc, Double value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetFloatPropertyFunction<T> getPropertyFunc, Float value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetIntegerPropertyFunction<T> getPropertyFunc, Integer value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetLongPropertyFunction<T> getPropertyFunc, Long value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetShortPropertyFunction<T> getPropertyFunc, Short value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> set(boolean enable, GetStringPropertyFunction<T> getPropertyFunc, String value) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            setColumnValueMap.put(propertyName, value);
+        }
         return this;
     }
 

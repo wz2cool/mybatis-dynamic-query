@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -191,14 +192,14 @@ public class DynamicMapperTest {
 
         UpdateQuery<User> userUpdateQuery = UpdateQuery.createQuery(User.class)
                 .set(User::getUsername, "Marry")
-                .set(User::getPassword, "111")
+                .set(User::getPassword, null)
                 .and(User::getId, isEqual(19));
         result = userDao.updateByUpdateQuery(userUpdateQuery);
         assertEquals(1, result);
 
         final User user1 = userDao.selectByPrimaryKey(19);
         assertEquals("Marry", user1.getUsername());
-        assertEquals("111", user1.getPassword());
+        assertNull(user1.getPassword());
     }
 
     @Test
