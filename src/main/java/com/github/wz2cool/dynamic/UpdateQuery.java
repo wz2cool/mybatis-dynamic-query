@@ -11,7 +11,6 @@ import java.util.*;
 
 /**
  * @author Frank
- * @date 2021/06/26
  **/
 public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
 
