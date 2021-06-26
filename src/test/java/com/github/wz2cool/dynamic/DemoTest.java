@@ -9,14 +9,18 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import com.github.wz2cool.dynamic.mybatis.mapper.batch.MapperBatchAction;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -42,6 +46,32 @@ public class DemoTest {
     private BugDao bugDao;
     @Resource
     private CategoryGroupCountMapper categoryGroupCountMapper;
+    @Resource
+    private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    @Transactional
+    public void testBatchAction() {
+        MapperBatchAction<BugDao> insertBatchAction = new MapperBatchAction<>(this.sqlSessionFactory, BugDao.class, 5);
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            insertBatchAction.addAction((b) -> b.insertSelective(newBug));
+        }
+        final List<BatchResult> batchResults = insertBatchAction.batchDoActions();
+        MapperBatchAction<BugDao> updateBatchAction = new MapperBatchAction<>(this.sqlSessionFactory, BugDao.class, 5);
+        for (int i = 0; i < 10; i++) {
+            UpdateQuery<Bug> updateQuery = UpdateQuery.createQuery(Bug.class)
+                    .set(Bug::getAssignTo, "Marry")
+                    .and(Bug::getId, isEqual(10000 + i));
+            updateBatchAction.addAction((b) -> b.updateByUpdateQuery(updateQuery));
+        }
+
+        final List<BatchResult> batchResults1 = updateBatchAction.batchDoActions();
+        assertTrue(batchResults.size() > 0);
+    }
 
     @Test
     public void testMinGroupBy() {
