@@ -200,6 +200,8 @@ public class DynamicMapperTest {
         final User user1 = userDao.selectByPrimaryKey(19);
         assertEquals("Marry", user1.getUsername());
         assertNull(user1.getPassword());
+
+        userDao.deleteByPrimaryKey(19);
     }
 
     @Test
