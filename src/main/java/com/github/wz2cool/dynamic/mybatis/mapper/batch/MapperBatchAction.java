@@ -54,7 +54,7 @@ public class MapperBatchAction<M extends DynamicQueryMapper<?>> {
             for (int i = 0; i < actions.size(); i++) {
                 actions.get(i).accept(mapper);
 
-                if (i != 0 && i % batchSize == 0) {
+                if (i != 0 && (i + 1) % batchSize == 0) {
                     final List<BatchResult> batchResults = sqlSession.flushStatements();
                     result.addAll(batchResults);
                 }

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,21 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testBatchInsert() {
+        MapperBatchAction<BugDao> insertBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
+        }
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        int effectRows = batchResults.stream().mapToInt(x -> Arrays.stream(x.getUpdateCounts()).sum()).sum();
+        assertEquals(10, effectRows);
+    }
 
     @Test
     public void testBatchAction() {
