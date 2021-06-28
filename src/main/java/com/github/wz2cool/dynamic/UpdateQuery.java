@@ -154,18 +154,20 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
         }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        final Map<String, Object> updateParamMap = toUpdateParamMap(setColumnValueMap);
+        final Map<String, Object> updateParamMap = toUpdateParamMap(isMapUnderscoreToCamelCase, setColumnValueMap);
         paramMap.putAll(updateParamMap);
         return paramMap;
     }
 
-    private Map<String, Object> toUpdateParamMap(Map<String, Object> setColumnValueMap) {
+    private Map<String, Object> toUpdateParamMap(boolean isMapUnderscoreToCamelCase, Map<String, Object> setColumnValueMap) {
         Map<String, Object> result = new HashMap<>();
         List<String> setExpressionItems = new ArrayList<>();
         for (Map.Entry<String, Object> columnValueEntry : setColumnValueMap.entrySet()) {
+            String propertyName = columnValueEntry.getKey();
             String valuePlaceHolder = String.format("param_%s", columnValueEntry.getKey());
+            final String columnName = QUERY_HELPER.getQueryColumnByProperty(this.getEntityClass(), propertyName);
             final String setExpressionItem = String.format("%s=#{%s.%s}",
-                    columnValueEntry.getKey(), MapperConstants.DYNAMIC_QUERY_PARAMS, valuePlaceHolder);
+                    columnName, MapperConstants.DYNAMIC_QUERY_PARAMS, valuePlaceHolder);
             setExpressionItems.add(setExpressionItem);
             result.put(valuePlaceHolder, columnValueEntry.getValue());
         }

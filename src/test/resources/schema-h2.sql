@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
   id       INT PRIMARY KEY,
-  username VARCHAR(64) NOT NULL,
+  user_name VARCHAR(64) NOT NULL,
   password VARCHAR(64)
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE bug
 
 DELETE
 FROM users;
-INSERT INTO users (id, username, password)
+INSERT INTO users (id, user_name, password)
 VALUES
   (1, 'usr1', 'bigSecret'),
   (2, 'usr2', 'topSecret');

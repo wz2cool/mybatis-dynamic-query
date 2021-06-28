@@ -36,7 +36,7 @@ public class DynamicMapperTest {
     public void testInsert() {
         User user = new User();
         user.setId(10);
-        user.setUsername("frank");
+        user.setUserName("frank");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -47,7 +47,7 @@ public class DynamicMapperTest {
     public void testInsertSelective() {
         User user = new User();
         user.setId(11);
-        user.setUsername("frank");
+        user.setUserName("frank");
 
         int result = userDao.insertSelective(user);
         assertEquals(1, result);
@@ -57,7 +57,7 @@ public class DynamicMapperTest {
     public void testDeleteByPrimaryKey() {
         User user = new User();
         user.setId(12);
-        user.setUsername("frank");
+        user.setUserName("frank");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -71,7 +71,7 @@ public class DynamicMapperTest {
     public void testDeleteByT() {
         User user = new User();
         user.setId(13);
-        user.setUsername("frank");
+        user.setUserName("frank");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -85,7 +85,7 @@ public class DynamicMapperTest {
     public void testDeleteByDynamicQuery() {
         User user = new User();
         user.setId(14);
-        user.setUsername("frank14");
+        user.setUserName("frank14");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -105,7 +105,7 @@ public class DynamicMapperTest {
     public void testUpdateByPrimaryKey() {
         User user = new User();
         user.setId(15);
-        user.setUsername("frank");
+        user.setUserName("frank");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -120,7 +120,7 @@ public class DynamicMapperTest {
     public void testUpdateByPrimaryKeySelective() {
         User user = new User();
         user.setId(16);
-        user.setUsername("frank");
+        user.setUserName("frank");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -137,7 +137,7 @@ public class DynamicMapperTest {
     public void testUpdateByDynamicQuery() {
         User user = new User();
         user.setId(17);
-        user.setUsername("frank17");
+        user.setUserName("frank17");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
@@ -145,7 +145,7 @@ public class DynamicMapperTest {
 
         User updateUser = new User();
         updateUser.setId(17);
-        updateUser.setUsername("Marry");
+        updateUser.setUserName("Marry");
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
@@ -161,14 +161,14 @@ public class DynamicMapperTest {
     public void testUpdate() {
         User user = new User();
         user.setId(18);
-        user.setUsername("frank18");
+        user.setUserName("frank18");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
         assertEquals(1, result);
 
         User updateUser = new User();
-        updateUser.setUsername("Marry");
+        updateUser.setUserName("Marry");
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
@@ -184,21 +184,21 @@ public class DynamicMapperTest {
     public void testUpdateByUpdateQuery() {
         User user = new User();
         user.setId(19);
-        user.setUsername("frank19");
+        user.setUserName("frank19");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
         assertEquals(1, result);
 
         UpdateQuery<User> userUpdateQuery = UpdateQuery.createQuery(User.class)
-                .set(User::getUsername, "Marry")
+                .set(User::getUserName, "Marry")
                 .set(User::getPassword, null)
-                .and(User::getId, isEqual(19));
+                .and(User::getUserName, isEqual("frank19"));
         result = userDao.updateByUpdateQuery(userUpdateQuery);
         assertEquals(1, result);
 
         final User user1 = userDao.selectByPrimaryKey(19);
-        assertEquals("Marry", user1.getUsername());
+        assertEquals("Marry", user1.getUserName());
         assertNull(user1.getPassword());
 
         userDao.deleteByPrimaryKey(19);
@@ -232,7 +232,7 @@ public class DynamicMapperTest {
     public void testSelectCount() {
         User user = new User();
         user.setId(19);
-        user.setUsername("frank19");
+        user.setUserName("frank19");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
