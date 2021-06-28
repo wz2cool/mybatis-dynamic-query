@@ -93,7 +93,7 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, "username",
+                FilterCondition.AND, "userName",
                 FilterOperator.CONTAINS, "14");
         dynamicQuery.addFilters(nameFilter);
 
@@ -149,7 +149,7 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, "username",
+                FilterCondition.AND, "userName",
                 FilterOperator.CONTAINS, "17");
         dynamicQuery.addFilters(nameFilter);
 
@@ -172,7 +172,7 @@ public class DynamicMapperTest {
 
         DynamicQuery<User> dynamicQuery = new DynamicQuery<>(User.class);
         FilterDescriptor nameFilter = new FilterDescriptor(
-                FilterCondition.AND, "username",
+                FilterCondition.AND, "userName",
                 FilterOperator.CONTAINS, "18");
         dynamicQuery.addFilters(nameFilter);
 
