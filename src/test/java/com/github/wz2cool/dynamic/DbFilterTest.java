@@ -429,12 +429,12 @@ public class DbFilterTest {
     @Test
     public void testSelectColumns() {
         DynamicQuery<User> dynamicQuery = DynamicQuery.createQuery(User.class)
-                .select(User::getUsername, User::getId)
+                .select(User::getUserName, User::getId)
                 .and(User::getId, isEqual(2));
         List<User> userNames = userDao.selectByDynamicQuery(dynamicQuery);
 
         for (User user : userNames) {
-            assertEquals(true, StringUtils.isNotBlank(user.getUsername()));
+            assertEquals(true, StringUtils.isNotBlank(user.getUserName()));
             // password should be empty bse only select 'Username' and 'Id'.
             assertEquals(true, StringUtils.isBlank(user.getPassword()));
         }

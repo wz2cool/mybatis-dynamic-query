@@ -9,14 +9,18 @@ import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
+import com.github.wz2cool.dynamic.mybatis.mapper.batch.MapperBatchAction;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -42,6 +46,70 @@ public class DemoTest {
     private BugDao bugDao;
     @Resource
     private CategoryGroupCountMapper categoryGroupCountMapper;
+    @Resource
+    private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testBatchInsert() {
+        MapperBatchAction<BugDao> insertBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
+        }
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        int effectRows = batchResults.stream().mapToInt(x -> Arrays.stream(x.getUpdateCounts()).sum()).sum();
+        assertEquals(10, effectRows);
+    }
+
+    @Test
+    public void testBatchAction() {
+        MapperBatchAction<BugDao> insertBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 5);
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
+        }
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        MapperBatchAction<BugDao> updateBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
+        for (int i = 0; i < 10; i++) {
+            UpdateQuery<Bug> updateQuery = UpdateQuery.createQuery(Bug.class)
+                    .set(Bug::getAssignTo, "Marry")
+                    .set(i % 2 == 0, Bug::getTitle, "title2")
+                    .and(Bug::getId, isEqual(10000 + i));
+            updateBatchAction.addAction((mapper) -> mapper.updateByUpdateQuery(updateQuery));
+        }
+        final List<BatchResult> batchResults1 = updateBatchAction.doBatchActions();
+        assertTrue(batchResults.size() > 0);
+        DynamicQuery<Bug> dynamicQuery = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, greaterThanOrEqual(10000));
+        List<Bug> bugs = bugDao.selectByDynamicQuery(dynamicQuery);
+
+        // delete all after verify
+        MapperBatchAction<BugDao> deleteBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
+        for (int i = 0; i < bugs.size(); i++) {
+            final int id = 10000 + i;
+            Bug bug = bugs.get(i);
+            assertEquals(10000 + i, (int) bug.getId());
+            assertEquals("Marry", bug.getAssignTo());
+            if (i % 2 == 0) {
+                assertEquals("title2", bug.getTitle());
+            } else {
+                assertEquals("title", bug.getTitle());
+            }
+            DynamicQuery<Bug> deleteQuery = DynamicQuery.createQuery(Bug.class)
+                    .and(Bug::getId, isEqual(id));
+            deleteBatchAction.addAction((mapper) -> mapper.deleteByDynamicQuery(deleteQuery));
+        }
+        deleteBatchAction.doBatchActions();
+
+        bugs = bugDao.selectByDynamicQuery(dynamicQuery);
+        assertEquals(0, bugs.size());
+    }
 
     @Test
     public void testMinGroupBy() {

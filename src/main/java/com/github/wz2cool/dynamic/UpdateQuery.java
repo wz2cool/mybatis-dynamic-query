@@ -35,35 +35,35 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
     }
 
     public UpdateQuery<T> set(GetBigDecimalPropertyFunction<T> getPropertyFunc, BigDecimal value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetBytePropertyFunction<T> getPropertyFunc, Byte value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDatePropertyFunction<T> getPropertyFunc, Date value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDoublePropertyFunction<T> getPropertyFunc, Double value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetFloatPropertyFunction<T> getPropertyFunc, Float value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetIntegerPropertyFunction<T> getPropertyFunc, Integer value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetLongPropertyFunction<T> getPropertyFunc, Long value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetShortPropertyFunction<T> getPropertyFunc, Short value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetStringPropertyFunction<T> getPropertyFunc, String value) {
@@ -154,18 +154,20 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
         }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        final Map<String, Object> updateParamMap = toUpdateParamMap(setColumnValueMap);
+        final Map<String, Object> updateParamMap = toUpdateParamMap(isMapUnderscoreToCamelCase, setColumnValueMap);
         paramMap.putAll(updateParamMap);
         return paramMap;
     }
 
-    private Map<String, Object> toUpdateParamMap(Map<String, Object> setColumnValueMap) {
+    private Map<String, Object> toUpdateParamMap(boolean isMapUnderscoreToCamelCase, Map<String, Object> setColumnValueMap) {
         Map<String, Object> result = new HashMap<>();
         List<String> setExpressionItems = new ArrayList<>();
         for (Map.Entry<String, Object> columnValueEntry : setColumnValueMap.entrySet()) {
+            String propertyName = columnValueEntry.getKey();
             String valuePlaceHolder = String.format("param_%s", columnValueEntry.getKey());
+            final String columnName = QUERY_HELPER.getQueryColumnByProperty(this.getEntityClass(), propertyName);
             final String setExpressionItem = String.format("%s=#{%s.%s}",
-                    columnValueEntry.getKey(), MapperConstants.DYNAMIC_QUERY_PARAMS, valuePlaceHolder);
+                    columnName, MapperConstants.DYNAMIC_QUERY_PARAMS, valuePlaceHolder);
             setExpressionItems.add(setExpressionItem);
             result.put(valuePlaceHolder, columnValueEntry.getValue());
         }
