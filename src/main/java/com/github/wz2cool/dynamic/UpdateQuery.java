@@ -35,35 +35,35 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
     }
 
     public UpdateQuery<T> set(GetBigDecimalPropertyFunction<T> getPropertyFunc, BigDecimal value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetBytePropertyFunction<T> getPropertyFunc, Byte value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDatePropertyFunction<T> getPropertyFunc, Date value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetDoublePropertyFunction<T> getPropertyFunc, Double value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetFloatPropertyFunction<T> getPropertyFunc, Float value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetIntegerPropertyFunction<T> getPropertyFunc, Integer value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetLongPropertyFunction<T> getPropertyFunc, Long value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetShortPropertyFunction<T> getPropertyFunc, Short value) {
-        return set(getPropertyFunc, value);
+        return set(true, getPropertyFunc, value);
     }
 
     public UpdateQuery<T> set(GetStringPropertyFunction<T> getPropertyFunc, String value) {
