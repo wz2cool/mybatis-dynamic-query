@@ -59,7 +59,7 @@ public class DemoTest {
             newBug.setTitle("title");
             insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
         }
-        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActionWithResults();
         int effectRows = batchResults.stream().mapToInt(x -> Arrays.stream(x.getUpdateCounts()).sum()).sum();
         assertEquals(10, effectRows);
     }
@@ -74,7 +74,7 @@ public class DemoTest {
             newBug.setTitle("title");
             insertBatchAction.addAction((mapper) -> mapper.insertSelective(newBug));
         }
-        final List<BatchResult> batchResults = insertBatchAction.doBatchActions();
+        final List<BatchResult> batchResults = insertBatchAction.doBatchActionWithResults();
         MapperBatchAction<BugDao> updateBatchAction = MapperBatchAction.create(BugDao.class, this.sqlSessionFactory, 3);
         for (int i = 0; i < 10; i++) {
             UpdateQuery<Bug> updateQuery = UpdateQuery.createQuery(Bug.class)
@@ -83,8 +83,8 @@ public class DemoTest {
                     .and(Bug::getId, isEqual(10000 + i));
             updateBatchAction.addAction((mapper) -> mapper.updateByUpdateQuery(updateQuery));
         }
-        final List<BatchResult> batchResults1 = updateBatchAction.doBatchActions();
-        assertTrue(batchResults.size() > 0);
+        int effectRows = updateBatchAction.doBatchActions();
+        assertTrue(effectRows > 0);
         DynamicQuery<Bug> dynamicQuery = DynamicQuery.createQuery(Bug.class)
                 .and(Bug::getId, greaterThanOrEqual(10000));
         List<Bug> bugs = bugDao.selectByDynamicQuery(dynamicQuery);
