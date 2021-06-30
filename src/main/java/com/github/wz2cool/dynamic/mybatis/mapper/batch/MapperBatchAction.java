@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -47,7 +48,12 @@ public class MapperBatchAction<M extends DynamicQueryMapper<?>> {
         return this;
     }
 
-    public List<BatchResult> doBatchActions() {
+    /**
+     * do batch action and return batch result.
+     *
+     * @return batch result.
+     */
+    public List<BatchResult> doBatchActionWithResults() {
         List<BatchResult> result = new ArrayList<>();
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
             final M mapper = sqlSession.getMapper(mapperClass);
@@ -63,5 +69,15 @@ public class MapperBatchAction<M extends DynamicQueryMapper<?>> {
             result.addAll(batchResults);
         }
         return result;
+    }
+
+    /**
+     * do batch action
+     *
+     * @return effect rows (update counts)
+     */
+    public int doBatchActions() {
+        final List<BatchResult> batchResults = doBatchActionWithResults();
+        return batchResults.stream().flatMapToInt(x -> Arrays.stream(x.getUpdateCounts())).sum();
     }
 }
