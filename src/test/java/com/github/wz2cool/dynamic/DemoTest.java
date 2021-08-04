@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -30,8 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -48,6 +48,17 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testEmptyFilters() {
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(g -> g
+                        .or(false, Bug::getId, isEqual(0))
+                        .or(false, Bug::getId, isEqual(1)));
+
+        final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
+        assertFalse(CollectionUtils.isEmpty(bugs));
+    }
 
     @Test
     public void testBatchInsert() {

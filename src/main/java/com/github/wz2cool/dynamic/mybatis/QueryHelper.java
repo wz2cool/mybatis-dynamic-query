@@ -27,7 +27,7 @@ public class QueryHelper {
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (BaseFilterDescriptor baseFilterDescriptor : filters) {
             ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
-            if (paramExpression != null) {
+            if (paramExpression != null && StringUtils.isNotBlank(paramExpression.getExpression())) {
                 paramMap.putAll(paramExpression.getParamMap());
 
                 if (StringUtils.isEmpty(expression)) {
@@ -38,7 +38,9 @@ public class QueryHelper {
                 }
             }
         }
-
+        if (StringUtils.isBlank(expression)) {
+            return new ParamExpression();
+        }
         expression = String.format("(%s)", expression);
         ParamExpression paramExpression = new ParamExpression();
         paramExpression.setExpression(expression);
