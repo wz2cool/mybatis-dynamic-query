@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("filterGroupDescriptor")
 public class FilterGroupDescriptor<T>
         extends BaseFilterGroup<T, FilterGroupDescriptor<T>>
-        implements BaseFilterDescriptor {
+        implements BaseFilterDescriptor<T> {
 
     private FilterCondition condition = FilterCondition.AND;
 
