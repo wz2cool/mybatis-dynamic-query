@@ -324,7 +324,8 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
         return (S) this;
     }
 
-    public S or(BaseFilterDescriptor<T>... filters) {
+    @SafeVarargs
+    public final S or(BaseFilterDescriptor<T>... filters) {
         return or(true, filters);
     }
 
