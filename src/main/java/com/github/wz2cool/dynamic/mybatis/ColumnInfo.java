@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 /**
  * Created by Frank on 2017/6/25.
  */
-class ColumnInfo {
+public class ColumnInfo {
     private String columnName;
     private String tableOrAlias;
     private Field field;
