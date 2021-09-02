@@ -64,9 +64,7 @@ public class DemoTest {
         updateBug.setTitle("titleUpdate");
 
         UpdateQuery<Bug> query = UpdateQuery.createQuery(Bug.class)
-                .set(updateBug)
-                .ignore(Bug::getId)
-                .ignore(Bug::getTitle)
+                .set(updateBug, c -> c.ignore(Bug::getId, Bug::getTitle))
                 .and(Bug::getId, isEqual(id));
         bugDao.updateByUpdateQuery(query);
 
