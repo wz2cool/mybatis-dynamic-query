@@ -308,6 +308,10 @@ public class QueryHelper {
         return columnInfo.getQueryColumn();
     }
 
+    public Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
+        return this.entityCache.getPropertyColumnInfoMap(entityClass);
+    }
+
     String toAllColumnsExpression(final Class entityClass) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();

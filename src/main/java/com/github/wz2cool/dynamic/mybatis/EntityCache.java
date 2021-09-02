@@ -98,7 +98,7 @@ class EntityCache {
         return columnInfos.toArray(new ColumnInfo[columnInfos.size()]);
     }
 
-    private Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
+    Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }

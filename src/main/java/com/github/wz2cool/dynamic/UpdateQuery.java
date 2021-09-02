@@ -1,10 +1,13 @@
 package com.github.wz2cool.dynamic;
 
+import com.github.wz2cool.dynamic.exception.InternalRuntimeException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.*;
+import com.github.wz2cool.dynamic.mybatis.ColumnInfo;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -68,6 +71,39 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
 
     public UpdateQuery<T> set(GetStringPropertyFunction<T> getPropertyFunc, String value) {
         return set(true, getPropertyFunc, value);
+    }
+
+    public UpdateQuery<T> set(T record) {
+        return set(true, record);
+    }
+
+    public UpdateQuery<T> set(boolean enable, T record) {
+        if (enable) {
+            Map<String, ColumnInfo> propertyColumnInfoMap = QUERY_HELPER.getPropertyColumnInfoMap(record.getClass());
+            for (Map.Entry<String, ColumnInfo> propertyColumnInfoEntry : propertyColumnInfoMap.entrySet()) {
+                String propertyName = propertyColumnInfoEntry.getKey();
+                ColumnInfo columnInfo = propertyColumnInfoEntry.getValue();
+                try {
+                    Object value = columnInfo.getField().get(record);
+                    setColumnValueMap.put(propertyName, value);
+                } catch (IllegalAccessException e) {
+                    throw new InternalRuntimeException(e);
+                }
+            }
+        }
+        return this;
+    }
+
+    public UpdateQuery<T> ignore(GetCommonPropertyFunction<T> ignoreUpdatePropertyFuncs) {
+        return ignore(true, ignoreUpdatePropertyFuncs);
+    }
+
+    public UpdateQuery<T> ignore(boolean enable, GetCommonPropertyFunction<T> ignoreUpdatePropertyFuncs) {
+        if (enable) {
+            final String propertyName = CommonsHelper.getPropertyName(ignoreUpdatePropertyFuncs);
+            setColumnValueMap.remove(propertyName);
+        }
+        return this;
     }
 
     public UpdateQuery<T> set(boolean enable, GetBigDecimalPropertyFunction<T> getPropertyFunc, BigDecimal value) {
@@ -173,6 +209,15 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
         }
         String setExpression = String.join(",", setExpressionItems);
         result.put(MapperConstants.SET_EXPRESSION, setExpression);
+        return result;
+    }
+
+    private Set<String> getPropertyNames(GetCommonPropertyFunction<T>... getPropertyFuncs) {
+        Set<String> result = new HashSet<>();
+        for (GetCommonPropertyFunction<T> getPropertyFunction : getPropertyFuncs) {
+            String propertyName = CommonsHelper.getPropertyName(getPropertyFunction);
+            result.add(propertyName);
+        }
         return result;
     }
 }
