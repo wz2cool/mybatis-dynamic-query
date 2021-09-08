@@ -16,7 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Frank
  */
 public class CommonsHelper {
-    private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
+
+
+    private static final ConcurrentHashMap<GetPropertyFunction, PropertyInfo> classMap = new ConcurrentHashMap<>(256);
+    private static final String GET = "get";
+    private static final String IS = "is";
+    private static final String WRITE_REPLACE = "writeReplace";
+
 
     private CommonsHelper() {
         throw new UnsupportedOperationException();
@@ -83,33 +89,31 @@ public class CommonsHelper {
     @SuppressWarnings("squid:S00112")
     public static <T, R extends Comparable> PropertyInfo getPropertyInfo(GetPropertyFunction<T, R> fn) {
         try {
-            Method method = fn.getClass().getDeclaredMethod("writeReplace");
+            PropertyInfo propertyInfo = classMap.get(fn);
+            // First fetch it from cache
+            if (propertyInfo != null) {
+                return propertyInfo;
+            }
+
+            Method method = fn.getClass().getDeclaredMethod(WRITE_REPLACE);
             method.setAccessible(true);
             SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
             String methodName = serializedLambda.getImplMethodName();
             String className = serializedLambda.getImplClass();
             String propertyName;
-            String getString = "get";
-            String isString = "is";
-            if (methodName.startsWith(getString)) {
+            if (methodName.startsWith(GET)) {
                 propertyName = java.beans.Introspector.decapitalize(methodName.substring(3));
-            } else if (methodName.startsWith(isString)) {
+            } else if (methodName.startsWith(IS)) {
                 propertyName = java.beans.Introspector.decapitalize(methodName.substring(2));
             } else {
                 propertyName = methodName;
             }
 
-            Class ownerClass;
-            if (classMap.containsKey(className)) {
-                ownerClass = classMap.get(className);
-            } else {
-                ownerClass = Class.forName(className.replace('/', '.'));
-                classMap.put(className, ownerClass);
-            }
-
-            PropertyInfo propertyInfo = new PropertyInfo();
+            Class ownerClass = Class.forName(className.replace('/', '.'));
+            propertyInfo = new PropertyInfo();
             propertyInfo.setPropertyName(propertyName);
             propertyInfo.setOwnerClass(ownerClass);
+            classMap.put(fn, propertyInfo);
             return propertyInfo;
         } catch (ReflectiveOperationException e) {
             throw new InternalRuntimeException(e);
