@@ -51,7 +51,7 @@ public class DemoTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
-    public void testUpdateQuery() {
+    public void testUpdateQueryIgnore() {
         int id = 10000;
         Bug newBug = new Bug();
         newBug.setId(id);
@@ -64,9 +64,37 @@ public class DemoTest {
         updateBug.setTitle("titleUpdate");
 
         UpdateQuery<Bug> query = UpdateQuery.createQuery(Bug.class)
-                .set(updateBug)
-                .ignore(Bug::getId)
-                .ignore(Bug::getTitle)
+                .set(updateBug, c -> c.ignore(Bug::getId, Bug::getTitle))
+                .and(Bug::getId, isEqual(id));
+        bugDao.updateByUpdateQuery(query);
+
+        DynamicQuery<Bug> query1 = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, isEqual(id));
+
+        Bug bug = bugDao.selectFirstByDynamicQuery(query1).orElse(null);
+
+        assertEquals(id, (int) bug.getId());
+        assertEquals("frankUpdate", bug.getAssignTo());
+        assertEquals("title", bug.getTitle());
+
+        bugDao.deleteByDynamicQuery(query1);
+    }
+
+    @Test
+    public void testUpdateQuerySelect() {
+        int id = 10000;
+        Bug newBug = new Bug();
+        newBug.setId(id);
+        newBug.setAssignTo("frank");
+        newBug.setTitle("title");
+        bugDao.insert(newBug);
+
+        Bug updateBug = new Bug();
+        updateBug.setAssignTo("frankUpdate");
+        updateBug.setTitle("titleUpdate");
+
+        UpdateQuery<Bug> query = UpdateQuery.createQuery(Bug.class)
+                .set(updateBug, c -> c.select(Bug::getAssignTo))
                 .and(Bug::getId, isEqual(id));
         bugDao.updateByUpdateQuery(query);
 
