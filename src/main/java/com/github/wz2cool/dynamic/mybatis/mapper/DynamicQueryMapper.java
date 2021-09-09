@@ -41,7 +41,7 @@ public interface DynamicQueryMapper<T> extends
         int pageIndex = normPagingQuery.getPageIndex();
         int pageSize = normPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
-        int offset = pageIndex * pageSize;
+        int offset = (pageIndex - 1) * pageSize;
         List<T> dataList = selectRowBoundsByDynamicQuery(normPagingQuery, new RowBounds(offset, queryPageSize));
         // 补偿当前页没有需要到上一页
         if (normPagingQuery.isAutoFillIfEmpty() && dataList.isEmpty() && pageIndex - 1 > 1) {
@@ -64,6 +64,6 @@ public interface DynamicQueryMapper<T> extends
         result.setList(dataList);
         result.setPageIndex(normPagingQuery.getPageIndex());
         result.setPageSize(normPagingQuery.getPageSize());
-        return new NormPagingResult<>();
+        return result;
     }
 }

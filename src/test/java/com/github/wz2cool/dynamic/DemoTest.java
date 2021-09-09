@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
+import com.github.wz2cool.dynamic.model.NormPagingResult;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.CategoryGroupCountMapper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
@@ -49,6 +50,22 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testNormPaging() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+        NormPagingQuery<Bug> query = NormPagingQuery.createQuery(Bug.class, 5, 3, true, true);
+        NormPagingResult<Bug> bugNormPagingResult = bugDao.selectByNormalPaging(query);
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+    }
 
     @Test
     public void testUpdateQueryIgnore() {

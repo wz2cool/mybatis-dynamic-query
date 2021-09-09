@@ -39,12 +39,12 @@ public class NormPagingQuery<T> extends DynamicQuery<T> {
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, calcTotal);
+            Class<T> clazz, int pageIndex, int pageSize, boolean autoFillIfEmpty, boolean calcTotal) {
+        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoFillIfEmpty, calcTotal);
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, boolean autoBackIfEmpty, int pageSize) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, true);
+            Class<T> clazz, int pageIndex, boolean autoFillIfEmpty, int pageSize) {
+        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoFillIfEmpty, true);
     }
 }
