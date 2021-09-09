@@ -61,7 +61,11 @@ public interface DynamicQueryMapper<T> extends
         boolean hasPre = pageIndex > 1;
         result.setHasNextPage(hasNext);
         result.setHasPreviousPage(hasPre);
-        result.setList(dataList);
+        if (dataList.size() > pageSize) {
+            result.setList(dataList.subList(0, pageSize));
+        } else {
+            result.setList(dataList);
+        }
         result.setPageIndex(normPagingQuery.getPageIndex());
         result.setPageSize(normPagingQuery.getPageSize());
         return result;

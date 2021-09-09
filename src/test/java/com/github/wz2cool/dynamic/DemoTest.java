@@ -62,7 +62,7 @@ public class DemoTest {
             newBug.setTitle("title");
             bugDao.insert(newBug);
         }
-        NormPagingQuery<Bug> query = NormPagingQuery.createQuery(Bug.class, 5, 3, true, true);
+        NormPagingQuery<Bug> query = NormPagingQuery.createQuery(Bug.class, 1, 3, true, true);
         NormPagingResult<Bug> bugNormPagingResult = bugDao.selectByNormalPaging(query);
         bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
