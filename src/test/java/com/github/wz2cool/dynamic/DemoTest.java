@@ -97,6 +97,7 @@ public class DemoTest {
 
     @Test
     public void testUpdateQueryIgnore() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
         int id = 10000;
         Bug newBug = new Bug();
         newBug.setId(id);
@@ -122,11 +123,12 @@ public class DemoTest {
         assertEquals("frankUpdate", bug.getAssignTo());
         assertEquals("title", bug.getTitle());
 
-        bugDao.deleteByDynamicQuery(query1);
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
 
     @Test
     public void testUpdateQuerySelect() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
         int id = 10000;
         Bug newBug = new Bug();
         newBug.setId(id);
@@ -152,11 +154,20 @@ public class DemoTest {
         assertEquals("frankUpdate", bug.getAssignTo());
         assertEquals("title", bug.getTitle());
 
-        bugDao.deleteByDynamicQuery(query1);
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+
     }
 
     @Test
     public void testEmptyFilters() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        int id = 10000;
+        Bug newBug = new Bug();
+        newBug.setId(id);
+        newBug.setAssignTo("frank");
+        newBug.setTitle("title");
+        bugDao.insert(newBug);
+
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
                 .and(g -> g
                         .or(false, Bug::getId, isEqual(0))
@@ -164,6 +175,7 @@ public class DemoTest {
 
         final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         assertFalse(CollectionUtils.isEmpty(bugs));
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
 
     @Test
