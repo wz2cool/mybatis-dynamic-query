@@ -3,7 +3,7 @@ package com.github.wz2cool.dynamic;
 /**
  * @author Frank
  */
-public class NormPagingQuery<T> extends DynamicQuery<T> {
+public class NormPagingQuery<T> extends BaseDynamicQuery<T, NormPagingQuery<T>> {
 
     private final int pageIndex;
     private final int pageSize;
@@ -31,7 +31,7 @@ public class NormPagingQuery<T> extends DynamicQuery<T> {
     }
 
     private NormPagingQuery(Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
-        super(clazz);
+        this.setEntityClass(clazz);
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
         this.autoBackIfEmpty = autoBackIfEmpty;
@@ -46,5 +46,15 @@ public class NormPagingQuery<T> extends DynamicQuery<T> {
     public static <T> NormPagingQuery<T> createQuery(
             Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty) {
         return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, true);
+    }
+
+    public DynamicQuery<T> getDynamicQuery() {
+        DynamicQuery<T> dynamicQuery = DynamicQuery.createQuery(getEntityClass());
+        dynamicQuery.addFilters(this.getFilters());
+        dynamicQuery.addSorts(this.getSorts());
+        dynamicQuery.setDistinct(this.isDistinct());
+        dynamicQuery.setSelectedProperties(this.getSelectedProperties());
+        dynamicQuery.setIgnoredProperties(this.getIgnoredProperties());
+        return dynamicQuery;
     }
 }

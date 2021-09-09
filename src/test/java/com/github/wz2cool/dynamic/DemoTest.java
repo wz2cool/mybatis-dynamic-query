@@ -61,7 +61,9 @@ public class DemoTest {
             newBug.setTitle("title");
             bugDao.insert(newBug);
         }
-        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, true);
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, true)
+                .and(Bug::getId, greaterThanOrEqual(0))
+                .orderBy(Bug::getId, asc());
         NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
         assertEquals(10003, (int) query1Result.getList().get(0).getId());
         assertEquals(10, query1Result.getTotalCount());
