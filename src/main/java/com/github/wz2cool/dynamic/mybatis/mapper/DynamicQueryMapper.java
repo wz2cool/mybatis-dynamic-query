@@ -38,17 +38,17 @@ public interface DynamicQueryMapper<T> extends
      */
     default NormPagingResult<T> selectByNormalPaging(NormPagingQuery<T> normPagingQuery) {
         NormPagingResult<T> result = new NormPagingResult<>();
-        int pageIndex = normPagingQuery.getPageIndex();
+        int pageIndex = normPagingQuery.getPageIndex() < 1 ? 1 : normPagingQuery.getPageIndex();
         int pageSize = normPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
         int offset = (pageIndex - 1) * pageSize;
         List<T> dataList = selectRowBoundsByDynamicQuery(normPagingQuery, new RowBounds(offset, queryPageSize));
         // 补偿当前页没有需要到上一页
-        if (normPagingQuery.isAutoFillIfEmpty() && dataList.isEmpty() && pageIndex - 1 > 1) {
+        if (normPagingQuery.isAutoBackIfEmpty() && dataList.isEmpty() && pageIndex - 1 > 1) {
             int newPageIndex = pageIndex - 1;
             NormPagingQuery<T> newNormalPagingQuery = NormPagingQuery.createQuery(normPagingQuery.getEntityClass(),
                     newPageIndex, normPagingQuery.getPageSize(),
-                    normPagingQuery.isAutoFillIfEmpty(), normPagingQuery.isCalcTotal());
+                    normPagingQuery.isAutoBackIfEmpty(), normPagingQuery.isCalcTotal());
             return selectByNormalPaging(newNormalPagingQuery);
         }
         if (normPagingQuery.isCalcTotal()) {
@@ -66,7 +66,7 @@ public interface DynamicQueryMapper<T> extends
         } else {
             result.setList(dataList);
         }
-        result.setPageIndex(normPagingQuery.getPageIndex());
+        result.setPageIndex(pageIndex);
         result.setPageSize(normPagingQuery.getPageSize());
         return result;
     }

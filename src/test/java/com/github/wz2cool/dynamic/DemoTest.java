@@ -54,7 +54,6 @@ public class DemoTest {
     @Test
     public void testNormPaging() {
         bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
-
         for (int i = 0; i < 10; i++) {
             Bug newBug = new Bug();
             newBug.setId(10000 + i);
@@ -62,8 +61,29 @@ public class DemoTest {
             newBug.setTitle("title");
             bugDao.insert(newBug);
         }
-        NormPagingQuery<Bug> query = NormPagingQuery.createQuery(Bug.class, 1, 3, true, true);
-        NormPagingResult<Bug> bugNormPagingResult = bugDao.selectByNormalPaging(query);
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, true);
+        NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
+        assertEquals(10003, (int) query1Result.getList().get(0).getId());
+        assertEquals(10, query1Result.getTotalCount());
+        assertEquals(2, query1Result.getPageIndex());
+        assertTrue(query1Result.isHasNextPage());
+        assertTrue(query1Result.isHasPreviousPage());
+
+        NormPagingQuery<Bug> query2 = NormPagingQuery.createQuery(Bug.class, 5, 3, true, true);
+        NormPagingResult<Bug> query2Result = bugDao.selectByNormalPaging(query2);
+        assertEquals(10, query2Result.getTotalCount());
+        assertEquals(4, query2Result.getPageIndex());
+        assertFalse(query2Result.isHasNextPage());
+        assertTrue(query2Result.isHasPreviousPage());
+
+        NormPagingQuery<Bug> query3 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, false);
+        NormPagingResult<Bug> query3Result = bugDao.selectByNormalPaging(query3);
+        assertEquals(10003, (int) query3Result.getList().get(0).getId());
+        assertEquals(0, query3Result.getTotalCount());
+        assertEquals(2, query3Result.getPageIndex());
+        assertTrue(query3Result.isHasNextPage());
+        assertTrue(query3Result.isHasPreviousPage());
+
         bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
 

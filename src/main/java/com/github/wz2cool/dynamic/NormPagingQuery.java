@@ -1,14 +1,14 @@
 package com.github.wz2cool.dynamic;
 
 /**
- * @param <T>
+ * @author Frank
  */
 public class NormPagingQuery<T> extends DynamicQuery<T> {
 
     private final int pageIndex;
     private final int pageSize;
     private final boolean calcTotal;
-    private boolean autoFillIfEmpty;
+    private boolean autoBackIfEmpty;
 
     public int getPageIndex() {
         return pageIndex;
@@ -22,29 +22,29 @@ public class NormPagingQuery<T> extends DynamicQuery<T> {
         return calcTotal;
     }
 
-    public boolean isAutoFillIfEmpty() {
-        return autoFillIfEmpty;
+    public boolean isAutoBackIfEmpty() {
+        return autoBackIfEmpty;
     }
 
-    public void setAutoFillIfEmpty(boolean autoFillIfEmpty) {
-        this.autoFillIfEmpty = autoFillIfEmpty;
+    public void setAutoBackIfEmpty(boolean autoBackIfEmpty) {
+        this.autoBackIfEmpty = autoBackIfEmpty;
     }
 
-    private NormPagingQuery(Class<T> clazz, int pageIndex, int pageSize, boolean autoFillIfEmpty, boolean calcTotal) {
+    private NormPagingQuery(Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
         super(clazz);
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-        this.autoFillIfEmpty = autoFillIfEmpty;
+        this.autoBackIfEmpty = autoBackIfEmpty;
         this.calcTotal = calcTotal;
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, int pageSize, boolean autoFillIfEmpty, boolean calcTotal) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoFillIfEmpty, calcTotal);
+            Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
+        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, calcTotal);
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, boolean autoFillIfEmpty, int pageSize) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoFillIfEmpty, true);
+            Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty) {
+        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, true);
     }
 }
