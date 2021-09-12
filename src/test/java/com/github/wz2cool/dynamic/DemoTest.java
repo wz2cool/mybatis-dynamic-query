@@ -1,5 +1,7 @@
 package com.github.wz2cool.dynamic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
@@ -49,6 +51,87 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testNormPaging1() throws JsonProcessingException {
+        // 传统分页
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+        // default autoBackIfEmpty = false, calcTotal = true
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3);
+        NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        final String json1 = objectMapper.writeValueAsString(query1Result);
+        System.out.println(json1);
+        assertEquals(10003, (int) query1Result.getList().get(0).getId());
+        assertEquals(10, query1Result.getTotal());
+        assertEquals(2, query1Result.getPageNum());
+        assertEquals(4, query1Result.getPages());
+        assertTrue(query1Result.isHasNextPage());
+        assertTrue(query1Result.isHasPreviousPage());
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+    }
+
+    @Test
+    public void testNormPaging2() throws JsonProcessingException {
+        // 传统分页
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+        // 这里我们calcTotal 是false 就会不计算数量
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, false);
+        NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        final String json1 = objectMapper.writeValueAsString(query1Result);
+        System.out.println(json1);
+        assertEquals(10003, (int) query1Result.getList().get(0).getId());
+        assertEquals(0, query1Result.getTotal());
+        assertEquals(2, query1Result.getPageNum());
+        assertEquals(0, query1Result.getPages());
+        assertTrue(query1Result.isHasNextPage());
+        assertTrue(query1Result.isHasPreviousPage());
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+    }
+
+    @Test
+    public void testNormPaging3() throws JsonProcessingException {
+        // 传统分页
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+        // 这里我们calcTotal 是false 就会不计算数量，并且设置pageNum = 5
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 5, 3, true, false);
+        NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        final String json1 = objectMapper.writeValueAsString(query1Result);
+        System.out.println(json1);
+        assertEquals(10009, (int) query1Result.getList().get(0).getId());
+        assertEquals(0, query1Result.getTotal());
+        // 因为只有4页数据，即使用户上面设置的是5页，我们也会归到第4页上
+        assertEquals(4, query1Result.getPageNum());
+        assertEquals(0, query1Result.getPages());
+        // 一共只有4也所以没有下一页了
+        assertFalse(query1Result.isHasNextPage());
+        assertTrue(query1Result.isHasPreviousPage());
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+    }
+
 
     @Test
     public void testNormPaging() {
