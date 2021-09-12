@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
+import com.github.wz2cool.dynamic.model.NormPagingResult;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.CategoryGroupCountMapper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
@@ -51,7 +52,54 @@ public class DemoTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
+    public void testNormPaging() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(10000 + i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, true)
+                .and(Bug::getId, greaterThanOrEqual(0))
+                .orderBy(Bug::getId, asc());
+        NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
+        assertEquals(10003, (int) query1Result.getList().get(0).getId());
+        assertEquals(10, query1Result.getTotalCount());
+        assertEquals(2, query1Result.getPageIndex());
+        assertTrue(query1Result.isHasNextPage());
+        assertTrue(query1Result.isHasPreviousPage());
+
+        NormPagingQuery<Bug> query2 = NormPagingQuery.createQuery(Bug.class, 5, 3, true, true);
+        NormPagingResult<Bug> query2Result = bugDao.selectByNormalPaging(query2);
+        assertEquals(10, query2Result.getTotalCount());
+        assertEquals(4, query2Result.getPageIndex());
+        assertFalse(query2Result.isHasNextPage());
+        assertTrue(query2Result.isHasPreviousPage());
+
+        NormPagingQuery<Bug> query3 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, false);
+        NormPagingResult<Bug> query3Result = bugDao.selectByNormalPaging(query3);
+        assertEquals(10003, (int) query3Result.getList().get(0).getId());
+        assertEquals(0, query3Result.getTotalCount());
+        assertEquals(2, query3Result.getPageIndex());
+        assertTrue(query3Result.isHasNextPage());
+        assertTrue(query3Result.isHasPreviousPage());
+
+        NormPagingQuery<Bug> query4 = NormPagingQuery.createQuery(Bug.class, -1, 3, true, true);
+        NormPagingResult<Bug> query4Result = bugDao.selectByNormalPaging(query4);
+        assertEquals(10000, (int) query4Result.getList().get(0).getId());
+        assertEquals(10, query4Result.getTotalCount());
+        assertEquals(1, query4Result.getPageIndex());
+        assertTrue(query4Result.isHasNextPage());
+        assertFalse(query4Result.isHasPreviousPage());
+
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+    }
+
+    @Test
     public void testUpdateQueryIgnore() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
         int id = 10000;
         Bug newBug = new Bug();
         newBug.setId(id);
@@ -77,11 +125,12 @@ public class DemoTest {
         assertEquals("frankUpdate", bug.getAssignTo());
         assertEquals("title", bug.getTitle());
 
-        bugDao.deleteByDynamicQuery(query1);
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
 
     @Test
     public void testUpdateQuerySelect() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
         int id = 10000;
         Bug newBug = new Bug();
         newBug.setId(id);
@@ -107,11 +156,20 @@ public class DemoTest {
         assertEquals("frankUpdate", bug.getAssignTo());
         assertEquals("title", bug.getTitle());
 
-        bugDao.deleteByDynamicQuery(query1);
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+
     }
 
     @Test
     public void testEmptyFilters() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        int id = 10000;
+        Bug newBug = new Bug();
+        newBug.setId(id);
+        newBug.setAssignTo("frank");
+        newBug.setTitle("title");
+        bugDao.insert(newBug);
+
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
                 .and(g -> g
                         .or(false, Bug::getId, isEqual(0))
@@ -119,6 +177,7 @@ public class DemoTest {
 
         final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
         assertFalse(CollectionUtils.isEmpty(bugs));
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
     }
 
     @Test
