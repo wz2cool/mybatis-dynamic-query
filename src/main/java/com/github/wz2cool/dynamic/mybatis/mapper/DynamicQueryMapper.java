@@ -38,7 +38,7 @@ public interface DynamicQueryMapper<T> extends
      */
     default NormPagingResult<T> selectByNormalPaging(NormPagingQuery<T> normPagingQuery) {
         NormPagingResult<T> result = new NormPagingResult<>();
-        int pageIndex = normPagingQuery.getPageIndex() < 1 ? 1 : normPagingQuery.getPageIndex();
+        int pageIndex = normPagingQuery.getPageNum() < 1 ? 1 : normPagingQuery.getPageNum();
         int pageSize = normPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
         int offset = (pageIndex - 1) * pageSize;
