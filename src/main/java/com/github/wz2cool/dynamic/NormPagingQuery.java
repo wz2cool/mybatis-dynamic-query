@@ -48,6 +48,10 @@ public class NormPagingQuery<T> extends BaseDynamicQuery<T, NormPagingQuery<T>> 
         return new NormPagingQuery<>(clazz, pageNum, pageSize, autoBackIfEmpty, true);
     }
 
+    public static <T> NormPagingQuery<T> createQuery(Class<T> clazz, int pageNum, int pageSize) {
+        return new NormPagingQuery<>(clazz, pageNum, pageSize, false, true);
+    }
+
     public DynamicQuery<T> getDynamicQuery() {
         DynamicQuery<T> dynamicQuery = DynamicQuery.createQuery(getEntityClass());
         dynamicQuery.addFilters(this.getFilters());
