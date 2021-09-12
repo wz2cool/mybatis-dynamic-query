@@ -2,18 +2,38 @@ package com.github.wz2cool.dynamic.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Frank
  **/
 public class NormPagingResult<T> {
+    /**
+     * 是否有上一页
+     */
     private boolean hasPreviousPage;
+    /**
+     * 是否有下一页
+     */
     private boolean hasNextPage;
+    /**
+     * 每页数量
+     */
     private int pageSize;
-    private int pageIndex;
+    /**
+     * 页码
+     */
     private int pageNum;
-    private long totalCount;
+    /**
+     * 总页数
+     */
+    private int pages;
+    /**
+     * 总记录数
+     */
+    private long total;
+    /**
+     * 结果集
+     */
     private List<T> list = new ArrayList<>();
 
     public boolean isHasPreviousPage() {
@@ -48,14 +68,6 @@ public class NormPagingResult<T> {
         this.list = list == null ? new ArrayList<>() : new ArrayList<>(list);
     }
 
-    public int getPageIndex() {
-        return pageIndex;
-    }
-
-    public void setPageIndex(int pageIndex) {
-        this.pageIndex = pageIndex;
-    }
-
     public int getPageNum() {
         return pageNum;
     }
@@ -64,11 +76,19 @@ public class NormPagingResult<T> {
         this.pageNum = pageNum;
     }
 
-    public long getTotalCount() {
-        return totalCount;
+    public int getPages() {
+        return pages;
     }
 
-    public void setTotalCount(long totalCount) {
-        this.totalCount = totalCount;
+    public void setPages(int pages) {
+        this.pages = pages;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
     }
 }

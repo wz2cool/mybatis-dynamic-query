@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -66,31 +65,34 @@ public class DemoTest {
                 .orderBy(Bug::getId, asc());
         NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
         assertEquals(10003, (int) query1Result.getList().get(0).getId());
-        assertEquals(10, query1Result.getTotalCount());
-        assertEquals(2, query1Result.getPageIndex());
+        assertEquals(10, query1Result.getTotal());
+        assertEquals(2, query1Result.getPageNum());
+        assertEquals(4, query1Result.getPages());
         assertTrue(query1Result.isHasNextPage());
         assertTrue(query1Result.isHasPreviousPage());
 
         NormPagingQuery<Bug> query2 = NormPagingQuery.createQuery(Bug.class, 5, 3, true, true);
         NormPagingResult<Bug> query2Result = bugDao.selectByNormalPaging(query2);
-        assertEquals(10, query2Result.getTotalCount());
-        assertEquals(4, query2Result.getPageIndex());
+        assertEquals(10, query2Result.getTotal());
+        assertEquals(4, query2Result.getPageNum());
+        assertEquals(4, query2Result.getPages());
         assertFalse(query2Result.isHasNextPage());
         assertTrue(query2Result.isHasPreviousPage());
 
         NormPagingQuery<Bug> query3 = NormPagingQuery.createQuery(Bug.class, 2, 3, true, false);
         NormPagingResult<Bug> query3Result = bugDao.selectByNormalPaging(query3);
         assertEquals(10003, (int) query3Result.getList().get(0).getId());
-        assertEquals(0, query3Result.getTotalCount());
-        assertEquals(2, query3Result.getPageIndex());
+        assertEquals(0, query3Result.getTotal());
+        assertEquals(2, query3Result.getPageNum());
+        assertEquals(0, query3Result.getPages());
         assertTrue(query3Result.isHasNextPage());
         assertTrue(query3Result.isHasPreviousPage());
 
         NormPagingQuery<Bug> query4 = NormPagingQuery.createQuery(Bug.class, -1, 3, true, true);
         NormPagingResult<Bug> query4Result = bugDao.selectByNormalPaging(query4);
         assertEquals(10000, (int) query4Result.getList().get(0).getId());
-        assertEquals(10, query4Result.getTotalCount());
-        assertEquals(1, query4Result.getPageIndex());
+        assertEquals(10, query4Result.getTotal());
+        assertEquals(1, query4Result.getPageNum());
         assertTrue(query4Result.isHasNextPage());
         assertFalse(query4Result.isHasPreviousPage());
 
