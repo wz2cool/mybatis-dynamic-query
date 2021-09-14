@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.swing.border.EtchedBorder;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +52,15 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testNewFilter() {
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, o -> o.greaterThan(1))
+                .and(Bug::getId, o -> o.lessThan(100))
+                .orderBy(Bug::getId, SortDirections::desc);
+        final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
+    }
 
     @Test
     public void testNormPaging1() throws JsonProcessingException {
