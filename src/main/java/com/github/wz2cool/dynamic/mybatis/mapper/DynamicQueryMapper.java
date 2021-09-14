@@ -38,16 +38,16 @@ public interface DynamicQueryMapper<T> extends
      */
     default NormPagingResult<T> selectByNormalPaging(NormPagingQuery<T> normPagingQuery) {
         NormPagingResult<T> result = new NormPagingResult<>();
-        int pageIndex = normPagingQuery.getPageIndex() < 1 ? 1 : normPagingQuery.getPageIndex();
+        int pageNum = normPagingQuery.getPageNum() < 1 ? 1 : normPagingQuery.getPageNum();
         int pageSize = normPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
-        int offset = (pageIndex - 1) * pageSize;
+        int offset = (pageNum - 1) * pageSize;
         List<T> dataList = selectRowBoundsByDynamicQuery(normPagingQuery.getDynamicQuery(), new RowBounds(offset, queryPageSize));
         // 补偿当前页没有需要到上一页
-        if (normPagingQuery.isAutoBackIfEmpty() && dataList.isEmpty() && pageIndex > 1) {
-            int newPageIndex = pageIndex - 1;
+        if (normPagingQuery.isAutoBackIfEmpty() && dataList.isEmpty() && pageNum > 1) {
+            int newPageNum = pageNum - 1;
             NormPagingQuery<T> newNormalPagingQuery = NormPagingQuery.createQuery(normPagingQuery.getEntityClass(),
-                    newPageIndex, normPagingQuery.getPageSize(),
+                    newPageNum, normPagingQuery.getPageSize(),
                     normPagingQuery.isAutoBackIfEmpty(), normPagingQuery.isCalcTotal());
             newNormalPagingQuery.setDistinct(normPagingQuery.isDistinct());
             newNormalPagingQuery.setFilters(normPagingQuery.getFilters());
@@ -58,12 +58,12 @@ public interface DynamicQueryMapper<T> extends
         }
         if (normPagingQuery.isCalcTotal()) {
             int totalCount = selectCountByDynamicQuery(normPagingQuery.getDynamicQuery());
-            int pageNum = (int) Math.ceil((double) totalCount / pageSize);
-            result.setTotalCount(totalCount);
-            result.setPageNum(pageNum);
+            int pages = (int) Math.ceil((double) totalCount / pageSize);
+            result.setTotal(totalCount);
+            result.setPages(pages);
         }
         boolean hasNext = dataList.size() > pageSize;
-        boolean hasPre = pageIndex > 1;
+        boolean hasPre = pageNum > 1;
         result.setHasNextPage(hasNext);
         result.setHasPreviousPage(hasPre);
         if (dataList.size() > pageSize) {
@@ -71,7 +71,7 @@ public interface DynamicQueryMapper<T> extends
         } else {
             result.setList(dataList);
         }
-        result.setPageIndex(pageIndex);
+        result.setPageNum(pageNum);
         result.setPageSize(normPagingQuery.getPageSize());
         return result;
     }

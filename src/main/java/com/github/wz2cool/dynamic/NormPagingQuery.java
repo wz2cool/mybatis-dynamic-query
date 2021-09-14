@@ -5,13 +5,13 @@ package com.github.wz2cool.dynamic;
  */
 public class NormPagingQuery<T> extends BaseDynamicQuery<T, NormPagingQuery<T>> {
 
-    private final int pageIndex;
+    private final int pageNum;
     private final int pageSize;
     private final boolean calcTotal;
     private boolean autoBackIfEmpty;
 
-    public int getPageIndex() {
-        return pageIndex;
+    public int getPageNum() {
+        return pageNum;
     }
 
     public int getPageSize() {
@@ -30,22 +30,26 @@ public class NormPagingQuery<T> extends BaseDynamicQuery<T, NormPagingQuery<T>> 
         this.autoBackIfEmpty = autoBackIfEmpty;
     }
 
-    private NormPagingQuery(Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
+    private NormPagingQuery(Class<T> clazz, int pageNum, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
         this.setEntityClass(clazz);
-        this.pageIndex = pageIndex;
+        this.pageNum = pageNum;
         this.pageSize = pageSize;
         this.autoBackIfEmpty = autoBackIfEmpty;
         this.calcTotal = calcTotal;
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, calcTotal);
+            Class<T> clazz, int pageNum, int pageSize, boolean autoBackIfEmpty, boolean calcTotal) {
+        return new NormPagingQuery<>(clazz, pageNum, pageSize, autoBackIfEmpty, calcTotal);
     }
 
     public static <T> NormPagingQuery<T> createQuery(
-            Class<T> clazz, int pageIndex, int pageSize, boolean autoBackIfEmpty) {
-        return new NormPagingQuery<>(clazz, pageIndex, pageSize, autoBackIfEmpty, true);
+            Class<T> clazz, int pageNum, int pageSize, boolean autoBackIfEmpty) {
+        return new NormPagingQuery<>(clazz, pageNum, pageSize, autoBackIfEmpty, true);
+    }
+
+    public static <T> NormPagingQuery<T> createQuery(Class<T> clazz, int pageNum, int pageSize) {
+        return new NormPagingQuery<>(clazz, pageNum, pageSize, false, true);
     }
 
     public DynamicQuery<T> getDynamicQuery() {

@@ -20,7 +20,7 @@ public class UpdatePropertyConfig<T> {
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> select(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final UpdatePropertyConfig<T> select(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         for (GetCommonPropertyFunction<T> getCommonPropertyFunc : getCommonPropertyFuncs) {
             final String propertyName = CommonsHelper.getPropertyName(getCommonPropertyFunc);
             selectPropertyNames.add(propertyName);
@@ -29,11 +29,21 @@ public class UpdatePropertyConfig<T> {
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> ignore(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final UpdatePropertyConfig<T> select(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+        return select(true, getCommonPropertyFuncs);
+    }
+
+    @SafeVarargs
+    public final UpdatePropertyConfig<T> ignore(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         for (GetCommonPropertyFunction<T> getCommonPropertyFunc : getCommonPropertyFuncs) {
             final String propertyName = CommonsHelper.getPropertyName(getCommonPropertyFunc);
             ignorePropertyNames.add(propertyName);
         }
         return this;
+    }
+
+    @SafeVarargs
+    public final UpdatePropertyConfig<T> ignore(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+        return ignore(true, getCommonPropertyFuncs);
     }
 }
