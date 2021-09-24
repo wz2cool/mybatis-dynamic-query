@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
 /**
  * @author Frank
@@ -38,10 +39,26 @@ public class DynamicQuerySqlHelper {
         return String.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SELECT_COLUMNS_EXPRESSION);
     }
 
-    public static String getWhereClause() {
-        String newExpression = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.WHERE_EXPRESSION);
-        return String.format("<if test=\"%s != null and %s != ''\">WHERE ${%s}</if>",
-                newExpression, newExpression, newExpression);
+
+    /**
+     * 获取where条件
+     *
+     * @param entityClass 实体对象
+     * @return 动态条件
+     */
+    public static String getWhereClause(Class<?> entityClass) {
+        final String newExpression = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.WHERE_EXPRESSION);
+        StringBuilder sql = new StringBuilder();
+        sql.append("<where>");
+        sql.append(String.format("<if test=\"%s != null and %s != ''\">${%s}</if>",
+                newExpression, newExpression, newExpression));
+
+        //如果开启了逻辑删除的功能. 则拼接sql
+        if (SqlHelper.hasLogicDeleteColumn(entityClass)) {
+            sql.append(SqlHelper.whereLogicDelete(entityClass, false));
+        }
+        sql.append("</where>");
+        return sql.toString();
     }
 
     public static String getSortClause() {
