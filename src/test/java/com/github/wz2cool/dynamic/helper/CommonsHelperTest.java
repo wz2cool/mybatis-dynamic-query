@@ -168,9 +168,8 @@ public class CommonsHelperTest {
 
     @Test
     public void format() {
-        int count = 100_000_000;
+        int count = 1_000_000;
         System.out.println("循环次数: " + count + " 统计耗时为毫秒");
-
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
@@ -182,7 +181,7 @@ public class CommonsHelperTest {
 
         start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            String format = CommonsHelper.format("{},{},{},{},{}", "V1", "V2", "1", "2", "3");
+            String format = CommonsHelper.format("%s,%s,%s,%s,%s", "V1", "V2", "1", "2", "3");
         }
         end = System.currentTimeMillis();
         System.out.println("CommonsHelper.format {} :" + (end - start));
@@ -221,11 +220,11 @@ public class CommonsHelperTest {
         System.out.println("StringBuilder: " + (end - start));
 
 
-        String format = CommonsHelper.format("{},{},{},{},{}", "V1", "V2", "1", "2", "3");
+        String format = CommonsHelper.format("%s,%s,%s,%s,%s", "V1", "V2", "1", "2", "3");
         //V1,V2,1,2,3
         System.out.println(format);
 
-        format = CommonsHelper.format("'{}'''':::,{}',%'s,{}',{}", "V1", "V2", "1", "2", "3");
+        format = CommonsHelper.format("'%s'''':::,%s',%'s,%s',%s", "V1", "V2", "1", "2", "3");
         System.out.println(format);
         //'V1'''':::,V2',%'s,1',2
     }

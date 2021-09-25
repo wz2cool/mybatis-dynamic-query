@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wangjin
  */
 public class CommonsHelper {
-    private static final String SYMBOL = "{}";
+    private static final String SYMBOL = "%s";
     private static final int SYMBOL_LENGTH = SYMBOL.length();
 
     private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
@@ -120,24 +120,30 @@ public class CommonsHelper {
         }
     }
 
+
+    public static void main(String[] args) {
+        String format = format("<if test=\"%s != null and %s != ''\">GROUP BY ${%s}</if>", "A", "B", "C");
+        System.out.println(format);
+    }
+
     /**
-     * 字符串替换,表示符号为:{} {@link CommonsHelper#SYMBOL}
+     * 字符串替换,表示符号为: {@link CommonsHelper#SYMBOL}
      * <code>
-     * format("{},{}", "A", "B");           AB
-     * format("{},{}", "A", "B", "C");      A,B
-     * format("{},{},{}", "A");             A
-     * format("{},{},{}", "A", "B", "C");   A,B,C
+     * format("%s,%s", "A", "B");           AB
+     * format("%s,%s", "A", "B", "C");      A,B
+     * format("%s,%s,%s", "A");             A,%s,%s
+     * format("%s,%s,%s", "A", "B", "C");   A,B,C
      * </code>
      *
-     * @param pattern   根据{}去替换arguments
-     * @param arguments {}的替换值
+     * @param pattern   根据SYMBOL去替换arguments
+     * @param arguments SYMBOL的替换值
      * @return String
      */
     public static String format(String pattern, String... arguments) {
         final StringBuilder stringBuilder = new StringBuilder(pattern.length() + 16);
-        //当前{}的坐标
+        //当前SYMBOL的坐标
         int indexOf = -1;
-        //从什么位置开始找{}坐标
+        //从什么位置开始找SYMBOL坐标
         int fromIndex = 0;
         for (String argument : arguments) {
             indexOf = pattern.indexOf(SYMBOL, fromIndex);
@@ -146,7 +152,7 @@ public class CommonsHelper {
                     //直接返回,没有匹配到
                     return pattern;
                 } else {
-                    //这里说明{}加多了. 那就容错处理.添加后面所有的字符串返回
+                    //这里说明SYMBOL加多了. 那就容错处理.添加后面所有的字符串返回
                     return stringBuilder.append(pattern, fromIndex, pattern.length()).toString();
                 }
             }
@@ -155,6 +161,7 @@ public class CommonsHelper {
             //当前坐标加上SYMBOL_LENGTH,继续循环判断
             fromIndex = indexOf + SYMBOL_LENGTH;
         }
+        stringBuilder.append(pattern, fromIndex, pattern.length());
         return stringBuilder.toString();
     }
 }
