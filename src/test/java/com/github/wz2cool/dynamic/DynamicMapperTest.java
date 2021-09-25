@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.pagehelper.PageRowBounds;
+import com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
 import static org.junit.Assert.assertEquals;
@@ -31,6 +33,32 @@ import static org.junit.Assert.assertNull;
 public class DynamicMapperTest {
     @Autowired
     private UserDao userDao;
+
+
+    @Test
+    public void selectByDynamicQuery() {
+        DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
+        query.select(User::getId);
+        List<User> users = userDao.selectByDynamicQuery(query);
+        System.out.println(users);
+    }
+
+    @Test
+    public void getAllAsBind() {
+        DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
+        System.out.println(userDao.getAllAsBind(query));
+    }
+
+
+    @Test
+    public void getAllAsMap() {
+        DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
+        query.and(User::getId, DynamicQueryBuilderHelper.notIn(1));
+        Map<String, Object> stringObjectMap = query.toQueryParamMap();
+        System.out.println(userDao.getAllAsMap(stringObjectMap));
+    }
+
+
 
     @Test
     public void testInsert() {
@@ -214,7 +242,6 @@ public class DynamicMapperTest {
     public void testSelectByT() {
         User user = new User();
         user.setId(1);
-
         List<User> users = userDao.select(user);
         assertEquals(1, users.size());
     }
