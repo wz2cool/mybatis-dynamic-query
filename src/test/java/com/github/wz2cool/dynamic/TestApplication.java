@@ -1,8 +1,8 @@
 package com.github.wz2cool.dynamic;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * Created by Frank on 2017/7/15.

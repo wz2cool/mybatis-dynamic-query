@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Frank
  */
-public class DynamicQueryProvider {
+public class DynamicInsertProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
     public String selectCountByDynamicQuery(ProviderContext providerContext) {
