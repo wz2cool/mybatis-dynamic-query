@@ -43,9 +43,17 @@ public class DynamicMapperTest {
         System.out.println(users);
     }
 
+
+    @Test
+    public void selectByPrimaryKey() {
+        System.out.println(userDao.selectByPrimaryKey(1));
+        System.out.println(userDao.selectOptionalByPrimaryKey(1));
+    }
+
     @Test
     public void getAllAsBind() {
         DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
+        query.select(User::getId);
         System.out.println(userDao.getAllAsBind(query));
     }
 
@@ -57,7 +65,6 @@ public class DynamicMapperTest {
         Map<String, Object> stringObjectMap = query.toQueryParamMap();
         System.out.println(userDao.getAllAsMap(stringObjectMap));
     }
-
 
 
     @Test
