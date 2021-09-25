@@ -5,6 +5,7 @@ import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
 /**
  * @author Frank
+ * @author wangjin
  */
 public class DynamicQuerySqlHelper {
     private DynamicQuerySqlHelper() {

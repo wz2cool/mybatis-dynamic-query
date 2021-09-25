@@ -14,9 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Frank
+ * @author wangjin
  */
 public class CommonsHelper {
-    private final static String STRING_SPLIT = "%s";
+    private static final String SYMBOL = "{}";
+    private static final int SYMBOL_LENGTH = SYMBOL.length();
+
     private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
 
     private CommonsHelper() {
@@ -117,23 +120,40 @@ public class CommonsHelper {
         }
     }
 
-
     /**
-     * 字符串简单替换,只处理%s类型的
-     * pattern中的%s和arguments数量尽量保持一致,arguments必须大于pattern中的%s
+     * 字符串替换,表示符号为:{} {@link CommonsHelper#SYMBOL}
+     * <code>
+     * format("{},{}", "A", "B");           AB
+     * format("{},{}", "A", "B", "C");      A,B
+     * format("{},{},{}", "A");             A
+     * format("{},{},{}", "A", "B", "C");   A,B,C
+     * </code>
      *
-     * @param pattern   根据%s去替换arguments
-     * @param arguments %s的替换值
+     * @param pattern   根据{}去替换arguments
+     * @param arguments {}的替换值
      * @return String
      */
     public static String format(String pattern, String... arguments) {
-        if (arguments.length == 0) {
-            return pattern;
-        }
-        String[] split = pattern.split(STRING_SPLIT);
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < split.length; i++) {
-            stringBuilder.append(split[i]).append(arguments[i]);
+        final StringBuilder stringBuilder = new StringBuilder(pattern.length() + 16);
+        //当前{}的坐标
+        int indexOf = -1;
+        //从什么位置开始找{}坐标
+        int fromIndex = 0;
+        for (String argument : arguments) {
+            indexOf = pattern.indexOf(SYMBOL, fromIndex);
+            if (indexOf == -1) {
+                if (fromIndex == 0) {
+                    //直接返回,没有匹配到
+                    return pattern;
+                } else {
+                    //这里说明{}加多了. 那就容错处理.添加后面所有的字符串返回
+                    return stringBuilder.append(pattern, fromIndex, pattern.length()).toString();
+                }
+            }
+            stringBuilder.append(pattern, fromIndex, indexOf);
+            stringBuilder.append(argument);
+            //当前坐标加上SYMBOL_LENGTH,继续循环判断
+            fromIndex = indexOf + SYMBOL_LENGTH;
         }
         return stringBuilder.toString();
     }
