@@ -120,12 +120,6 @@ public class CommonsHelper {
         }
     }
 
-
-    public static void main(String[] args) {
-        String format = format("<if test=\"%s != null and %s != ''\">GROUP BY ${%s}</if>", "A", "B", "C");
-        System.out.println(format);
-    }
-
     /**
      * 字符串替换,表示符号为: {@link CommonsHelper#SYMBOL}
      * <code>
