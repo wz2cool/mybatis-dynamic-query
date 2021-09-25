@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,4 +164,70 @@ public class CommonsHelperTest {
         result = CommonsHelper.toStringSafe(1);
         assertEquals("1", result);
     }
+
+
+    @Test
+    public void format() {
+        int count = 10_000_000;
+        System.out.println("循环次数: " + count + " 统计耗时为毫秒");
+
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = MessageFormat.format("{0},{1},{2},{3},{4}", "V1", "V2", "1", "2", "3");
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("MessageFormat.format with {} 不同的占位符:" + (end - start));
+
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = CommonsHelper.format("%s,%s,%s,%s,%s", "V1", "V2", "1", "2", "3");
+        }
+        end = System.currentTimeMillis();
+        System.out.println("CommonsHelper.format {} :" + (end - start));
+
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = MessageFormat.format("{0},{0},{0},{0},{0}", "V1");
+        }
+        end = System.currentTimeMillis();
+        System.out.println("MessageFormat.format with 同一个占位符 {0} :" + (end - start));
+
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = "V1" + "V2" + "1" + "2" + "3";
+        }
+        end = System.currentTimeMillis();
+        System.out.println("String plus: " + (end - start));
+
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = String.format("%s,%s,%s,%s,%s", "V1", "V2", "1", "2", "3");
+        }
+        end = System.currentTimeMillis();
+        System.out.println("String.format: " + (end - start));
+
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            String format = new StringBuilder().append("V1").append("V2")
+                    .append("1").append("2").append("3").toString();
+        }
+        end = System.currentTimeMillis();
+        System.out.println("StringBuilder: " + (end - start));
+
+
+        String format = CommonsHelper.format("%s,%s,%s,%s,%s", "V1", "V2", "1", "2", "3");
+        //V1,V2,1,2,3
+        System.out.println(format);
+
+        format = CommonsHelper.format("'%s'''':::,%s',%'s,%s',%s", "V1", "V2", "1", "2", "3");
+        System.out.println(format);
+        //'V1'''':::,V2',%'s,1',2
+    }
+
 }

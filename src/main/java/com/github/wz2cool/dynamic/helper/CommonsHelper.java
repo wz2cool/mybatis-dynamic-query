@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Frank
  */
 public class CommonsHelper {
+    private final static String STRING_SPLIT = "%s";
     private static ConcurrentHashMap<String, Class> classMap = new ConcurrentHashMap<>();
 
     private CommonsHelper() {
@@ -114,5 +115,26 @@ public class CommonsHelper {
         } catch (ReflectiveOperationException e) {
             throw new InternalRuntimeException(e);
         }
+    }
+
+
+    /**
+     * 字符串简单替换,只处理%s类型的
+     * pattern中的%s和arguments数量尽量保持一致,arguments必须大于pattern中的%s
+     *
+     * @param pattern   根据%s去替换arguments
+     * @param arguments %s的替换值
+     * @return String
+     */
+    public static String format(String pattern, String... arguments) {
+        if (arguments.length == 0) {
+            return pattern;
+        }
+        String[] split = pattern.split(STRING_SPLIT);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < split.length; i++) {
+            stringBuilder.append(split[i]).append(arguments[i]);
+        }
+        return stringBuilder.toString();
     }
 }
