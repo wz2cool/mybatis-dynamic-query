@@ -2,22 +2,15 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.provider.ProviderFactory;
 import com.github.wz2cool.dynamic.provider.ProviderTable;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +19,7 @@ import java.util.Map;
 public class DynamicQueryProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
-    public String dynamicQuery( ProviderContext providerContext) {
+    public String dynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         Class<?> entityClass = providerTable.getEntityClass();
         StringBuilder sql = new StringBuilder();
@@ -44,6 +37,14 @@ public class DynamicQueryProvider {
         sql.append("</script>");
         System.out.println(sql.toString());
         return sql.toString();
+    }
+
+    public String selectByPrimaryKey(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        return new SQL().SELECT("*").FROM(providerTable.getTableName())
+                .WHERE(CommonsHelper.format("%s=#{%s}"
+                        , providerTable.getPrimaryKey().getColumn(), providerTable.getPrimaryKey().getColumn()))
+                .toString();
     }
 
     public String selectCountByDynamicQuery(ProviderContext providerContext) {

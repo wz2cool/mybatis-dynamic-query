@@ -3,7 +3,9 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 public interface SelectMapper<T> {
 
@@ -31,9 +33,11 @@ public interface SelectMapper<T> {
      * @param key
      * @return
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "select")
-    T selectByPrimaryKey(Object key);
+    @SelectProvider(type = DynamicQueryProvider.class, method = "selectByPrimaryKey")
+    T selectByPrimaryKey(Serializable key);
 
+    @SelectProvider(type = DynamicQueryProvider.class, method = "selectByPrimaryKey")
+    Optional<T> selectOptionalByPrimaryKey(Serializable key);
 
     /**
      * 查询全部结果

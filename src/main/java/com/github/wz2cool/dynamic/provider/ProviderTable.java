@@ -14,6 +14,8 @@ public class ProviderTable {
 
     protected String tableName;
 
+    protected ProviderColumn primaryKey;
+
     protected ProviderColumn[] columns;
     protected ProviderColumn[] transientColumns;
 
@@ -35,5 +37,9 @@ public class ProviderTable {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public ProviderColumn getPrimaryKey() {
+        return primaryKey;
     }
 }

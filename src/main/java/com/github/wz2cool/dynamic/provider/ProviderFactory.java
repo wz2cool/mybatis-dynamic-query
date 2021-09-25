@@ -55,6 +55,8 @@ public class ProviderFactory {
 
         List<ProviderColumn> columnList = new ArrayList<>(declaredFields.length);
         List<ProviderColumn> transientColumnList = new ArrayList<>(declaredFields.length);
+
+        ProviderColumn pk = null;
         for (Field declaredField : declaredFields) {
             final ProviderColumn col = new ProviderColumn();
 
@@ -64,6 +66,7 @@ public class ProviderFactory {
             col.columnType = declaredField.getType();
             if (declaredField.getAnnotation(Id.class) != null) {
                 col.isPrimaryKey = true;
+                pk = col;
             }
             if (declaredField.getAnnotation(Transient.class) == null) {
                 columnList.add(col);
@@ -76,6 +79,7 @@ public class ProviderFactory {
         providerTable.fields = declaredFields;
         providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
         providerTable.columns = columnList.toArray(new ProviderColumn[0]);
+        providerTable.primaryKey = pk;
         return providerTable;
     }
 }
