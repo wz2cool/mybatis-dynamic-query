@@ -134,10 +134,11 @@ public class DynamicQueryProvider {
         return sql;
     }
 
-    public String dynamicQuery(ProviderContext providerContext) {
+    public String dynamicQuery( ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         Class<?> entityClass = providerTable.getEntityClass();
         StringBuilder sql = new StringBuilder();
+        sql.append("<script>");
         //add bind
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(true));
         sql.append("SELECT");
@@ -148,6 +149,7 @@ public class DynamicQueryProvider {
         sql.append("from " + providerTable.getTableName() + " ");
         sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
         sql.append(DynamicQuerySqlHelper.getSortClause());
+        sql.append("</script>");
         System.out.println(sql.toString());
         return sql.toString();
     }
