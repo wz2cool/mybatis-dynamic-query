@@ -10,7 +10,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.provider.GroupedQueryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
-import tk.mybatis.mapper.annotation.RegisterMapper;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import java.util.Optional;
 /**
  * @author Frank
  **/
-@RegisterMapper
 @SuppressWarnings("java:S119")
 public interface SelectMinByGroupedQueryMapper<T> {
 

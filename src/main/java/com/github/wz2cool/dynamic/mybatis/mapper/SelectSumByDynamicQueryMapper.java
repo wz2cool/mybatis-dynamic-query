@@ -9,7 +9,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
-import tk.mybatis.mapper.annotation.RegisterMapper;
+
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -17,7 +17,6 @@ import java.util.Optional;
 /**
  * @author Frank
  **/
-@RegisterMapper
 public interface SelectSumByDynamicQueryMapper<T> {
 
     QueryHelper QUERY_HELPER = new QueryHelper();

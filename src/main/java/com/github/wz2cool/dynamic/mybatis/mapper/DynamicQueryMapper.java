@@ -3,7 +3,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 import com.github.wz2cool.dynamic.NormPagingQuery;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
 import org.apache.ibatis.session.RowBounds;
-import tk.mybatis.mapper.annotation.RegisterMapper;
+
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 
@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * @author Frank
  */
-@RegisterMapper
 public interface DynamicQueryMapper<T> extends
         BaseMapper<T>,
         InsertListMapper<T>,

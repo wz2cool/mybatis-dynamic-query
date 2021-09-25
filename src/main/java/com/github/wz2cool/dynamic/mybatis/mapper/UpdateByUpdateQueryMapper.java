@@ -5,12 +5,11 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
-import tk.mybatis.mapper.annotation.RegisterMapper;
+
 
 /**
  * @author Frank
  **/
-@RegisterMapper
 public interface UpdateByUpdateQueryMapper<T> {
 
     /**
