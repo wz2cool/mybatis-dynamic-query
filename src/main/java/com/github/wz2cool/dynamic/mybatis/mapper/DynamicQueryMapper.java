@@ -4,9 +4,6 @@ import com.github.wz2cool.dynamic.NormPagingQuery;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
 import org.apache.ibatis.session.RowBounds;
 
-import tk.mybatis.mapper.common.BaseMapper;
-import tk.mybatis.mapper.common.special.InsertListMapper;
-
 import java.util.List;
 
 
@@ -14,8 +11,10 @@ import java.util.List;
  * @author Frank
  */
 public interface DynamicQueryMapper<T> extends
-        BaseMapper<T>,
-        InsertListMapper<T>,
+        InsertMapper<T>,
+        UpdateMapper<T>,
+        DeleteMapper<T>,
+        SelectMapper<T>,
         SelectCountByDynamicQueryMapper<T>,
         DeleteByDynamicQueryMapper<T>,
         SelectByDynamicQueryMapper<T>,

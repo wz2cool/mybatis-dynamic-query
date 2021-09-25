@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
 /**
  * @author Frank
@@ -53,11 +52,6 @@ public class DynamicQuerySqlHelper {
         sql.append("<where>");
         sql.append(String.format("<if test=\"%s != null and %s != ''\">${%s}</if>",
                 newExpression, newExpression, newExpression));
-
-        //如果开启了逻辑删除的功能. 则拼接sql
-        if (SqlHelper.hasLogicDeleteColumn(entityClass)) {
-            sql.append(SqlHelper.whereLogicDelete(entityClass, false));
-        }
         sql.append("</where>");
         return sql.toString();
     }
