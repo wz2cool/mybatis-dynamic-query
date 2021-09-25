@@ -18,6 +18,22 @@ import java.util.Map;
 public class DynamicDeleteProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
+    @Deprecated
+    public String dynamicSQL(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        Class<?> entityClass = providerTable.getEntityClass();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT");
+        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
+                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
+        //支持查询指定列
+        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
+        sql.append("from " + providerTable.getTableName() + " ");
+        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
+        sql.append(DynamicQuerySqlHelper.getSortClause());
+        return sql.toString();
+    }
+
     public String selectCountByDynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         Class<?> entityClass = providerTable.getEntityClass();
@@ -92,7 +108,7 @@ public class DynamicDeleteProvider {
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
         sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sql.append("form " + providerTable.getTableName() + " ");
+        sql.append("from " + providerTable.getTableName() + " ");
         sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
         sql.append(DynamicQuerySqlHelper.getSortClause());
         return sql.toString();
@@ -131,10 +147,16 @@ public class DynamicDeleteProvider {
 //    }
 
     /// region for xml query
+    public static Map<String, Object> getDynamicQueryParamInternal(
+            final DynamicQuery dynamicQuery) {
+        System.out.println("into================");
+        return dynamicQuery.toQueryParamMap(true);
+    }
 
     public static Map<String, Object> getDynamicQueryParamInternal(
             final DynamicQuery dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
+        System.out.println("into================");
         return dynamicQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
 

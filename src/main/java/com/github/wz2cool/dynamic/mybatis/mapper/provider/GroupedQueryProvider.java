@@ -3,7 +3,12 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 import com.github.wz2cool.dynamic.GroupedQuery;
 import com.github.wz2cool.dynamic.mybatis.EntityHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.GroupedQuerySqlHelper;
+import com.github.wz2cool.dynamic.provider.ProviderFactory;
+import com.github.wz2cool.dynamic.provider.ProviderTable;
+import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.lang.reflect.ParameterizedType;
@@ -16,6 +21,22 @@ import java.util.Map;
  **/
 public class GroupedQueryProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
+
+    @Deprecated
+    public String dynamicSQL(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        Class<?> entityClass = providerTable.getEntityClass();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT");
+        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
+                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
+        //支持查询指定列
+        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
+        sql.append("from " + providerTable.getTableName() + " ");
+        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
+        sql.append(DynamicQuerySqlHelper.getSortClause());
+        return sql.toString();
+    }
 
 //
 //    public String selectByGroupedQuery(MappedStatement ms) {

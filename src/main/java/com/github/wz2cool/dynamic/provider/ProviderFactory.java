@@ -72,6 +72,7 @@ public class ProviderFactory {
             }
         }
         providerTable.tableName = tableName;
+        providerTable.entityClass = entityClass;
         providerTable.fields = declaredFields;
         providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
         providerTable.columns = columnList.toArray(new ProviderColumn[0]);

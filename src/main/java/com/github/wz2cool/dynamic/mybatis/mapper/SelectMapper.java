@@ -13,7 +13,7 @@ public interface SelectMapper<T> {
      * @param record
      * @return
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "select")
     List<T> select(T record);
 
     /**
@@ -22,7 +22,7 @@ public interface SelectMapper<T> {
      * @param record
      * @return
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "select")
     T selectOne(T record);
 
     /**
@@ -31,7 +31,7 @@ public interface SelectMapper<T> {
      * @param key
      * @return
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "select")
     T selectByPrimaryKey(Object key);
 
 
@@ -40,7 +40,7 @@ public interface SelectMapper<T> {
      *
      * @return
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "select")
     List<T> selectAll();
 
 
