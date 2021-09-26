@@ -21,7 +21,7 @@ public interface InsertMapper<T> {
      * @param record
      * @return
      */
-    @InsertProvider(type = DynamicInsertProvider.class, method = "dynamicSQL")
+    @InsertProvider(type = DynamicInsertProvider.class, method = "insertSelective")
     int insertSelective(T record);
 
 }

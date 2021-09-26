@@ -54,6 +54,16 @@ public class DynamicMapperTest {
 
 
     @Test
+    public void insert() {
+        User user = new User();
+//        user.setId(1);
+        user.setUserName("aaa");
+        user.setPassword("pasworddddddddd");
+        System.out.println(userDao.insert(user));
+    }
+
+
+    @Test
     public void selectAll() {
         System.out.println(userDao.selectAll());
     }
