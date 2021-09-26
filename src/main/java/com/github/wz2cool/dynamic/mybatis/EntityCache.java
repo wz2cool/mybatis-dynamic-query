@@ -12,11 +12,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 class EntityCache {
-    private static EntityCache instance = new EntityCache();
-    private final Map<Class, String[]> propertyNameCacheMap = new ConcurrentHashMap<>();
-    private final Map<Class, Map<String, ColumnInfo>> columnInfoCacheMap = new ConcurrentHashMap<>();
+    private static final EntityCache instance = new EntityCache();
+    private final Map<Class<?>, String[]> propertyNameCacheMap = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Map<String, ColumnInfo>> columnInfoCacheMap = new ConcurrentHashMap<>();
     private static final String ENTITY_CLASS = "entityClass";
-    private final Map<Class, String> viewExpressionCacheMap = new ConcurrentHashMap<>();
+    private final Map<Class<?>, String> viewExpressionCacheMap = new ConcurrentHashMap<>();
 
     // region implement singleton.
 
@@ -29,7 +29,7 @@ class EntityCache {
 
     // endregion
 
-    String getViewExpression(Class entityClass) {
+    String getViewExpression(Class<?> entityClass) {
         String viewExpression = viewExpressionCacheMap.get(entityClass);
         if (Objects.nonNull(viewExpression)) {
             return viewExpression;
@@ -45,7 +45,7 @@ class EntityCache {
         return viewExpression;
     }
 
-    String[] getPropertyNames(final Class entityClass) {
+    String[] getPropertyNames(final Class<?> entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }
@@ -64,7 +64,7 @@ class EntityCache {
         }
     }
 
-    boolean hasProperty(final Class entityClass, final String propertyName) {
+    boolean hasProperty(final Class<?> entityClass, final String propertyName) {
         if (StringUtils.isBlank(propertyName)) {
             return false;
         }
@@ -79,7 +79,7 @@ class EntityCache {
         return false;
     }
 
-    ColumnInfo getColumnInfo(Class entityClass, String propertyName) {
+    ColumnInfo getColumnInfo(Class<?> entityClass, String propertyName) {
         if (propertyName == null) {
             throw new NullPointerException("propertyName");
         }
@@ -92,13 +92,13 @@ class EntityCache {
         return propertyDbColumnMap.get(propertyName);
     }
 
-    ColumnInfo[] getColumnInfos(Class entityClass) {
+    ColumnInfo[] getColumnInfos(Class<?> entityClass) {
         Map<String, ColumnInfo> propertyDbColumnMap = getPropertyColumnInfoMap(entityClass);
         Collection<ColumnInfo> columnInfos = propertyDbColumnMap.values();
         return columnInfos.toArray(new ColumnInfo[columnInfos.size()]);
     }
 
-    Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
+    Map<String, ColumnInfo> getPropertyColumnInfoMap(Class<?> entityClass) {
         if (entityClass == null) {
             throw new NullPointerException(ENTITY_CLASS);
         }
