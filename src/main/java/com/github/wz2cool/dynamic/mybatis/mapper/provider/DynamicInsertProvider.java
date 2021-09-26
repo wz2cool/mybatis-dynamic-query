@@ -3,7 +3,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
-import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
  */
 public class DynamicInsertProvider {
     private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
-    private static final QueryHelper QUERY_HELPER = new QueryHelper();
-
 
     @Deprecated
     public String dynamicSQL(ProviderContext providerContext) {
@@ -68,7 +65,7 @@ public class DynamicInsertProvider {
         sqlBuilder.append(Arrays.stream(providerTable.getColumns())
 //                .filter(a->!a.isPrimaryKey())
                 .map(ProviderColumn::getJavaColumn)
-                .map(a->CommonsHelper.format("#{%s}",a))
+                .map(a -> CommonsHelper.format("#{%s}", a))
                 .collect(Collectors.joining(",")));
         sqlBuilder.append(")");
         sqlBuilder.append("</script>");
@@ -87,18 +84,21 @@ public class DynamicInsertProvider {
 
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("<script>");
-        sqlBuilder.append("insert into");
-        sqlBuilder.append(" ");
+        sqlBuilder.append("insert into ");
         sqlBuilder.append(providerTable.getTableName());
-        sqlBuilder.append("(");
-        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
-                .map(ProviderColumn::getDbColumn).collect(Collectors.joining(",")));
-        sqlBuilder.append(") ");
-        sqlBuilder.append("values (");
+        sqlBuilder.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (ProviderColumn column : providerTable.getColumns()) {
-            sqlBuilder.append(CommonsHelper.format("#{%s}", column.getJavaColumn()));
+            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\">%s,</if>",
+                    column.getJavaColumn(), column.getDbColumn()));
         }
-        sqlBuilder.append("values )");
+        sqlBuilder.append("</trim>");
+
+        sqlBuilder.append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">");
+        for (ProviderColumn column : providerTable.getColumns()) {
+            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\">#{%s},</if>",
+                    column.getJavaColumn(), column.getJavaColumn()));
+        }
+        sqlBuilder.append("</trim>");
         sqlBuilder.append("</script>");
         final String sql = sqlBuilder.toString();
         System.out.println(sql);
