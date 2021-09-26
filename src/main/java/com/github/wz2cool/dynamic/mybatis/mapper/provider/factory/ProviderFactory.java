@@ -1,14 +1,10 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
-import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.View;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wangjin
  */
 public class ProviderFactory {
-    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private static final Map<String, ProviderTable> cache = new ConcurrentHashMap<>(256);
 
     public static String genKey(ProviderContext providerContext) {
@@ -59,6 +54,7 @@ public class ProviderFactory {
         List<ProviderColumn> transientColumnList = new ArrayList<>(declaredFields.length);
 
         ProviderColumn pk = null;
+        boolean isAutoIncrement = false;
         for (Field declaredField : declaredFields) {
             final ProviderColumn col = new ProviderColumn();
             col.javaColumn = declaredField.getName();
@@ -70,6 +66,17 @@ public class ProviderFactory {
                 col.isPrimaryKey = true;
                 pk = col;
             }
+
+
+            GeneratedValue annotation = declaredField.getAnnotation(GeneratedValue.class);
+            if (annotation != null) {
+                if (annotation.strategy() == GenerationType.IDENTITY ||
+                        annotation.strategy() == GenerationType.AUTO) {
+                    //说明是自增
+                    isAutoIncrement = true;
+                }
+            }
+
             if (declaredField.getAnnotation(Transient.class) == null) {
                 columnList.add(col);
             } else {
@@ -83,6 +90,7 @@ public class ProviderFactory {
         providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
         providerTable.columns = columnList.toArray(new ProviderColumn[0]);
         providerTable.primaryKey = pk;
+        providerTable.isAutoIncrement = isAutoIncrement;
         return providerTable;
     }
 

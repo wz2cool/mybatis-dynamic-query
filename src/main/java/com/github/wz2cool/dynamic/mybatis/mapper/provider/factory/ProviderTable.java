@@ -10,7 +10,6 @@ public class ProviderTable {
 
     protected String key;
 
-
     protected Class<?> entityClass;
 
     protected Field[] fields;
@@ -18,6 +17,11 @@ public class ProviderTable {
     protected String tableName;
 
     protected ProviderColumn primaryKey;
+
+    /**
+     * 是否为自增ID
+     */
+    protected boolean isAutoIncrement;
 
     protected ProviderColumn[] columns;
     protected ProviderColumn[] transientColumns;
@@ -48,5 +52,9 @@ public class ProviderTable {
 
     public String getKey() {
         return key;
+    }
+
+    public boolean isAutoIncrement() {
+        return isAutoIncrement;
     }
 }

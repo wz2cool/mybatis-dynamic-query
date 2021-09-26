@@ -2,20 +2,26 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author Frank
  */
 public class DynamicInsertProvider {
+    private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
 
@@ -38,18 +44,60 @@ public class DynamicInsertProvider {
 
     public String insert(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
 
-        Class<?> entityClass = providerTable.getEntityClass();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT");
-        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
-                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
-        //支持查询指定列
-        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sql.append("from " + providerTable.getTableName() + " ");
-        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
-        sql.append(DynamicQuerySqlHelper.getSortClause());
-        return sql.toString();
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        sqlBuilder.append("insert into");
+        sqlBuilder.append(" ");
+        sqlBuilder.append(providerTable.getTableName());
+        sqlBuilder.append("(");
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                        .filter(a->!a.isPrimaryKey())
+                .map(ProviderColumn::getDbColumn).collect(Collectors.joining(",")));
+        sqlBuilder.append(") ");
+        sqlBuilder.append("values (");
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                .filter(a->!a.isPrimaryKey())
+                .map(ProviderColumn::getJavaColumn)
+                .map(a->CommonsHelper.format("#{%s}",a))
+                .collect(Collectors.joining(",")));
+        sqlBuilder.append(")");
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println(sql);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
+    public String insertSelective(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        sqlBuilder.append("insert into");
+        sqlBuilder.append(" ");
+        sqlBuilder.append(providerTable.getTableName());
+        sqlBuilder.append("(");
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                .map(ProviderColumn::getDbColumn).collect(Collectors.joining(",")));
+        sqlBuilder.append(") ");
+        sqlBuilder.append("values (");
+        for (ProviderColumn column : providerTable.getColumns()) {
+            sqlBuilder.append(CommonsHelper.format("#{%s}", column.getJavaColumn()));
+        }
+        sqlBuilder.append("values )");
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println(sql);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
     }
 
 
