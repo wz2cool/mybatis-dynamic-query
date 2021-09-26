@@ -86,14 +86,14 @@ public class ProviderFactory {
         return providerTable;
     }
 
-    public static void main(String[] args) {
-        System.out.println(underline("aaaa"));
-        System.out.println(underline("userInfo"));
-        System.out.println(underline("userIIIfino"));
-    }
 
     /**
      * 驼峰转下划线
+     *
+     * <code>
+     * aBCD         a_b_c_d
+     * abcD         abc_d
+     * </code>
      *
      * @param name 驼峰单词
      * @return 下划线单词
@@ -103,11 +103,45 @@ public class ProviderFactory {
         for (int i = 0; i < name.length(); ++i) {
             char ch = name.charAt(i);
             if (ch >= 'A' && ch <= 'Z') {
-                char ch_ucase = (char) (ch + 32);
+                char cause = (char) (ch + 32);
                 if (i > 0) {
                     buf.append('_');
                 }
-                buf.append(ch_ucase);
+                buf.append(cause);
+            } else {
+                buf.append(ch);
+            }
+        }
+        return buf.toString();
+    }
+
+    /**
+     * 下划线转驼峰
+     *
+     * <code>
+     * a_b_c____d      aBCD
+     * abc_d           abcD
+     * </code>
+     *
+     * @param name 下划线单词
+     * @return 驼峰单词
+     */
+    private static String camelLine(String name) {
+        StringBuilder buf = new StringBuilder();
+        boolean caseLine = false;
+        for (int i = 0; i < name.length(); ++i) {
+            char ch = name.charAt(i);
+            if (ch == '_') {
+                caseLine = true;
+                continue;
+            }
+            if (caseLine) {
+                if (ch >= 'A' && ch <= 'Z') {
+                    buf.append(ch);
+                } else {
+                    buf.append((char) (ch - 32));
+                }
+                caseLine = false;
             } else {
                 buf.append(ch);
             }
