@@ -20,6 +20,16 @@
     </select>
 
 
+
+    <select id="test" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User">
+        SELECT * from users
+        <where>
+            <if test="id != null">
+               and id = #{id}
+            </if>
+        </where>
+    </select>
+
     <select id="getAllAsMap" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User">
         SELECT * from users
         <where>
