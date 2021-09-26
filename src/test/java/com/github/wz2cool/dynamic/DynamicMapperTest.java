@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
 import static org.junit.Assert.assertEquals;
@@ -48,8 +49,34 @@ public class DynamicMapperTest {
 
     @Test
     public void selectByPrimaryKey() {
-        System.out.println(userDao.selectByPrimaryKey(1));
-        System.out.println(userDao.selectOptionalByPrimaryKey(1));
+        System.out.println(userDao.selectByPrimaryKey(2));
+    }
+
+
+    @Test
+    public void selectAll() {
+        System.out.println(userDao.selectAll());
+    }
+
+    @Test
+    public void selecttest() {
+        User user = new User();
+        user.setId(1);
+        System.out.println(userDao.test(user));
+    }
+
+    @Test
+    public void select() {
+        User user = new User();
+        user.setId(1);
+        System.out.println(userDao.select(user));
+    }
+
+    @Test
+    public void selectOne() {
+        User user = new User();
+        user.setId(1);
+        System.out.println(userDao.selectOne(user));
     }
 
     @Test
@@ -234,9 +261,9 @@ public class DynamicMapperTest {
         result = userDao.updateByUpdateQuery(userUpdateQuery);
         assertEquals(1, result);
 
-        final User user1 = userDao.selectByPrimaryKey(19);
-        assertEquals("Marry", user1.getUserName());
-        assertNull(user1.getPassword());
+        final Optional<User> user1 = userDao.selectByPrimaryKey(19);
+        assertEquals("Marry", user1.get().getUserName());
+        assertNull(user1.get().getPassword());
 
         userDao.deleteByPrimaryKey(19);
     }
@@ -260,25 +287,10 @@ public class DynamicMapperTest {
         User user = new User();
         user.setId(1);
 
-        User matchedUser = userDao.selectOne(user);
-        assertEquals(Integer.valueOf(1), matchedUser.getId());
+        Optional<User> matchedUser = userDao.selectOne(user);
+        assertEquals(Integer.valueOf(1), matchedUser.get().getId());
     }
 
-    @Test
-    public void testSelectCount() {
-        User user = new User();
-        user.setId(19);
-        user.setUserName("frank19");
-        user.setPassword("frank");
-
-        int result = userDao.insert(user);
-        assertEquals(1, result);
-
-        User findUser = new User();
-        user.setId(19);
-        result = userDao.selectCount(findUser);
-        assertEquals(true, result > 0);
-    }
 
     @Test
     public void testSelectRowBoundsByDynamicQuery() {

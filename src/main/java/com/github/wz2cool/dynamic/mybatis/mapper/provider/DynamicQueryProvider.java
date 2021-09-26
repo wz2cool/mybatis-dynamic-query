@@ -7,6 +7,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.SelectByDynamicQueryMapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.SelectMapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -30,7 +31,6 @@ public class DynamicQueryProvider {
      * 根据{@link SelectProvider#method()}解析的方法
      * 如:
      * {@link SelectByDynamicQueryMapper}
-     * {@link SelectMapper}
      *
      * @param providerContext 上下文
      * @return sql脚本
@@ -61,12 +61,70 @@ public class DynamicQueryProvider {
         return sql;
     }
 
+
+    /**
+     * 根据{@link SelectProvider#method()}解析的方法
+     * 如:
+     * {@link SelectMapper}
+     *
+     * @param providerContext 上下文
+     * @return sql脚本
+     */
+    public String selectAll(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        final String sql = "select * from " + providerTable.getTableName();
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
+    /**
+     * 待实体条件的查询
+     *
+     * @param providerContext
+     * @return
+     */
+    public String select(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        sqlBuilder.append("select * from ");
+        sqlBuilder.append(providerTable.getTableName());
+        sqlBuilder.append(" ");
+        sqlBuilder.append("<where>");
+        for (ProviderColumn column : providerTable.getColumns()) {
+            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\"> and %s = #{%s}</if>\n",
+                    column.getJavaColumn(), column.getDbColumn(), column.getJavaColumn()));
+        }
+        sqlBuilder.append("</where>");
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println(sql);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
     public String selectByPrimaryKey(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
-        return new SQL().SELECT("*").FROM(providerTable.getTableName())
-                .WHERE(CommonsHelper.format("%s=#{%s}"
-                        , providerTable.getPrimaryKey().getDbColumn(), providerTable.getPrimaryKey().getJavaColumn()))
-                .toString();
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("select * from ");
+        sqlBuilder.append(providerTable.getTableName());
+        sqlBuilder.append(" ");
+        sqlBuilder.append(CommonsHelper.format("where %s=#{%s}", providerTable.getPrimaryKey().getDbColumn(),
+                providerTable.getPrimaryKey().getJavaColumn()));
+        final String sql = sqlBuilder.toString();
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
     }
 
     public String selectCountByDynamicQuery(ProviderContext providerContext) {
@@ -146,23 +204,6 @@ public class DynamicQueryProvider {
         sql.append("from " + providerTable.getTableName() + " ");
         sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
         sql.append(DynamicQuerySqlHelper.getSortClause());
-        return sql.toString();
-    }
-
-
-    public String select(ProviderContext providerContext) {
-        ProviderTable providerTable = ProviderFactory.create(providerContext);
-        Class<?> entityClass = providerTable.getEntityClass();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT");
-//        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
-//                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
-        //支持查询指定列
-        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sql.append("from " + providerTable.getTableName() + " ");
-//        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
-//        sql.append(DynamicQuerySqlHelper.getSortClause());
-        System.out.println(sql.toString());
         return sql.toString();
     }
 

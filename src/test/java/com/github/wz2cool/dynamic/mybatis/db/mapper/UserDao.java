@@ -24,4 +24,6 @@ public interface UserDao extends DynamicQueryMapper<User> {
     List<User> getAllAsBind(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<User> dynamicQuery);
 
     List<User> getAllAsMap(@Param(MapperConstants.DYNAMIC_QUERY) Map<String, Object> params);
+
+    List<User> test(User user);
 }
