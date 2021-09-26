@@ -1,6 +1,7 @@
-package com.github.wz2cool.dynamic.provider;
+package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
+import com.github.wz2cool.dynamic.mybatis.View;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
@@ -33,7 +34,7 @@ public class ProviderFactory {
         if (cache.containsKey(key)) {
             return cache.get(key);
         }
-        final ProviderTable providerTable = createProviderTable(providerContext);
+        final ProviderTable providerTable = ProviderFactory.createProviderTable(providerContext);
         providerTable.key = key;
         cache.put(key, providerTable);
         return providerTable;
@@ -54,17 +55,16 @@ public class ProviderFactory {
         //取字段
         final Field[] declaredFields = entityClass.getDeclaredFields();
 
-
         List<ProviderColumn> columnList = new ArrayList<>(declaredFields.length);
         List<ProviderColumn> transientColumnList = new ArrayList<>(declaredFields.length);
 
         ProviderColumn pk = null;
         for (Field declaredField : declaredFields) {
             final ProviderColumn col = new ProviderColumn();
-
-            col.column = Optional.ofNullable(declaredField.getAnnotation(Column.class))
+            col.javaColumn = declaredField.getName();
+            col.dbColumn = Optional.ofNullable(declaredField.getAnnotation(Column.class))
                     .map(Column::name)
-                    .orElse(declaredField.getName());
+                    .orElse(ProviderFactory.underline(declaredField.getName()));
             col.columnType = declaredField.getType();
             if (declaredField.getAnnotation(Id.class) != null) {
                 col.isPrimaryKey = true;
@@ -76,17 +76,42 @@ public class ProviderFactory {
                 transientColumnList.add(col);
             }
         }
-
         //VIEW 注解的
-        final String viewExpression = QUERY_HELPER.getViewExpression(entityClass);
-
-
-        providerTable.tableName = viewExpression == null ? tableName : viewExpression;
+        providerTable.tableName = Optional.ofNullable(entityClass.getAnnotation(View.class)).map(View::value).orElse(tableName);
         providerTable.entityClass = entityClass;
         providerTable.fields = declaredFields;
         providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
         providerTable.columns = columnList.toArray(new ProviderColumn[0]);
         providerTable.primaryKey = pk;
         return providerTable;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(underline("aaaa"));
+        System.out.println(underline("userInfo"));
+        System.out.println(underline("userIIIfino"));
+    }
+
+    /**
+     * 驼峰转下划线
+     *
+     * @param name 驼峰单词
+     * @return 下划线单词
+     */
+    private static String underline(String name) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < name.length(); ++i) {
+            char ch = name.charAt(i);
+            if (ch >= 'A' && ch <= 'Z') {
+                char ch_ucase = (char) (ch + 32);
+                if (i > 0) {
+                    buf.append('_');
+                }
+                buf.append(ch_ucase);
+            } else {
+                buf.append(ch);
+            }
+        }
+        return buf.toString();
     }
 }

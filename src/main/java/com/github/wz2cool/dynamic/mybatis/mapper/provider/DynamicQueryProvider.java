@@ -3,11 +3,10 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
-import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.provider.ProviderFactory;
-import com.github.wz2cool.dynamic.provider.ProviderTable;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -52,7 +51,7 @@ public class DynamicQueryProvider {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         return new SQL().SELECT("*").FROM(providerTable.getTableName())
                 .WHERE(CommonsHelper.format("%s=#{%s}"
-                        , providerTable.getPrimaryKey().getColumn(), providerTable.getPrimaryKey().getColumn()))
+                        , providerTable.getPrimaryKey().getDbColumn(), providerTable.getPrimaryKey().getJavaColumn()))
                 .toString();
     }
 

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.wz2cool.dynamic.provider;
+package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
