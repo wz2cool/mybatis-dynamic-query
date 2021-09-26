@@ -33,6 +33,7 @@ public class ProviderFactory {
             return cache.get(key);
         }
         final ProviderTable providerTable = createProviderTable(providerContext);
+        providerTable.key = key;
         cache.put(key, providerTable);
         return providerTable;
     }
