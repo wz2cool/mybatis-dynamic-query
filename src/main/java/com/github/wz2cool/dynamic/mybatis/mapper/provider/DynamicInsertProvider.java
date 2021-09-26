@@ -55,12 +55,18 @@ public class DynamicInsertProvider {
         sqlBuilder.append(providerTable.getTableName());
         sqlBuilder.append("(");
         sqlBuilder.append(Arrays.stream(providerTable.getColumns())
-                        .filter(a->!a.isPrimaryKey())
+//                        .filter(a->{
+//                            //过滤条件
+//                            if (providerTable.isAutoIncrement()) {
+//                                //如果自增的话, 直接忽略插入
+//                            }
+//                            return false;
+//                        })
                 .map(ProviderColumn::getDbColumn).collect(Collectors.joining(",")));
         sqlBuilder.append(") ");
         sqlBuilder.append("values (");
         sqlBuilder.append(Arrays.stream(providerTable.getColumns())
-                .filter(a->!a.isPrimaryKey())
+//                .filter(a->!a.isPrimaryKey())
                 .map(ProviderColumn::getJavaColumn)
                 .map(a->CommonsHelper.format("#{%s}",a))
                 .collect(Collectors.joining(",")));
