@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Frank
  */
 public class DynamicQueryProvider {
-    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
 
 

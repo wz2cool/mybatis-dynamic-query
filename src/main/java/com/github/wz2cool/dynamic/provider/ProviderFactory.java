@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.provider;
 
+import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wangjin
  */
 public class ProviderFactory {
-
+    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private static final Map<String, ProviderTable> cache = new ConcurrentHashMap<>(256);
 
     public static String genKey(ProviderContext providerContext) {
@@ -75,7 +76,12 @@ public class ProviderFactory {
                 transientColumnList.add(col);
             }
         }
-        providerTable.tableName = tableName;
+
+        //VIEW 注解的
+        final String viewExpression = QUERY_HELPER.getViewExpression(entityClass);
+
+
+        providerTable.tableName = viewExpression == null ? tableName : viewExpression;
         providerTable.entityClass = entityClass;
         providerTable.fields = declaredFields;
         providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
