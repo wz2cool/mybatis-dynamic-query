@@ -49,17 +49,25 @@ public class DynamicMapperTest {
 
     @Test
     public void selectByPrimaryKey() {
-        System.out.println(userDao.selectByPrimaryKey(2));
+        System.out.println(userDao.selectByPrimaryKey(11111));
     }
 
-
+    @Test
+    public void insert2() {
+        User user = new User();
+        user.setId(11111);
+        user.setUserName("aaa");
+        System.out.println(userDao.insert(user));
+        System.out.println(userDao.selectByPrimaryKey(11111));
+    }
     @Test
     public void insert() {
         User user = new User();
-//        user.setId(1);
+        user.setId(11111);
         user.setUserName("aaa");
         user.setPassword("pasworddddddddd");
         System.out.println(userDao.insert(user));
+        System.out.println(userDao.selectByPrimaryKey(11111));
     }
 
 

@@ -15,6 +15,8 @@ import javax.persistence.Transient;
  */
 @Table(name = "users")
 public class User {
+
+
     @Id
     private Integer id;
     private String userName;
@@ -53,5 +55,16 @@ public class User {
 
     public void setUselessProperty(String uselessProperty) {
         this.uselessProperty = uselessProperty;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", uselessProperty='" + uselessProperty + '\'' +
+                '}';
     }
 }
