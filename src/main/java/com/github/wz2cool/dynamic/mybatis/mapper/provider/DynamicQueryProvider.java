@@ -12,31 +12,41 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Frank
  */
 public class DynamicQueryProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
+    private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
+
 
     public String dynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
+
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+
         Class<?> entityClass = providerTable.getEntityClass();
-        StringBuilder sql = new StringBuilder();
-        sql.append("<script>");
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
         //add bind
-        sql.append(DynamicQuerySqlHelper.getBindFilterParams(true));
-        sql.append("SELECT");
-        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
+        sqlBuilder.append(DynamicQuerySqlHelper.getBindFilterParams(true));
+        sqlBuilder.append("SELECT");
+        sqlBuilder.append(String.format("<if test=\"%s.%s\">distinct</if>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
-        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sql.append("from " + providerTable.getTableName() + " ");
-        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
-        sql.append(DynamicQuerySqlHelper.getSortClause());
-        sql.append("</script>");
-        System.out.println(sql.toString());
-        return sql.toString();
+        sqlBuilder.append(DynamicQuerySqlHelper.getSelectColumnsClause());
+        sqlBuilder.append("from " + providerTable.getTableName() + " ");
+        sqlBuilder.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
+        sqlBuilder.append(DynamicQuerySqlHelper.getSortClause());
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println("\n" + sql + "\n");
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
     }
 
     public String selectByPrimaryKey(ProviderContext providerContext) {

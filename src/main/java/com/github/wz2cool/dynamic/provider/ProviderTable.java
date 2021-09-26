@@ -8,6 +8,9 @@ import java.lang.reflect.Field;
  */
 public class ProviderTable {
 
+    protected String key;
+
+
     protected Class<?> entityClass;
 
     protected Field[] fields;
@@ -41,5 +44,9 @@ public class ProviderTable {
 
     public ProviderColumn getPrimaryKey() {
         return primaryKey;
+    }
+
+    public String getKey() {
+        return key;
     }
 }
