@@ -72,6 +72,16 @@ public class DynamicMapperTest {
 
 
     @Test
+    public void insertSelective() {
+        User user = new User();
+        user.setId(11111);
+        user.setUserName("aaa");
+        System.out.println(userDao.insertSelective(user));
+        System.out.println(userDao.selectByPrimaryKey(11111));
+    }
+
+
+    @Test
     public void selectAll() {
         System.out.println(userDao.selectAll());
     }
