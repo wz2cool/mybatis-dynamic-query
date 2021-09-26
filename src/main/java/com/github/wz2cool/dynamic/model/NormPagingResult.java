@@ -2,6 +2,9 @@ package com.github.wz2cool.dynamic.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Frank
@@ -35,6 +38,39 @@ public class NormPagingResult<T> {
      * 结果集
      */
     private List<T> list = new ArrayList<>();
+
+
+    /**
+     * 转换 NormPagingResult 的数据泛型
+     *
+     * @param mapper 数据类型映射关系
+     * @param <O>    目标数据泛型
+     * @return 目标数据泛型的 {@link NormPagingResult}
+     */
+    public <O> NormPagingResult<O> convert(Function<? super T, ? extends O> mapper) {
+        List<O> collect = this.getList().stream().map(mapper).collect(toList());
+        return copyPageResult(this, collect);
+    }
+
+    /**
+     * copy page result property and set list is collect
+     *
+     * @param sourcePageResult 源 {@link NormPagingResult}
+     * @param collect          重新设置的数据内容
+     * @param <O>              目标数据泛型
+     * @return copy 后的目标 {@link NormPagingResult}
+     */
+    private <O> NormPagingResult<O> copyPageResult(NormPagingResult<T> sourcePageResult, List<O> collect) {
+        NormPagingResult<O> objectPageResult = new NormPagingResult<>();
+        objectPageResult.setPageNum(sourcePageResult.getPageNum());
+        objectPageResult.setPageSize(sourcePageResult.getPageSize());
+        objectPageResult.setHasPreviousPage(sourcePageResult.isHasPreviousPage());
+        objectPageResult.setHasNextPage(sourcePageResult.isHasNextPage());
+        objectPageResult.setPages(sourcePageResult.getPages());
+        objectPageResult.setTotal(sourcePageResult.getTotal());
+        objectPageResult.setList(collect);
+        return objectPageResult;
+    }
 
     public boolean isHasPreviousPage() {
         return hasPreviousPage;
