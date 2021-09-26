@@ -1,19 +1,11 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
-import com.github.wz2cool.dynamic.GroupedQuery;
-import com.github.wz2cool.dynamic.mybatis.EntityHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.GroupedQuerySqlHelper;
-import com.github.wz2cool.dynamic.provider.ProviderFactory;
-import com.github.wz2cool.dynamic.provider.ProviderTable;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
 
 
 /**

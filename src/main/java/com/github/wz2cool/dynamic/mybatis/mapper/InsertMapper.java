@@ -11,7 +11,7 @@ public interface InsertMapper<T> {
      * @param record
      * @return
      */
-    @InsertProvider(type = DynamicInsertProvider.class, method = "dynamicSQL")
+    @InsertProvider(type = DynamicInsertProvider.class, method = "insert")
     int insert(T record);
 
 

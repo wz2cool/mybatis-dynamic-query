@@ -1,4 +1,4 @@
-package com.github.wz2cool.dynamic.provider;
+package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 
 import java.lang.reflect.Field;
