@@ -153,12 +153,22 @@ public class DynamicDeleteProvider {
         return dynamicQuery.toQueryParamMap(true);
     }
 
+
+    /**
+     * 通过xml中的bind调用
+     * {@link DynamicQuerySqlHelper#getBindFilterParams(boolean)}
+     *
+     * @param dynamicQuery               dynamicQuery
+     * @param isMapUnderscoreToCamelCase 下划线转驼峰
+     * @return Map
+     */
     public static Map<String, Object> getDynamicQueryParamInternal(
-            final DynamicQuery dynamicQuery,
+            final DynamicQuery<?> dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
         System.out.println("into================");
         return dynamicQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
+
 
     public static Map<String, Object> getUpdateQueryParamInternal(
             final UpdateQuery updateQuery,
