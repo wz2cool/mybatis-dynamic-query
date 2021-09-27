@@ -60,6 +60,17 @@ public class DynamicMapperTest {
         user.setUserName("aaa");
         System.out.println(userDao.insert(user));
         System.out.println(userDao.selectByPrimaryKey(11111));
+
+        user.setUserName("bbbbb");
+        userDao.updateByPrimaryKey(user);
+        System.out.println(userDao.selectByPrimaryKey(11111));
+
+
+        user = new User();
+        user.setId(11111);
+        user.setPassword("password");
+        userDao.updateByPrimaryKeySelective(user);
+        System.out.println(userDao.selectByPrimaryKey(11111));
     }
 
     @Test
