@@ -13,14 +13,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -124,13 +117,10 @@ public class DynamicQueryProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("select * from ");
-        sqlBuilder.append(providerTable.getTableName());
-        sqlBuilder.append(" ");
-        sqlBuilder.append(CommonsHelper.format("where %s=#{%s}", providerTable.getPrimaryKey().getDbColumn(),
-                providerTable.getPrimaryKey().getJavaColumn()));
-        final String sql = sqlBuilder.toString();
+
+        final String sql = CommonsHelper.format("select * from %s where %s = #{%s}"
+                , providerTable.getTableName(), providerTable.getPrimaryKey().getDbColumn(),
+                providerTable.getPrimaryKey().getJavaColumn());
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
