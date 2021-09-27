@@ -6,6 +6,7 @@ import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.DynamicCreateSqlFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
@@ -38,17 +39,13 @@ public class DynamicDeleteProvider {
         return sql.toString();
     }
 
+
     public String deleteByPrimaryKey(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-        if (!providerTable.getPrimaryKey().isPrimaryKey()) {
-            return "no primaryKey";
-        }
-        final String sql = CommonsHelper.format("delete from %s where %s = #{%s}",
-                providerTable.getTableName(), providerTable.getPrimaryKey().getDbColumn(), providerTable.getPrimaryKey().getJavaColumn());
-        System.out.println(sql);
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDeleteSql(true);
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
@@ -59,18 +56,7 @@ public class DynamicDeleteProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("<script>");
-        sqlBuilder.append(CommonsHelper.format("delete from %s ", providerTable.getTableName()));
-        sqlBuilder.append("<where>");
-        for (ProviderColumn column : providerTable.getColumns()) {
-            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\"> and %s = #{%s}</if>\n",
-                    column.getJavaColumn(), column.getDbColumn(), column.getJavaColumn()));
-        }
-        sqlBuilder.append("</where>");
-        sqlBuilder.append("</script>");
-        final String sql = sqlBuilder.toString();
-        System.out.println(sql);
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDeleteSql(false);
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }

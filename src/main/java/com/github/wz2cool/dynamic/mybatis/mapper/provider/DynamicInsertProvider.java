@@ -2,19 +2,16 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
-import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.DynamicCreateSqlFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * @author Frank
@@ -44,33 +41,7 @@ public class DynamicInsertProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("<script>");
-        sqlBuilder.append("insert into");
-        sqlBuilder.append(" ");
-        sqlBuilder.append(providerTable.getTableName());
-        sqlBuilder.append("(");
-        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
-//                        .filter(a->{
-//                            //过滤条件
-//                            if (providerTable.isAutoIncrement()) {
-//                                //如果自增的话, 直接忽略插入
-//                            }
-//                            return false;
-//                        })
-                .map(ProviderColumn::getDbColumn).collect(Collectors.joining(",")));
-        sqlBuilder.append(") ");
-        sqlBuilder.append("values (");
-        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
-//                .filter(a->!a.isPrimaryKey())
-                .map(ProviderColumn::getJavaColumn)
-                .map(a -> CommonsHelper.format("#{%s}", a))
-                .collect(Collectors.joining(",")));
-        sqlBuilder.append(")");
-        sqlBuilder.append("</script>");
-        final String sql = sqlBuilder.toString();
-        System.out.println(sql);
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getInsertSql(false);
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
@@ -81,27 +52,7 @@ public class DynamicInsertProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("<script>");
-        sqlBuilder.append("insert into ");
-        sqlBuilder.append(providerTable.getTableName());
-        sqlBuilder.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
-        for (ProviderColumn column : providerTable.getColumns()) {
-            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\">%s,</if>",
-                    column.getJavaColumn(), column.getDbColumn()));
-        }
-        sqlBuilder.append("</trim>");
-
-        sqlBuilder.append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">");
-        for (ProviderColumn column : providerTable.getColumns()) {
-            sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null\">#{%s},</if>",
-                    column.getJavaColumn(), column.getJavaColumn()));
-        }
-        sqlBuilder.append("</trim>");
-        sqlBuilder.append("</script>");
-        final String sql = sqlBuilder.toString();
-        System.out.println(sql);
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getInsertSql(true);
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
