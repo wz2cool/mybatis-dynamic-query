@@ -162,6 +162,22 @@
             <version>2.2</version>
         </dependency>
 
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-core &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-core</artifactId>-->
+<!--            <version>5.3.10</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+<!--        jsr305 规范-->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

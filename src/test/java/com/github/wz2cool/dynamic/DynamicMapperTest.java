@@ -40,7 +40,7 @@ public class DynamicMapperTest {
     public void selectByDynamicQuery() {
         DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
         query.select(User::getId);
-        query.and(User::getId,DynamicQueryBuilderHelper.notIn(1));
+        query.and(User::getId, DynamicQueryBuilderHelper.notIn(1));
         List<User> users = userDao.selectByDynamicQuery(query);
         List<User> users2 = userDao.selectByDynamicQuery(query);
         System.out.println(users);
@@ -61,6 +61,7 @@ public class DynamicMapperTest {
         System.out.println(userDao.insert(user));
         System.out.println(userDao.selectByPrimaryKey(11111));
     }
+
     @Test
     public void insert() {
         User user = new User();
