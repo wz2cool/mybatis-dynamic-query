@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Frank
@@ -19,38 +20,38 @@ public class QueryHelper {
     // region and
 
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
+        AtomicInteger paramNum = new AtomicInteger(0);
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
-
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (BaseFilterDescriptor baseFilterDescriptor : filters) {
-            ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
+            ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor, paramNum);
             if (paramExpression != null && StringUtils.isNotBlank(paramExpression.getExpression())) {
                 paramMap.putAll(paramExpression.getParamMap());
 
                 if (StringUtils.isEmpty(expression)) {
                     expression = paramExpression.getExpression();
                 } else {
-                    expression = String.format("%s %s %s",
-                            expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
+                    expression = CommonsHelper.format("%s %s %s",
+                            expression, baseFilterDescriptor.getCondition().toString(), paramExpression.getExpression());
                 }
             }
         }
         if (StringUtils.isBlank(expression)) {
             return new ParamExpression();
         }
-        expression = String.format("(%s)", expression);
+        expression = CommonsHelper.format("(%s)", expression);
         ParamExpression paramExpression = new ParamExpression();
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor) {
+    ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor, final AtomicInteger paramNum) {
         if (baseFilterDescriptor instanceof FilterDescriptor) {
-            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor);
+            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor, paramNum);
         } else if (baseFilterDescriptor instanceof FilterGroupDescriptor) {
             FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) baseFilterDescriptor;
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
@@ -78,7 +79,7 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
+    private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor, final AtomicInteger paramNum) {
         String propertyPath = filterDescriptor.getPropertyName();
         FilterOperator operator = filterDescriptor.getOperator();
         Object[] filterValues = getFilterValues(filterDescriptor);
@@ -90,9 +91,9 @@ public class QueryHelper {
             String paramPlaceholder1;
             String paramPlaceholder2;
             paramPlaceholder1 =
-                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    CommonsHelper.format("param_%s_BETWEEN_%s", propertyPath, paramNum.incrementAndGet() + "");
             paramPlaceholder2 =
-                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("param_%s_BETWEEN_%s", propertyPath, paramNum.incrementAndGet() + "");
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder1, paramPlaceholder2);
             paramMap.put(paramPlaceholder1, filterValues[0]);
             paramMap.put(paramPlaceholder2, filterValues[1]);
@@ -100,7 +101,7 @@ public class QueryHelper {
             List<String> paramPlaceholders = new ArrayList<>();
             for (Object filterValue : filterValues) {
                 String paramPlaceholder =
-                        String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                        CommonsHelper.format("param_%s_%s_%s", propertyPath, operator.name(), paramNum.incrementAndGet() + "");
                 paramPlaceholders.add(paramPlaceholder);
                 paramMap.put(paramPlaceholder, filterValue);
             }
@@ -110,7 +111,7 @@ public class QueryHelper {
         } else {
             String paramPlaceholder;
             paramPlaceholder =
-                    String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                    CommonsHelper.format("param_%s_%s_%s", propertyPath, operator.name(), paramNum.incrementAndGet() + "");
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
 
             Object filterValue = processSingleFilterValue(operator, filterValues[0]);
@@ -145,6 +146,7 @@ public class QueryHelper {
 
         return expressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
     }
+
 
     Object[] getFilterValues(final FilterDescriptor filterDescriptor) {
         FilterOperator operator = filterDescriptor.getOperator();
