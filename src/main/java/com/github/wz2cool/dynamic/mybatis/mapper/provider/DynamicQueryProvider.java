@@ -117,6 +117,9 @@ public class DynamicQueryProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
+        if (providerTable.getPrimaryKey() == null) {
+            throw new IllegalArgumentException(CommonsHelper.format("该类[%s]没有发现主键", providerTable.getTableName()));
+        }
 
         final String sql = CommonsHelper.format("select * from %s where %s = #{%s}"
                 , providerTable.getTableName(), providerTable.getPrimaryKey().getDbColumn(),
