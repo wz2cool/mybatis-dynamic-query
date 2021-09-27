@@ -3,6 +3,8 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicDeleteProvider;
 import org.apache.ibatis.annotations.DeleteProvider;
 
+import java.io.Serializable;
+
 
 public interface DeleteMapper<T> {
     /**
@@ -11,7 +13,7 @@ public interface DeleteMapper<T> {
      * @param record
      * @return
      */
-    @DeleteProvider(type = DynamicDeleteProvider.class, method = "dynamicSQL")
+    @DeleteProvider(type = DynamicDeleteProvider.class, method = "delete")
     int delete(T record);
 
     /**
@@ -20,6 +22,6 @@ public interface DeleteMapper<T> {
      * @param key
      * @return
      */
-    @DeleteProvider(type = DynamicDeleteProvider.class, method = "dynamicSQL")
-    int deleteByPrimaryKey(Object key);
+    @DeleteProvider(type = DynamicDeleteProvider.class, method = "deleteByPrimaryKey")
+    int deleteByPrimaryKey(Serializable key);
 }

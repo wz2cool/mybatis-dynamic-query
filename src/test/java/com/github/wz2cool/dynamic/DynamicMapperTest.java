@@ -65,12 +65,17 @@ public class DynamicMapperTest {
         userDao.updateByPrimaryKey(user);
         System.out.println(userDao.selectByPrimaryKey(11111));
 
-
         user = new User();
         user.setId(11111);
         user.setPassword("password");
         userDao.updateByPrimaryKeySelective(user);
         System.out.println(userDao.selectByPrimaryKey(11111));
+    }
+
+
+    @Test
+    public void deleteByPrimaryKey() {
+        System.out.println(userDao.deleteByPrimaryKey(1));
     }
 
     @Test
