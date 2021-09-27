@@ -10,6 +10,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> extends BaseFilterGroup<T, S> {
 
@@ -85,6 +86,26 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
     }
 
     public S orderBy(boolean enable, GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
+        if (enable) {
+            String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
+            SortDirection direction = sortDirection.getDirection();
+            SortDescriptor sortDescriptor = new SortDescriptor();
+            sortDescriptor.setPropertyName(propertyName);
+            sortDescriptor.setDirection(direction);
+            addSorts(sortDescriptor);
+        }
+        return (S) this;
+    }
+
+    private static final SortDirections SORT_DIRECTIONS = new SortDirections();
+
+    public S orderBy(GetPropertyFunction<T, Comparable> getPropertyFunc, Function<SortDirections, ISortDirection> sortDirectionFunc) {
+        return orderBy(true, getPropertyFunc, sortDirectionFunc);
+    }
+
+    public S orderBy(boolean enable, GetPropertyFunction<T, Comparable> getPropertyFunc,
+                     Function<SortDirections, ISortDirection> sortDirectionFunc) {
+        final ISortDirection sortDirection = sortDirectionFunc.apply(SORT_DIRECTIONS);
         if (enable) {
             String propertyName = CommonsHelper.getPropertyName(getPropertyFunc);
             SortDirection direction = sortDirection.getDirection();

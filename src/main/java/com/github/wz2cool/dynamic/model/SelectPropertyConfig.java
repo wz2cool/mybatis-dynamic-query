@@ -6,7 +6,7 @@ import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UpdatePropertyConfig<T> {
+public class SelectPropertyConfig<T> {
 
     private final Set<String> selectPropertyNames = new HashSet<>();
     private final Set<String> ignorePropertyNames = new HashSet<>();
@@ -20,7 +20,7 @@ public class UpdatePropertyConfig<T> {
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> select(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final SelectPropertyConfig<T> select(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         for (GetCommonPropertyFunction<T> getCommonPropertyFunc : getCommonPropertyFuncs) {
             final String propertyName = CommonsHelper.getPropertyName(getCommonPropertyFunc);
             selectPropertyNames.add(propertyName);
@@ -29,12 +29,12 @@ public class UpdatePropertyConfig<T> {
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> select(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final SelectPropertyConfig<T> select(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         return select(true, getCommonPropertyFuncs);
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> ignore(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final SelectPropertyConfig<T> ignore(boolean enable, GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         for (GetCommonPropertyFunction<T> getCommonPropertyFunc : getCommonPropertyFuncs) {
             final String propertyName = CommonsHelper.getPropertyName(getCommonPropertyFunc);
             ignorePropertyNames.add(propertyName);
@@ -43,7 +43,7 @@ public class UpdatePropertyConfig<T> {
     }
 
     @SafeVarargs
-    public final UpdatePropertyConfig<T> ignore(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
+    public final SelectPropertyConfig<T> ignore(GetCommonPropertyFunction<T>... getCommonPropertyFuncs) {
         return ignore(true, getCommonPropertyFuncs);
     }
 }
