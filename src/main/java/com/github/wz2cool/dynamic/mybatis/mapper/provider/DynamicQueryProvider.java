@@ -7,6 +7,7 @@ import com.github.wz2cool.dynamic.mybatis.mapper.SelectByDynamicQueryMapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.SelectMapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.DynamicCreateSqlFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactory;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
@@ -37,27 +38,10 @@ public class DynamicQueryProvider {
      */
     public String dynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
-
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-
-        Class<?> entityClass = providerTable.getEntityClass();
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("<script>");
-        //add bind
-        sqlBuilder.append(DynamicQuerySqlHelper.getBindFilterParams(true));
-        sqlBuilder.append("select");
-        sqlBuilder.append(String.format("<if test=\"%s.%s\">distinct</if>",
-                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
-        //支持查询指定列
-        sqlBuilder.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sqlBuilder.append(" from " + providerTable.getTableName() + " ");
-        sqlBuilder.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
-        sqlBuilder.append(DynamicQuerySqlHelper.getSortClause());
-        sqlBuilder.append("</script>");
-        final String sql = sqlBuilder.toString();
-        System.out.println(sql);
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicSql();
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }

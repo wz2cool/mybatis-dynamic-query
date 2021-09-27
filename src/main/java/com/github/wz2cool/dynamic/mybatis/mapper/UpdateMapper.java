@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
 public interface UpdateMapper<T> {
 
     /**
-     * 根据主键更新属性不为null的值
-     * //TODO 默认更改 !=null  如果是空则也会更改
+     * 根据主键更新属性不为null且不为空的值
      *
      * @param record
      * @return
@@ -19,7 +18,7 @@ public interface UpdateMapper<T> {
 
 
     /**
-     * 根据主键更新实体全部字段，null值会被更新
+     * 根据主键更新实体全部字段，null值空值会被更新
      *
      * @param record
      * @return
