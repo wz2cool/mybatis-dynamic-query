@@ -9,11 +9,12 @@ public interface UpdateMapper<T> {
 
     /**
      * 根据主键更新属性不为null的值
+     * //TODO 默认更改 !=null  如果是空则也会更改
      *
      * @param record
      * @return
      */
-    @UpdateProvider(type = DynamicUpdateProvider.class, method = "dynamicSQL")
+    @UpdateProvider(type = DynamicUpdateProvider.class, method = "updateByPrimaryKeySelective")
     int updateByPrimaryKeySelective(T record);
 
 
@@ -23,6 +24,6 @@ public interface UpdateMapper<T> {
      * @param record
      * @return
      */
-    @UpdateProvider(type = DynamicUpdateProvider.class, method = "dynamicSQL")
+    @UpdateProvider(type = DynamicUpdateProvider.class, method = "updateByPrimaryKey")
     int updateByPrimaryKey(T record);
 }

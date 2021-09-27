@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.UpdateQuery;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
@@ -10,13 +11,18 @@ import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author Frank
  */
 public class DynamicUpdateProvider {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
+    private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
+
 
     @Deprecated
     public String dynamicSQL(ProviderContext providerContext) {
@@ -33,12 +39,73 @@ public class DynamicUpdateProvider {
         sql.append(DynamicQuerySqlHelper.getSortClause());
         return sql.toString();
     }
+
     public String selectCountByDynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         Class<?> entityClass = providerTable.getEntityClass();
         return new SQL().INTO_COLUMNS().FROM(providerTable.getTableName())
                 .WHERE(DynamicQuerySqlHelper.getWhereClause(entityClass)).toString();
     }
+
+
+    public String updateByPrimaryKey(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+
+        if (!providerTable.getPrimaryKey().isPrimaryKey()) {
+            return "no primaryKey";
+        }
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        sqlBuilder.append(CommonsHelper.format("update %s set ", providerTable.getTableName()));
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                .filter(a -> !a.isPrimaryKey())
+                .map(a -> CommonsHelper.format("%s = #{%s}", a.getDbColumn(), a.getJavaColumn()))
+                .collect(Collectors.joining(",")));
+        sqlBuilder.append(CommonsHelper.format(" where %s = #{%s}",
+                providerTable.getPrimaryKey().getDbColumn(), providerTable.getPrimaryKey().getJavaColumn()));
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println(sql);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
+    //TODO
+    public String updateByPrimaryKeySelective(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+
+        if (!providerTable.getPrimaryKey().isPrimaryKey()) {
+            return "no primaryKey";
+        }
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        sqlBuilder.append(CommonsHelper.format("update %s ", providerTable.getTableName()));
+        sqlBuilder.append("<set>");
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                .filter(a -> !a.isPrimaryKey())
+                .map(a -> CommonsHelper.format("<if test=\"%s != null\">%s = #{%s},</if>",
+                        a.getJavaColumn(), a.getDbColumn(), a.getJavaColumn()))
+                .collect(Collectors.joining()));
+
+        sqlBuilder.append("</set>");
+
+        sqlBuilder.append(CommonsHelper.format(" where %s = #{%s}",
+                providerTable.getPrimaryKey().getDbColumn(), providerTable.getPrimaryKey().getJavaColumn()));
+        sqlBuilder.append("</script>");
+        final String sql = sqlBuilder.toString();
+        System.out.println(sql);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
 //
 //    public String selectMaxByDynamicQuery(ProviderContext ms) {
 //        Class<?> entityClass = getEntityClass(ms);
