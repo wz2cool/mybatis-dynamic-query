@@ -141,8 +141,11 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return toQueryParamMap(false);
     }
 
+
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         Class<?> entityClass = this.getEntityClass();
+
+
         BaseFilterDescriptor[] filters = this.getFilters();
         BaseSortDescriptor[] sorts = this.getSorts();
         String[] selectedProperties = this.getSelectedProperties();
