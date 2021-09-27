@@ -79,6 +79,14 @@ public class DynamicMapperTest {
     }
 
     @Test
+    public void delete() {
+        User user = new User();
+        user.setId(11111);
+        user.setUserName("aaa");
+        System.out.println(userDao.delete(user));
+    }
+
+    @Test
     public void insert() {
         User user = new User();
         user.setId(11111);
