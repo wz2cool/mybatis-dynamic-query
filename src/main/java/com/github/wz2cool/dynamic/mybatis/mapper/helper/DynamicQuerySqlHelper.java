@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 
 /**
@@ -11,16 +12,16 @@ public class DynamicQuerySqlHelper {
         throw new UnsupportedOperationException();
     }
 
+    private static final String bind_template = "<bind name=\"%s\" value=\"@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider@getDynamicQueryParamInternal(%s, %s)\"/>";
+
+    /**
+     * bind
+     *
+     * @param isMapUnderscoreToCamelCase 是否下划线转驼峰
+     * @return bind sql
+     */
     public static String getBindFilterParams(boolean isMapUnderscoreToCamelCase) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"");
-        sql.append(MapperConstants.DYNAMIC_QUERY_PARAMS).append("\" ");
-        sql.append("value=\"");
-        sql.append("@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider");
-        sql.append("@getDynamicQueryParamInternal(");
-        sql.append(MapperConstants.DYNAMIC_QUERY).append(", ").append(isMapUnderscoreToCamelCase).append(")");
-        sql.append("\"/>");
-        return sql.toString();
+        return CommonsHelper.format(bind_template, MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DYNAMIC_QUERY, String.valueOf(isMapUnderscoreToCamelCase));
     }
 
     public static String getUpdateBindFilterParams(boolean isMapUnderscoreToCamelCase) {

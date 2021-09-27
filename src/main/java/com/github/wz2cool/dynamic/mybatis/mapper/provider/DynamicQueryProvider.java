@@ -64,6 +64,7 @@ public class DynamicQueryProvider {
         sqlBuilder.append(DynamicQuerySqlHelper.getSortClause());
         sqlBuilder.append("</script>");
         final String sql = sqlBuilder.toString();
+        System.out.println(sql);
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
