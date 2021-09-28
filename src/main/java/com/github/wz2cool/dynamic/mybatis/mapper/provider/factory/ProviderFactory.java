@@ -1,9 +1,9 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +35,7 @@ public class ProviderFactory {
         final Class<?> mapperType = providerContext.getMapperType();
         final Method mapperMethod = providerContext.getMapperMethod();
         final String databaseId = providerContext.getDatabaseId();
-        final Class<?> entityClass = (Class<?>) ((ParameterizedTypeImpl) mapperType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        final Class<?> entityClass = (Class<?>) ((ParameterizedType) mapperType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
         return ProviderTableHelper.getProviderTable(entityClass);
     }
 

@@ -41,7 +41,18 @@ public class DynamicQueryProvider {
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
             return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
         }
-        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicSql();
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicQuery();
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
+    public String selectCountByDynamicQuery(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicCount();
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
@@ -112,12 +123,6 @@ public class DynamicQueryProvider {
         return sql;
     }
 
-    public String selectCountByDynamicQuery(ProviderContext providerContext) {
-        ProviderTable providerTable = ProviderFactory.create(providerContext);
-        Class<?> entityClass = providerTable.getEntityClass();
-        return new SQL().INTO_COLUMNS().FROM(providerTable.getTableName())
-                .WHERE(DynamicQuerySqlHelper.getWhereClause(entityClass)).toString();
-    }
 //
 //    public String selectMaxByDynamicQuery(ProviderContext ms) {
 //        Class<?> entityClass = getEntityClass(ms);
@@ -195,22 +200,7 @@ public class DynamicQueryProvider {
 
     @Deprecated
     public String dynamicSQL(ProviderContext providerContext) {
-        ProviderTable providerTable = ProviderFactory.create(providerContext);
-        Class<?> entityClass = providerTable.getEntityClass();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT");
-//        sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
-//                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
-        //支持查询指定列
-//        sql.append(DynamicQuerySqlHelper.getSelectColumnsClause());
-        sql.append(" * ");
-        sql.append("from " + providerTable.getTableName() + " ");
-
-        sql.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
-//        sql.append(DynamicQuerySqlHelper.getSortClause());
-
-        System.out.println(sql.toString());
-        return sql.toString();
+        return dynamicQuery(providerContext);
     }
 
 //

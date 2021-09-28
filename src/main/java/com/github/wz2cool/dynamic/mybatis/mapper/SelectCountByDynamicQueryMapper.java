@@ -18,6 +18,6 @@ public interface SelectCountByDynamicQueryMapper<T> {
      * @param dynamicQuery dynamic query
      * @return the count of items
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "selectCountByDynamicQuery")
     int selectCountByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 }

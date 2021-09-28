@@ -25,10 +25,11 @@ public interface SelectRowBoundsByDynamicQueryMapper<T> {
      * @param rowBounds    row bounds
      * @return the list of items
      */
-    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicQuery")
     List<T> selectRowBoundsByDynamicQuery(
             @Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery,
             RowBounds rowBounds);
+
 
     /**
      * select first record by dynamic query
