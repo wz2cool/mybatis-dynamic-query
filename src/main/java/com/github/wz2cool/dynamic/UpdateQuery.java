@@ -4,10 +4,12 @@ import com.github.wz2cool.dynamic.exception.InternalRuntimeException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.*;
 import com.github.wz2cool.dynamic.model.UpdatePropertyConfig;
-import com.github.wz2cool.dynamic.mybatis.ColumnInfo;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTableHelper;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -92,11 +94,12 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
             if (Objects.nonNull(getConfigFunc)) {
                 config = getConfigFunc.apply(new UpdatePropertyConfig<>());
             }
-            Map<String, ColumnInfo> propertyColumnInfoMap = QUERY_HELPER.getPropertyColumnInfoMap(record.getClass());
-            final Set<String> needUpdatePropertyNames = getNeedUpdatePropertyNames(propertyColumnInfoMap.keySet(), config);
-            for (Map.Entry<String, ColumnInfo> propertyColumnInfoEntry : propertyColumnInfoMap.entrySet()) {
-                String propertyName = propertyColumnInfoEntry.getKey();
-                ColumnInfo columnInfo = propertyColumnInfoEntry.getValue();
+            ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
+            Map<String, ProviderColumn> columnHash = providerTable.getColumnHash();
+            final Set<String> needUpdatePropertyNames = getNeedUpdatePropertyNames(columnHash.keySet(), config);
+            for (Map.Entry<String, ProviderColumn> providerColumnEntry : columnHash.entrySet()) {
+                String propertyName = providerColumnEntry.getKey();
+                ProviderColumn columnInfo = providerColumnEntry.getValue();
                 try {
                     if (needUpdatePropertyNames.contains(propertyName)) {
                         Object value = columnInfo.getField().get(record);
@@ -183,7 +186,7 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
     }
 
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
-        BaseFilterDescriptor[] filters = this.getFilters();
+        BaseFilterDescriptor<?>[] filters = this.getFilters();
         ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();

@@ -4,6 +4,7 @@ import com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper;
 import com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import org.apache.ibatis.session.RowBounds;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +36,36 @@ public class DynamicMapperTest {
     @Autowired
     private UserDao userDao;
 
-
     @Test
     public void selectByDynamicQuery() {
         DynamicQuery<User> query = DynamicQuery.createQuery(User.class);
         query.select(User::getId);
         query.and(User::getId, DynamicQueryBuilderHelper.notIn(1));
+
         List<User> users = userDao.selectByDynamicQuery(query);
-        List<User> users2 = userDao.selectByDynamicQuery(query);
         System.out.println(users);
-        System.out.println(users2);
+
+        User user = new User();
+        user.setUserName("setUserName");
+        user.setPassword("setPassword");
+        user.setUselessProperty("setUselessProperty");
+        user.setId(1000010);
+        int insert = userDao.insert(user);
+        assertEquals(1, insert);
+
+        User user1 = userDao.selectFirstByDynamicQuery(DynamicQuery.createQuery(User.class)
+                .and(User::getId, isEqual(1000010))).orElse(null);
+        Assert.assertNotNull(user1);
+
+        user.setPassword(null);
+        UpdateQuery<User> updateQuery = UpdateQuery.createQuery(User.class);
+        updateQuery.set(user, a -> a.ignore(User::getId));
+        updateQuery.and(User::getId, isEqual(1000010));
+        userDao.updateByUpdateQuery(updateQuery);
+
+        user1.setPassword(null);
+        user1.setUserName("newname");
+        userDao.updateByDynamicQuery(user1, DynamicQuery.createQuery(User.class).and(User::getId, isEqual(1000010)));
     }
 
 

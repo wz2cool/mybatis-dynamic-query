@@ -1,6 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.FilterOperator;
+import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
 class ExpressionHelper {
 
     @SuppressWarnings("squid:MethodCyclomaticComplexity")
-    String getExpression(final FilterOperator operator, final ColumnInfo columnInfo, final Object filterValue, final String... paramPlaceholders) {
+    String getExpression(final FilterOperator operator, final ProviderColumn columnInfo, final Object filterValue, final String... paramPlaceholders) {
         switch (operator) {
             case EQUAL:
                 return getEqualExpression(columnInfo, filterValue, paramPlaceholders);
@@ -38,47 +40,47 @@ class ExpressionHelper {
             case BETWEEN:
                 return getBetweenExpression(columnInfo, paramPlaceholders);
             default:
-                throw new UnsupportedOperationException(String.format("not support operator: %s", operator));
+                throw new UnsupportedOperationException(CommonsHelper.format("not support operator: %s", operator.name()));
         }
     }
 
-    String getEqualExpression(final ColumnInfo columnInfo, Object filterValue, final String... paramPlaceholders) {
+    String getEqualExpression(final ProviderColumn columnInfo, Object filterValue, final String... paramPlaceholders) {
         if (filterValue == null) {
-            return String.format("%s IS NULL", columnInfo.getQueryColumn());
+            return CommonsHelper.format("%s IS NULL", columnInfo.getDbColumn());
         }
 
-        return String.format("%s = #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+        return CommonsHelper.format("%s = #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getNotEqualExpression(final ColumnInfo columnInfo, Object filterValue, final String... paramPlaceholders) {
+    String getNotEqualExpression(final ProviderColumn columnInfo, Object filterValue, final String... paramPlaceholders) {
         if (filterValue == null) {
-            return String.format("%s IS NOT NULL", columnInfo.getQueryColumn());
+            return CommonsHelper.format("%s IS NOT NULL", columnInfo.getDbColumn());
         }
 
-        return String.format("%s <> #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+        return CommonsHelper.format("%s <> #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getLessThanExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        return String.format("%s < #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+    String getLessThanExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
+        return CommonsHelper.format("%s < #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getLessThanOrEqualExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        return String.format("%s <= #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+    String getLessThanOrEqualExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
+        return CommonsHelper.format("%s <= #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getGreaterThanOrEqualExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        return String.format("%s >= #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+    String getGreaterThanOrEqualExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
+        return CommonsHelper.format("%s >= #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getGreaterThanExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        return String.format("%s > #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+    String getGreaterThanExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
+        return CommonsHelper.format("%s > #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getLikeExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
-        return String.format("%s LIKE #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+    String getLikeExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
+        return CommonsHelper.format("%s LIKE #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0]);
     }
 
-    String getInExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
+    String getInExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
         if (paramPlaceholders.length == 0) {
             return "FALSE";
         }
@@ -86,12 +88,12 @@ class ExpressionHelper {
         String inStr = "%s IN (%s)";
         List<String> formattedParams = new ArrayList<>();
         for (String paramPlaceholder : paramPlaceholders) {
-            formattedParams.add(String.format("#{%s}", paramPlaceholder));
+            formattedParams.add(CommonsHelper.format("#{%s}", paramPlaceholder));
         }
-        return String.format(inStr, columnInfo.getQueryColumn(), String.join(",", formattedParams));
+        return CommonsHelper.format(inStr, columnInfo.getDbColumn(), String.join(",", formattedParams));
     }
 
-    String getNotInExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
+    String getNotInExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
         if (paramPlaceholders.length == 0) {
             return "TRUE";
         }
@@ -99,18 +101,18 @@ class ExpressionHelper {
         String notInStr = "%s NOT IN (%s)";
         List<String> formattedParams = new ArrayList<>();
         for (String paramPlaceholder : paramPlaceholders) {
-            formattedParams.add(String.format("#{%s}", paramPlaceholder));
+            formattedParams.add(CommonsHelper.format("#{%s}", paramPlaceholder));
         }
-        return String.format(notInStr, columnInfo.getQueryColumn(), String.join(",", formattedParams));
+        return CommonsHelper.format(notInStr, columnInfo.getDbColumn(), String.join(",", formattedParams));
     }
 
-    String getBetweenExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
+    String getBetweenExpression(final ProviderColumn columnInfo, final String... paramPlaceholders) {
         int expectedSize = 2;
         if (paramPlaceholders.length != expectedSize) {
             String errMsg = "if \"Between\" operator, the count of paramPlaceholders must be 2";
             throw new InvalidParameterException(errMsg);
         }
 
-        return String.format("%s BETWEEN #{%s} AND #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0], paramPlaceholders[1]);
+        return CommonsHelper.format("%s BETWEEN #{%s} AND #{%s}", columnInfo.getDbColumn(), paramPlaceholders[0], paramPlaceholders[1]);
     }
 }

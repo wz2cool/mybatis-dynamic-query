@@ -3,6 +3,9 @@ package com.github.wz2cool.dynamic.mybatis;
 import com.github.wz2cool.dynamic.*;
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderColumn;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTableHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,19 +17,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Frank
  */
 public class QueryHelper {
-    private final EntityCache entityCache = EntityCache.getInstance();
-    private final ExpressionHelper expressionHelper = new ExpressionHelper();
+    private static final ExpressionHelper expressionHelper = new ExpressionHelper();
 
     // region and
 
-    public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
+    public ParamExpression toWhereExpression(Class<?> entityClass, final BaseFilterDescriptor<?>[] filters) {
         AtomicInteger paramNum = new AtomicInteger(0);
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
         String expression = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
-        for (BaseFilterDescriptor baseFilterDescriptor : filters) {
+        for (BaseFilterDescriptor<?> baseFilterDescriptor : filters) {
             ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor, paramNum);
             if (paramExpression != null && StringUtils.isNotBlank(paramExpression.getExpression())) {
                 paramMap.putAll(paramExpression.getParamMap());
@@ -49,11 +51,12 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor, final AtomicInteger paramNum) {
+    ParamExpression toWhereExpression(Class<?> entityClass, final BaseFilterDescriptor<?> baseFilterDescriptor, final AtomicInteger paramNum) {
         if (baseFilterDescriptor instanceof FilterDescriptor) {
-            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor, paramNum);
+            FilterDescriptor<?> filterDescriptor = (FilterDescriptor<?>) baseFilterDescriptor;
+            return toWhereExpression(entityClass, filterDescriptor, paramNum);
         } else if (baseFilterDescriptor instanceof FilterGroupDescriptor) {
-            FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) baseFilterDescriptor;
+            FilterGroupDescriptor<?> filterGroupDescriptor = (FilterGroupDescriptor<?>) baseFilterDescriptor;
             return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
         } else if (baseFilterDescriptor instanceof CustomFilterDescriptor) {
             CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) baseFilterDescriptor;
@@ -79,7 +82,7 @@ public class QueryHelper {
         return paramExpression;
     }
 
-    private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor, final AtomicInteger paramNum) {
+    private ParamExpression toWhereExpression(final Class<?> entityClass, final FilterDescriptor<?> filterDescriptor, final AtomicInteger paramNum) {
         String propertyPath = filterDescriptor.getPropertyName();
         FilterOperator operator = filterDescriptor.getOperator();
         Object[] filterValues = getFilterValues(filterDescriptor);
@@ -139,12 +142,10 @@ public class QueryHelper {
     }
 
     String generateFilterExpression(
-            final Class entityClass, final FilterDescriptor filterDescriptor, final String... paramPlaceholders) {
-        String propertyPath = filterDescriptor.getPropertyName();
-        Object value = filterDescriptor.getValue();
-        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, propertyPath);
-
-        return expressionHelper.getExpression(filterDescriptor.getOperator(), columnInfo, value, paramPlaceholders);
+            final Class<?> entityClass, final FilterDescriptor filterDescriptor, final String... paramPlaceholders) {
+        return expressionHelper.getExpression(filterDescriptor.getOperator(),
+                ProviderTableHelper.getProviderTable(entityClass).getProviderColumn(filterDescriptor.getPropertyName()),
+                filterDescriptor.getValue(), paramPlaceholders);
     }
 
 
@@ -226,14 +227,16 @@ public class QueryHelper {
         }
     }
 
-    ParamExpression toSortExpression(final Class entityClass, final SortDescriptor sortDescriptor) {
+    ParamExpression toSortExpression(final Class<?> entityClass, final SortDescriptor sortDescriptor) {
         ParamExpression paramExpression = new ParamExpression();
         if (Objects.isNull(sortDescriptor.getPropertyName())) {
             paramExpression.setExpression("NULL");
             return paramExpression;
         }
-        ColumnInfo columnInfo = entityCache.getColumnInfo(entityClass, sortDescriptor.getPropertyName());
-        String expression = String.format("%s %s", columnInfo.getQueryColumn(), sortDescriptor.getDirection());
+        String expression = CommonsHelper.format("%s %s", ProviderTableHelper.getProviderTable(entityClass)
+                        .getProviderColumn(sortDescriptor.getPropertyName())
+                        .getDbColumn(),
+                sortDescriptor.getDirection().name());
         paramExpression.setExpression(expression);
         return paramExpression;
     }
@@ -258,22 +261,19 @@ public class QueryHelper {
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
     }
-    // endregion
-
-    public String getViewExpression(Class entityClass) {
-        return entityCache.getViewExpression(entityClass);
-    }
 
     public String toSelectColumnsExpression(final Class entityClass,
                                             final String[] selectedProperties,
                                             final String[] ignoredProperties,
                                             final boolean mapUnderscoreToCamelCase) {
-        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
+        ProviderColumn[] columnInfos = providerTable.getColumns();
         List<String> columns = new ArrayList<>();
         boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
         boolean isIgnoredPropertiesNotEmpty = ArrayUtils.isNotEmpty(ignoredProperties);
-        for (ColumnInfo columnInfo : columnInfos) {
-            String fieldName = columnInfo.getField().getName();
+        for (ProviderColumn columnInfo : columnInfos) {
+            String fieldName = columnInfo.getJavaColumn();
             boolean needSelectColumn;
             if (isSelectedPropertiesNotEmpty) {
                 needSelectColumn = ArrayUtils.contains(selectedProperties, fieldName);
@@ -285,50 +285,44 @@ public class QueryHelper {
 
             if (needSelectColumn) {
                 // 这里我们需要判断一下，是否设置了 @column ,如果有的话，我们不做驼峰
-                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
-                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
+                String column = CommonsHelper.format("%s AS %s", columnInfo.getDbColumn(), columnInfo.getJavaColumn());
                 columns.add(column);
             }
         }
         return String.join(", ", columns);
     }
 
-    public String toGroupByColumnsExpression(final Class entityClass, final String[] groupByProperties) {
-        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+    public String toGroupByColumnsExpression(final Class<?> entityClass, final String[] groupByProperties) {
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
+        ProviderColumn[] columnInfos = providerTable.getColumns();
         List<String> columns = new ArrayList<>();
-        for (ColumnInfo columnInfo : columnInfos) {
-            String fieldName = columnInfo.getField().getName();
+        for (ProviderColumn columnInfo : columnInfos) {
+            String fieldName = columnInfo.getJavaColumn();
             if (ArrayUtils.contains(groupByProperties, fieldName)) {
-                columns.add(columnInfo.getQueryColumn());
+                columns.add(columnInfo.getDbColumn());
             }
         }
         return String.join(", ", columns);
     }
 
-    public String getQueryColumnByProperty(Class entityClass, String propertyName) {
-        ColumnInfo columnInfo = this.entityCache.getColumnInfo(entityClass, propertyName);
-        return columnInfo.getQueryColumn();
+    public String getQueryColumnByProperty(Class<?> entityClass, String propertyName) {
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
+        return providerTable.getProviderColumn(propertyName).getDbColumn();
     }
 
-    public Map<String, ColumnInfo> getPropertyColumnInfoMap(Class entityClass) {
-        return this.entityCache.getPropertyColumnInfoMap(entityClass);
-    }
-
-    String toAllColumnsExpression(final Class entityClass) {
-        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+    String toAllColumnsExpression(final Class<?> entityClass) {
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
+        ProviderColumn[] columnInfos = providerTable.getColumns();
         List<String> columns = new ArrayList<>();
-        for (ColumnInfo columnInfo : columnInfos) {
-            String column = String.format("%s AS %s",
-                    columnInfo.getQueryColumn(),
-                    EntityHelper.camelCaseToUnderscore(columnInfo.getField().getName()));
+        for (ProviderColumn columnInfo : columnInfos) {
+            String column = CommonsHelper.format("%s AS %s",
+                    columnInfo.getDbColumn(),
+                    columnInfo.getJavaColumn());
             columns.add(column);
         }
         return String.join(", ", columns);
     }
 
-    ColumnInfo getColumnInfo(final Class entityClass, final String propertyName) {
-        return entityCache.getColumnInfo(entityClass, propertyName);
-    }
 
     /**
      * Valid filters.
@@ -337,18 +331,18 @@ public class QueryHelper {
      * @param filters     the filters
      * @throws PropertyNotFoundException the property not found exception
      */
-    void validFilters(final Class entityClass, final BaseFilterDescriptor... filters)
+    void validFilters(final Class<?> entityClass, final BaseFilterDescriptor... filters)
             throws PropertyNotFoundException {
         if (filters == null || filters.length == 0) {
             return;
         }
-
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
         for (BaseFilterDescriptor filter : filters) {
             if (filter instanceof FilterDescriptor) {
                 FilterDescriptor useFilter = (FilterDescriptor) filter;
                 String propertyPath = useFilter.getPropertyName();
-                if (!entityCache.hasProperty(entityClass, propertyPath)) {
-                    String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                if (!providerTable.containsProviderColumn(propertyPath)) {
+                    String errMsg = CommonsHelper.format("Can't find property %s in %s", propertyPath, entityClass.getName());
                     throw new PropertyNotFoundException(errMsg);
                 }
             } else if (filter instanceof FilterGroupDescriptor) {
@@ -365,18 +359,19 @@ public class QueryHelper {
      * @param sorts       the sorts
      * @throws PropertyNotFoundException the property not found exception
      */
-    void validSorts(final Class entityClass, final BaseSortDescriptor... sorts)
+    void validSorts(final Class<?> entityClass, final BaseSortDescriptor... sorts)
             throws PropertyNotFoundException {
         if (sorts == null || sorts.length == 0) {
             return;
         }
+        ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
 
         for (BaseSortDescriptor sort : sorts) {
             if (sort instanceof SortDescriptor) {
                 SortDescriptor useSort = (SortDescriptor) sort;
                 String propertyPath = useSort.getPropertyName();
-                if (!entityCache.hasProperty(entityClass, propertyPath)) {
-                    String errMsg = String.format("Can't find property %s in %s", propertyPath, entityClass);
+                if (!providerTable.containsProviderColumn(propertyPath)) {
+                    String errMsg = CommonsHelper.format("Can't find property %s in %s", propertyPath, entityClass.getName());
                     throw new PropertyNotFoundException(errMsg);
                 }
             }

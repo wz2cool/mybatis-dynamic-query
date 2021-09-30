@@ -10,7 +10,6 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> extends BaseFilterGroup<T, S> {
 
@@ -124,7 +123,7 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         Class<?> entityClass = this.getEntityClass();
-        BaseFilterDescriptor[] filters = this.getFilters();
+        BaseFilterDescriptor<?>[] filters = this.getFilters();
         BaseSortDescriptor[] sorts = this.getSorts();
         String[] selectedProperties = this.getSelectedProperties();
         String[] ignoredProperties = this.getIgnoredProperties();
@@ -133,9 +132,9 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
         for (Map.Entry<String, Object> param : paramMap.entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
-            whereExpression = whereExpression.replace(key, newKey);
+            final String key = param.getKey();
+            whereExpression = whereExpression.replace(key,
+                    CommonsHelper.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key));
         }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 

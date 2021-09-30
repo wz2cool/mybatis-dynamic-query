@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ public class ProviderTable {
     protected Field[] fields;
     protected String tableName;
     protected ProviderColumn primaryKey;
+
+
     /**
      * 空间换时间. key为{@link ProviderColumn#javaColumn}
      */
@@ -25,8 +28,15 @@ public class ProviderTable {
     protected ProviderColumn[] transientColumns;
 
 
-    public ProviderColumn getProviderColumn(String javaColumn) {
+    public ProviderColumn getProviderColumn(final String javaColumn) {
         return columnHash.get(javaColumn);
+    }
+
+    public boolean containsProviderColumn(@Nullable final String javaColumn) {
+        if (javaColumn == null || "".equals(javaColumn)) {
+            return false;
+        }
+        return columnHash.containsKey(javaColumn);
     }
 
 
@@ -60,5 +70,9 @@ public class ProviderTable {
 
     public boolean isAutoIncrement() {
         return isAutoIncrement;
+    }
+
+    public Map<String, ProviderColumn> getColumnHash() {
+        return columnHash;
     }
 }
