@@ -17,6 +17,7 @@ public class EntityCacheTest {
         assertEquals("name", result.getQueryColumn());
 
         result = EntityCache.getInstance().getColumnInfo(Student.class, "note");
+        System.out.println(result);
         assertEquals("queryColumn.note", result.getQueryColumn());
         assertEquals("queryColumn", result.getTableOrAlias());
     }

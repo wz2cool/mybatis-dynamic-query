@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class ParamExpression {
     private String expression = "";
-    private Map<String, Object> paramMap = new LinkedHashMap<>();
+    private final Map<String, Object> paramMap = new LinkedHashMap<>();
 
     public String getExpression() {
         return expression;
