@@ -109,14 +109,14 @@ public class DynamicMapperTest {
     public void select() {
         User user = new User();
         user.setId(1);
-        System.out.println(userDao.select(user));
+        System.out.println(userDao.select(null));
     }
 
     @Test
     public void selectOne() {
         User user = new User();
         user.setId(1);
-        System.out.println(userDao.selectOne(user));
+        System.out.println(userDao.selectOne(user).getId());
     }
 
     @Test
@@ -301,7 +301,7 @@ public class DynamicMapperTest {
         result = userDao.updateByUpdateQuery(userUpdateQuery);
         assertEquals(1, result);
 
-        final Optional<User> user1 = userDao.selectByPrimaryKey(19);
+        final Optional<User> user1 = userDao.selectByPrimaryKeyForOptional(19);
         assertEquals("Marry", user1.get().getUserName());
         assertNull(user1.get().getPassword());
 
@@ -327,7 +327,7 @@ public class DynamicMapperTest {
         User user = new User();
         user.setId(1);
 
-        Optional<User> matchedUser = userDao.selectOne(user);
+        Optional<User> matchedUser = userDao.selectOneForOptional(user);
         assertEquals(Integer.valueOf(1), matchedUser.get().getId());
     }
 
