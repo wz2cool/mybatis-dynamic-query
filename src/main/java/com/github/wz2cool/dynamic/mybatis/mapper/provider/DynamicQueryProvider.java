@@ -13,7 +13,6 @@ import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderFactor
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -248,13 +247,13 @@ public class DynamicQueryProvider {
     /// region for xml query
 
     public static Map<String, Object> getDynamicQueryParamInternal(
-            final DynamicQuery dynamicQuery,
+            final DynamicQuery<?> dynamicQuery,
             final boolean isMapUnderscoreToCamelCase) {
         return dynamicQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }
 
     public static Map<String, Object> getUpdateQueryParamInternal(
-            final UpdateQuery updateQuery,
+            final UpdateQuery<?> updateQuery,
             final boolean isMapUnderscoreToCamelCase) {
         return updateQuery.toQueryParamMap(isMapUnderscoreToCamelCase);
     }

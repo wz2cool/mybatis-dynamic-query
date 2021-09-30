@@ -185,4 +185,43 @@ public final class DynamicCreateSqlFactory {
         sqlBuilder.append("</script>");
         return sqlBuilder.toString();
     }
+
+    /**
+     * @return sql
+     */
+    public String getDynamicUpdate() {
+        Class<?> entityClass = providerTable.getEntityClass();
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        //add bind
+        sqlBuilder.append(DynamicQuerySqlHelper.getUpdateBindFilterParams(true));
+        sqlBuilder.append(CommonsHelper.format("update %s ", providerTable.getTableName()));
+        sqlBuilder.append(DynamicQuerySqlHelper.getSetClause());
+        sqlBuilder.append(DynamicQuerySqlHelper.getWhereClause(entityClass));
+        sqlBuilder.append("</script>");
+        return sqlBuilder.toString();
+    }
+
+    public String getDynamicUpdateForSelective() {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("<script>");
+        //add bind
+        sqlBuilder.append(DynamicQuerySqlHelper.getBindFilterParams(true));
+        sqlBuilder.append(CommonsHelper.format("update %s ", providerTable.getTableName()));
+        sqlBuilder.append("<set>");
+        sqlBuilder.append(Arrays.stream(providerTable.getColumns())
+                .filter(a -> !a.isPrimaryKey())
+                // entity为别名  @see UpdateByDynamicQueryMapper#updateByDynamicQuery
+                .map(a -> CommonsHelper.format("<if test=\"entity.%s != null %s\">%s = #{entity.%s},</if>",
+                        a.getJavaColumn(),
+                        Objects.equals(a.getColumnType().getSimpleName(),
+                                "String") ? CommonsHelper.format("and entity.%s != ''", a.getJavaColumn()) : "",
+                        a.getDbColumn(), a.getJavaColumn()))
+                .collect(Collectors.joining()));
+        sqlBuilder.append("</set>");
+        sqlBuilder.append(DynamicQuerySqlHelper.getWhereClause(providerTable.getEntityClass()));
+        sqlBuilder.append("</script>");
+        System.out.println(sqlBuilder.toString());
+        return sqlBuilder.toString();
+    }
 }

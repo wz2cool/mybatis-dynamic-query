@@ -43,6 +43,8 @@ public final class ProviderTableHelper {
         ProviderColumn pk = null;
         boolean isAutoIncrement = false;
         for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
+
             final ProviderColumn col = new ProviderColumn();
             col.javaColumn = declaredField.getName();
             Column column = declaredField.getAnnotation(Column.class);
@@ -54,6 +56,7 @@ public final class ProviderTableHelper {
                 col.dbColumnTable = column.table();
             }
             col.columnType = declaredField.getType();
+            col.field = declaredField;
             if (declaredField.getAnnotation(Id.class) != null) {
                 col.isPrimaryKey = true;
                 pk = col;

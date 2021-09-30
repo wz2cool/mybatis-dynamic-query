@@ -2,11 +2,13 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 
 import javax.persistence.Column;
+import java.lang.reflect.Field;
 
 /**
  * @author wangjin
  */
 public class ProviderColumn {
+    protected Field field;
     /**
      * java字段
      */
@@ -37,7 +39,10 @@ public class ProviderColumn {
     }
 
     public String getDbColumn() {
-        return dbColumn;
+        if (dbColumnTable == null) {
+            return dbColumn;
+        }
+        return dbColumnTable + "." + dbColumn;
     }
 
     public boolean isPrimaryKey() {
@@ -48,7 +53,7 @@ public class ProviderColumn {
         return columnType;
     }
 
-    public String getDbColumnTable() {
-        return dbColumnTable;
+    public Field getField() {
+        return field;
     }
 }

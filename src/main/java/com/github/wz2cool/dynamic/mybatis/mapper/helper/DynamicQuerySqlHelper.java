@@ -12,7 +12,10 @@ public class DynamicQuerySqlHelper {
         throw new UnsupportedOperationException();
     }
 
-    private static final String bind_template = "<bind name=\"%s\" value=\"@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider@getDynamicQueryParamInternal(%s, %s)\"/>";
+    private static final String bind_template = "<bind name=\"%s\" value=\"@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider@%s(%s, %s)\"/>";
+
+    private static final String filter_method = "getDynamicQueryParamInternal";
+    private static final String update_method = "getUpdateQueryParamInternal";
 
     /**
      * bind
@@ -21,9 +24,13 @@ public class DynamicQuerySqlHelper {
      * @return bind sql
      */
     public static String getBindFilterParams(boolean isMapUnderscoreToCamelCase) {
-        return CommonsHelper.format(bind_template, MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DYNAMIC_QUERY, String.valueOf(isMapUnderscoreToCamelCase));
+        return CommonsHelper.format(bind_template, MapperConstants.DYNAMIC_QUERY_PARAMS, filter_method, MapperConstants.DYNAMIC_QUERY, String.valueOf(isMapUnderscoreToCamelCase));
     }
 
+
+    public static String getUpdateBindFilterParams(boolean isMapUnderscoreToCamelCase) {
+        return CommonsHelper.format(bind_template, MapperConstants.DYNAMIC_QUERY_PARAMS, update_method, MapperConstants.DYNAMIC_QUERY, String.valueOf(isMapUnderscoreToCamelCase));
+    }
 
     public static String getSelectColumnsClause() {
         return CommonsHelper.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.SELECT_COLUMNS_EXPRESSION);

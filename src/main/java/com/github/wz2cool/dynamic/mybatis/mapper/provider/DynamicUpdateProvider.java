@@ -18,8 +18,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Frank
  */
 public class DynamicUpdateProvider {
-    private static final QueryHelper QUERY_HELPER = new QueryHelper();
     private static final Map<String, String> DYNAMIC_QUERY_CACHE = new ConcurrentHashMap<>(256);
+
+    public String dynamicUpdate(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicUpdate();
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
+
+
+    /**
+     * 这个动态sql参数有别名, 需要注意
+     * @param providerContext
+     * @return
+     */
+    public String dynamicUpdateForSelective(ProviderContext providerContext) {
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getDynamicUpdateForSelective();
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
 
 
     @Deprecated
