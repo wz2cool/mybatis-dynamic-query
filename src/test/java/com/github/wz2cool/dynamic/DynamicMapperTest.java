@@ -98,8 +98,12 @@ public class DynamicMapperTest {
         User user = new User();
         user.setId(11111);
         user.setUserName("aaa");
-        user.setPassword("pasworddddddddd");
+        user.setPassword("");
         System.out.println(userDao.insert(user));
+        user.setId(12331213);
+        user.setUserName("1");
+        user.setPassword("");
+        System.out.println(userDao.insertSelective(user));
         System.out.println(userDao.selectByPrimaryKey(11111));
     }
 
@@ -110,6 +114,7 @@ public class DynamicMapperTest {
         user.setId(1188111);
         user.setUserName("aaa");
         System.out.println(userDao.insertSelective(user));
+
         System.out.println(userDao.selectByPrimaryKey(1188111));
     }
 
@@ -238,6 +243,7 @@ public class DynamicMapperTest {
 
         user.setPassword("test12345");
         result = userDao.updateByPrimaryKey(user);
+        result = userDao.updateByPrimaryKeySelective(user);
         assertEquals(1, result);
     }
 
