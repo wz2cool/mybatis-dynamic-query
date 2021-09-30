@@ -5,11 +5,10 @@ import com.github.wz2cool.dynamic.mybatis.View;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 根据class解析实体结构
@@ -46,9 +45,14 @@ public final class ProviderTableHelper {
         for (Field declaredField : declaredFields) {
             final ProviderColumn col = new ProviderColumn();
             col.javaColumn = declaredField.getName();
-            col.dbColumn = Optional.ofNullable(declaredField.getAnnotation(Column.class))
-                    .map(Column::name)
-                    .orElse(ProviderTableHelper.underline(declaredField.getName()));
+            Column column = declaredField.getAnnotation(Column.class);
+            if (column == null) {
+                col.dbColumn = ProviderTableHelper.underline(declaredField.getName());
+                col.dbColumnTable = null;
+            } else {
+                col.dbColumn = column.name();
+                col.dbColumnTable = column.table();
+            }
             col.columnType = declaredField.getType();
             if (declaredField.getAnnotation(Id.class) != null) {
                 col.isPrimaryKey = true;
@@ -80,6 +84,8 @@ public final class ProviderTableHelper {
         providerTable.columns = columnList.toArray(new ProviderColumn[0]);
         providerTable.primaryKey = pk;
         providerTable.isAutoIncrement = isAutoIncrement;
+        providerTable.columnHash = Arrays.stream(providerTable.columns)
+                .collect(Collectors.toMap(ProviderColumn::getJavaColumn, Function.identity()));
         return providerTable;
     }
 
