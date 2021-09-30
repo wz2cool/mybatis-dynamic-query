@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -18,6 +19,7 @@ public class User {
 
 
     @Id
+    @JoinTable(name = "")
     private Integer id;
     private String userName;
     private String password;
