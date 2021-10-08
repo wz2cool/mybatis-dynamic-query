@@ -3,7 +3,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -82,7 +81,7 @@ public final class DynamicCreateSqlFactory {
                 final String stringIf = column.getColumnType().isAssignableFrom(String.class)
                         ? CommonsHelper.format(template, column.getJavaColumn()) : "";
                 sqlBuilder.append(CommonsHelper.format("<if test=\"%s != null %s\">#{%s},</if>",
-                        column.getJavaColumn(),stringIf, column.getJavaColumn()));
+                        column.getJavaColumn(), stringIf, column.getJavaColumn()));
             }
             sqlBuilder.append("</trim>");
             sqlBuilder.append("</script>");
@@ -262,12 +261,5 @@ public final class DynamicCreateSqlFactory {
         }
         sqlBuilder.deleteCharAt(sqlBuilder.lastIndexOf(","));
         return sqlBuilder.toString();
-    }
-
-    public static void main(String[] args) {
-        DynamicCreateSqlFactory sqlFactory = DynamicCreateSqlFactory.getSqlFactory(ProviderTableHelper.getProviderTable(BIConversion.User.class));
-        System.out.println(sqlFactory.getDynamicDefaultIfSet("test", true, false));
-        System.out.println(sqlFactory.getDynamicDefaultIfSet("test", true, true));
-
     }
 }
