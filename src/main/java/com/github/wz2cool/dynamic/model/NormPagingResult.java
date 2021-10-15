@@ -49,27 +49,8 @@ public class NormPagingResult<T> {
      */
     public <O> NormPagingResult<O> convert(Function<? super T, ? extends O> mapper) {
         List<O> collect = this.getList().stream().map(mapper).collect(toList());
-        return copyPageResult(this, collect);
-    }
-
-    /**
-     * copy page result property and set list is collect
-     *
-     * @param sourcePageResult 源 {@link NormPagingResult}
-     * @param collect          重新设置的数据内容
-     * @param <O>              目标数据泛型
-     * @return copy 后的目标 {@link NormPagingResult}
-     */
-    private <O> NormPagingResult<O> copyPageResult(NormPagingResult<T> sourcePageResult, List<O> collect) {
-        NormPagingResult<O> objectPageResult = new NormPagingResult<>();
-        objectPageResult.setPageNum(sourcePageResult.getPageNum());
-        objectPageResult.setPageSize(sourcePageResult.getPageSize());
-        objectPageResult.setHasPreviousPage(sourcePageResult.isHasPreviousPage());
-        objectPageResult.setHasNextPage(sourcePageResult.isHasNextPage());
-        objectPageResult.setPages(sourcePageResult.getPages());
-        objectPageResult.setTotal(sourcePageResult.getTotal());
-        objectPageResult.setList(collect);
-        return objectPageResult;
+        ((NormPagingResult<O>)this).setList(collect);
+        return ((NormPagingResult<O>)this);
     }
 
     public boolean isHasPreviousPage() {
