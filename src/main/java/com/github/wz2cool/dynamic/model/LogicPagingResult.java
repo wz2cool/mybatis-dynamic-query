@@ -2,6 +2,9 @@ package com.github.wz2cool.dynamic.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Frank
@@ -13,6 +16,19 @@ public class LogicPagingResult<T> {
     private long startPageId;
     private long endPageId;
     private List<T> list = new ArrayList<>();
+
+    /**
+     * 转换 LogicPagingResult 的数据泛型
+     *
+     * @param mapper 数据类型映射关系
+     * @param <O>    目标数据泛型
+     * @return 目标数据泛型的 {@link NormPagingResult}
+     */
+    public <O> LogicPagingResult<O> convert(Function<? super T, ? extends O> mapper) {
+        List<O> collect = this.getList().stream().map(mapper).collect(toList());
+        ((LogicPagingResult<O>)this).setList(collect);
+        return ((LogicPagingResult<O>)this);
+    }
 
     public boolean isHasPreviousPage() {
         return hasPreviousPage;
