@@ -28,10 +28,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.swing.border.EtchedBorder;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.*;
@@ -536,5 +533,15 @@ public class DemoTest {
         for (Bug bug : bugs) {
             assertEquals(true, StringUtils.isNotBlank(bug.getAssignTo()));
         }
+    }
+
+    @Test
+    public void testDelayCalcNull() {
+        Bug nullBug = null;
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(Objects.nonNull(nullBug) && Objects.nonNull(nullBug.getId()),
+                        Bug::getId, op -> op.isEqual(nullBug.getId()));
+        final BaseFilterDescriptor<Bug>[] filters = query.getFilters();
+        assertEquals(0, filters.length);
     }
 }
