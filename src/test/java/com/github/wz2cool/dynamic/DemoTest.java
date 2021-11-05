@@ -528,6 +528,15 @@ public class DemoTest {
 
     @Test
     public void testNewFilter() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+
         DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
                 .and(Bug::getId, o -> o.greaterThan(1))
                 .and(Bug::getId, o -> o.lessThan(100))
