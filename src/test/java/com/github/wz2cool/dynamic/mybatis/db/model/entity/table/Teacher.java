@@ -1,8 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 
 
-import tk.mybatis.mapper.annotation.LogicDelete;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -28,7 +26,6 @@ public class Teacher {
         return this;
     }
 
-    @LogicDelete
     private Integer deleted;
 
     public Long getId() {

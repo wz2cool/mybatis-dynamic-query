@@ -9,6 +9,8 @@ import javax.persistence.Table;
 @Table(name = "student")
 public class Student {
     private long serialId = 123456;
+
+    @Column(name = "aa_name")
     private String name;
     private Integer age;
     @Column(name = "note", table = "queryColumn")

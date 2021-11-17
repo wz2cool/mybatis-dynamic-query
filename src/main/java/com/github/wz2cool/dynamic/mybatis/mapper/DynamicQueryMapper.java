@@ -3,9 +3,6 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 import com.github.wz2cool.dynamic.NormPagingQuery;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
 import org.apache.ibatis.session.RowBounds;
-import tk.mybatis.mapper.annotation.RegisterMapper;
-import tk.mybatis.mapper.common.BaseMapper;
-import tk.mybatis.mapper.common.special.InsertListMapper;
 
 import java.util.List;
 
@@ -13,10 +10,11 @@ import java.util.List;
 /**
  * @author Frank
  */
-@RegisterMapper
 public interface DynamicQueryMapper<T> extends
-        BaseMapper<T>,
-        InsertListMapper<T>,
+        InsertMapper<T>,
+        UpdateMapper<T>,
+        DeleteMapper<T>,
+        SelectMapper<T>,
         SelectCountByDynamicQueryMapper<T>,
         DeleteByDynamicQueryMapper<T>,
         SelectByDynamicQueryMapper<T>,
@@ -38,7 +36,7 @@ public interface DynamicQueryMapper<T> extends
      */
     default NormPagingResult<T> selectByNormalPaging(NormPagingQuery<T> normPagingQuery) {
         NormPagingResult<T> result = new NormPagingResult<>();
-        int pageNum = normPagingQuery.getPageNum() < 1 ? 1 : normPagingQuery.getPageNum();
+        int pageNum = Math.max(normPagingQuery.getPageNum(), 1);
         int pageSize = normPagingQuery.getPageSize();
         int queryPageSize = pageSize + 1;
         int offset = (pageNum - 1) * pageSize;

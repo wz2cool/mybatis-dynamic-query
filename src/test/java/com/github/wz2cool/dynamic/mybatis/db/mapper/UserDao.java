@@ -1,7 +1,14 @@
 package com.github.wz2cool.dynamic.mybatis.db.mapper;
 
+import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
+import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -13,4 +20,10 @@ import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
  * \
  */
 public interface UserDao extends DynamicQueryMapper<User> {
+
+    List<User> getAllAsBind(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<User> dynamicQuery);
+
+    List<User> getAllAsMap(@Param(MapperConstants.DYNAMIC_QUERY) Map<String, Object> params);
+
+    List<User> test(User user);
 }

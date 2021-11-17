@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.wz2cool.dynamic.mybatis.db.mapper.UserDao">
+    <select id="getAllAsBind" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User">
+        <bind name="dynamicQueryParams"
+              value="@com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicQueryProvider@getDynamicQueryParamInternal(dynamicQuery, false)"/>
+        SELECT<if test="dynamicQueryParams.distinct">
+        distinct
+    </if> ${dynamicQueryParams.selectColumnsExpression} from users
+        <where>
+            <if test="dynamicQueryParams.whereExpression != null and dynamicQueryParams.whereExpression != ''">
+                ${dynamicQueryParams.whereExpression}
+            </if>
+        </where>
+        <if test="dynamicQueryParams.sortExpression != null and dynamicQueryParams.sortExpression != ''">
+            ORDER BY ${dynamicQueryParams.sortExpression}
+        </if>
+    </select>
+
+
+
+    <select id="test" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User">
+        SELECT * from users
+        <where>
+            <if test="id != null">
+               and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAllAsMap" resultType="com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User">
+        SELECT * from users
+        <where>
+            <if test="dynamicQueryParams.whereExpression != null and dynamicQueryParams.whereExpression != ''">
+                ${dynamicQueryParams.whereExpression}
+            </if>
+        </where>
+    </select>
+</mapper>

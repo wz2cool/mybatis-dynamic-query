@@ -6,6 +6,8 @@ import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.model.PropertyInfo;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTable;
+import com.github.wz2cool.dynamic.mybatis.mapper.provider.factory.ProviderTableHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -74,9 +76,8 @@ public class MybatisQueryProvider<T> {
             final GetPropertyFunction<T, Comparable> getFieldFunc) {
         PropertyInfo propertyInfo = CommonsHelper.getPropertyInfo(getFieldFunc);
         String propertyName = propertyInfo.getPropertyName();
-        Class ownerClass = propertyInfo.getOwnerClass();
-        ColumnInfo columnInfo = QUERY_HELPER.getColumnInfo(ownerClass, propertyName);
-        return columnInfo.getQueryColumn();
+        Class<?> ownerClass = propertyInfo.getOwnerClass();
+        return ProviderTableHelper.getProviderTable(ownerClass).getProviderColumn(propertyName).getDbColumn();
     }
 
     private static <T> Map<String, Object> getQueryParamMap(

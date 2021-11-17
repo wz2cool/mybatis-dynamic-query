@@ -1,16 +1,6 @@
 package com.github.wz2cool.dynamic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.wz2cool.dynamic.builder.direction.ISortDirection;
-import com.github.wz2cool.dynamic.helper.CommonsHelper;
-import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
-import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
-import com.github.wz2cool.dynamic.mybatis.ParamExpression;
-import com.github.wz2cool.dynamic.mybatis.QueryHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Map;
 
 /**
  * @author Frank
