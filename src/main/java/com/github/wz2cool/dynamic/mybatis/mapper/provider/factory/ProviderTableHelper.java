@@ -1,6 +1,5 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
-
 import com.github.wz2cool.dynamic.mybatis.View;
 
 import javax.persistence.*;
@@ -19,50 +18,42 @@ public final class ProviderTableHelper {
 
     private static final Map<Class<?>, ProviderTable> cache = new ConcurrentHashMap<>(255);
 
-
     public static ProviderTable getProviderTable(Class<?> entityClass) {
         if (cache.containsKey(entityClass)) {
             return cache.get(entityClass);
         }
-
         final ProviderTable providerTable = initProviderTable(entityClass);
         cache.put(entityClass, providerTable);
         return providerTable;
     }
-
 
     private static ProviderTable initProviderTable(Class<?> entityClass) {
         final String tableName = Optional.ofNullable(entityClass.getAnnotation(Table.class)).map(Table::name)
                 .orElse(entityClass.getSimpleName());
         //取字段
         final Field[] declaredFields = entityClass.getDeclaredFields();
-
         List<ProviderColumn> columnList = new ArrayList<>(declaredFields.length);
         List<ProviderColumn> transientColumnList = new ArrayList<>(declaredFields.length);
-
         ProviderColumn pk = null;
         boolean isAutoIncrement = false;
         for (Field declaredField : declaredFields) {
             declaredField.setAccessible(true);
-
-            final ProviderColumn col = new ProviderColumn();
-            col.javaColumn = declaredField.getName();
+            ProviderColumn.ProviderColumnBuilder builder = ProviderColumn.builder();
+            builder.withJavaColumn(declaredField.getName());
             Column column = declaredField.getAnnotation(Column.class);
             if (column == null) {
-                col.dbColumn = ProviderTableHelper.underline(declaredField.getName());
-                col.dbColumnTable = null;
+                builder.withDbColumn(ProviderTableHelper.underline(declaredField.getName()))
+                        .withDbColumnTable(null);
             } else {
-                col.dbColumn = column.name();
-                col.dbColumnTable = column.table();
+                builder.withDbColumn(column.table() + "." + column.name())
+                        .withDbColumnTable(column.table());
             }
-            col.columnType = declaredField.getType();
-            col.field = declaredField;
+            builder.withColumnType(declaredField.getType())
+                    .withField(declaredField);
             if (declaredField.getAnnotation(Id.class) != null) {
-                col.isPrimaryKey = true;
-                pk = col;
+                pk = builder.withIsPrimaryKey(true).build();
             }
-
-
+            ProviderColumn col = builder.build();
             GeneratedValue annotation = declaredField.getAnnotation(GeneratedValue.class);
             if (annotation != null) {
                 if (annotation.strategy() == GenerationType.IDENTITY ||
@@ -71,27 +62,26 @@ public final class ProviderTableHelper {
                     isAutoIncrement = true;
                 }
             }
-
             if (declaredField.getAnnotation(Transient.class) == null) {
                 columnList.add(col);
             } else {
                 transientColumnList.add(col);
             }
         }
-        final ProviderTable providerTable = new ProviderTable();
-        //VIEW 注解的
-        providerTable.tableName = Optional.ofNullable(entityClass.getAnnotation(View.class)).map(View::value).orElse(tableName);
-        providerTable.entityClass = entityClass;
-        providerTable.fields = declaredFields;
-        providerTable.transientColumns = transientColumnList.toArray(new ProviderColumn[0]);
-        providerTable.columns = columnList.toArray(new ProviderColumn[0]);
-        providerTable.primaryKey = pk;
-        providerTable.isAutoIncrement = isAutoIncrement;
-        providerTable.columnHash = Arrays.stream(providerTable.columns)
-                .collect(Collectors.toMap(ProviderColumn::getJavaColumn, Function.identity()));
+        ProviderColumn[] columns = columnList.toArray(new ProviderColumn[0]);
+        final ProviderTable providerTable = ProviderTable.builder()
+                .withTableName(Optional.ofNullable(entityClass.getAnnotation(View.class)).map(View::value).orElse(tableName))
+                .withEntityClass(entityClass)
+                .withFields(declaredFields)
+                .withTransientColumns(transientColumnList.toArray(new ProviderColumn[0]))
+                .withColumns(columns)
+                .withPrimaryKey(pk)
+                .withIsAutoIncrement(isAutoIncrement)
+                .withColumnHash(Arrays.stream(columns)
+                        .collect(Collectors.toMap(ProviderColumn::getJavaColumn, Function.identity())))
+                .build();
         return providerTable;
     }
-
 
     /**
      * 驼峰转下划线

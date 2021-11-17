@@ -1,6 +1,5 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
-
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -8,25 +7,45 @@ import java.util.Map;
 /**
  * @author wangjin
  */
-public class ProviderTable {
-    protected String key;
-    protected Class<?> entityClass;
-    protected Field[] fields;
-    protected String tableName;
-    protected ProviderColumn primaryKey;
-
-
+public final class ProviderTable {
+    private final Class<?> entityClass;
+    private final Field[] fields;
+    private final String tableName;
+    private final ProviderColumn primaryKey;
     /**
-     * 空间换时间. key为{@link ProviderColumn#javaColumn}
+     * 空间换时间. key为{@link ProviderColumn#getJavaColumn()}
      */
-    protected Map<String, ProviderColumn> columnHash;
+    private final Map<String, ProviderColumn> columnHash;
     /**
      * 是否为自增ID
      */
-    protected boolean isAutoIncrement;
-    protected ProviderColumn[] columns;
-    protected ProviderColumn[] transientColumns;
+    private final boolean isAutoIncrement;
+    private final ProviderColumn[] columns;
+    private final ProviderColumn[] transientColumns;
+    private String key;
 
+    public ProviderTable(Class<?> entityClass, Field[] fields, String tableName, ProviderColumn primaryKey, Map<String, ProviderColumn> columnHash, boolean isAutoIncrement, ProviderColumn[] columns, ProviderColumn[] transientColumns) {
+        this.entityClass = entityClass;
+        this.fields = fields;
+        this.tableName = tableName;
+        this.primaryKey = primaryKey;
+        this.columnHash = columnHash;
+        this.isAutoIncrement = isAutoIncrement;
+        this.columns = columns;
+        this.transientColumns = transientColumns;
+    }
+
+    static ProviderTableBuilder builder() {
+        return new ProviderTableBuilder();
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    void setKey(String key) {
+        this.key = key;
+    }
 
     public ProviderColumn getProviderColumn(final String javaColumn) {
         return columnHash.get(javaColumn);
@@ -38,7 +57,6 @@ public class ProviderTable {
         }
         return columnHash.containsKey(javaColumn);
     }
-
 
     public ProviderColumn[] getColumns() {
         return columns;
@@ -64,15 +82,69 @@ public class ProviderTable {
         return primaryKey;
     }
 
-    public String getKey() {
-        return key;
-    }
-
     public boolean isAutoIncrement() {
         return isAutoIncrement;
     }
 
     public Map<String, ProviderColumn> getColumnHash() {
         return columnHash;
+    }
+
+    static final class ProviderTableBuilder {
+        private Class<?> entityClass;
+        private Field[] fields;
+        private String tableName;
+        private ProviderColumn primaryKey;
+        private Map<String, ProviderColumn> columnHash;
+        private boolean isAutoIncrement;
+        private ProviderColumn[] columns;
+        private ProviderColumn[] transientColumns;
+
+        private ProviderTableBuilder() {
+        }
+
+        public ProviderTableBuilder withEntityClass(Class<?> entityClass) {
+            this.entityClass = entityClass;
+            return this;
+        }
+
+        public ProviderTableBuilder withFields(Field[] fields) {
+            this.fields = fields;
+            return this;
+        }
+
+        public ProviderTableBuilder withTableName(String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+
+        public ProviderTableBuilder withPrimaryKey(ProviderColumn primaryKey) {
+            this.primaryKey = primaryKey;
+            return this;
+        }
+
+        public ProviderTableBuilder withColumnHash(Map<String, ProviderColumn> columnHash) {
+            this.columnHash = columnHash;
+            return this;
+        }
+
+        public ProviderTableBuilder withIsAutoIncrement(boolean isAutoIncrement) {
+            this.isAutoIncrement = isAutoIncrement;
+            return this;
+        }
+
+        public ProviderTableBuilder withColumns(ProviderColumn[] columns) {
+            this.columns = columns;
+            return this;
+        }
+
+        public ProviderTableBuilder withTransientColumns(ProviderColumn[] transientColumns) {
+            this.transientColumns = transientColumns;
+            return this;
+        }
+
+        public ProviderTable build() {
+            return new ProviderTable(entityClass, fields, tableName, primaryKey, columnHash, isAutoIncrement, columns, transientColumns);
+        }
     }
 }

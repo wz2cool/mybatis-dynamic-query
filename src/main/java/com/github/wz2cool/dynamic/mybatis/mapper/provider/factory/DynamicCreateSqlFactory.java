@@ -15,6 +15,13 @@ import java.util.stream.Collectors;
  */
 public final class DynamicCreateSqlFactory {
 
+    //#####################################################################################################
+    //############################################公共私有方法,请勿更改######################################
+    //#####################################################################################################
+    private static final String if_set_template = "<if test=\"aliasName%s != null\">%s = #{aliasName%s},</if>";
+    private static final String if_set_string_template = "<if test=\"aliasName%s != null and aliasName%s != ''\">%s = #{aliasName%s},</if>";
+    private static final String set_template = "%s = #{aliasName%s}";
+    private static final String ALIAS_NAME = "aliasName";
     private final ProviderTable providerTable;
 
     private DynamicCreateSqlFactory(ProviderTable providerTable) {
@@ -24,7 +31,6 @@ public final class DynamicCreateSqlFactory {
     public static DynamicCreateSqlFactory getSqlFactory(ProviderTable providerTable) {
         return new DynamicCreateSqlFactory(providerTable);
     }
-
 
     /**
      * @param deleteByPrimaryKey 如果是deleteByPrimaryKey, 则说明只通过主键删除
@@ -53,7 +59,6 @@ public final class DynamicCreateSqlFactory {
         sqlBuilder.append("</script>");
         return sqlBuilder.toString();
     }
-
 
     /**
      * @param insertSelective insertSelective
@@ -124,7 +129,6 @@ public final class DynamicCreateSqlFactory {
         return sqlBuilder.toString();
     }
 
-
     /**
      * @return sql
      */
@@ -146,7 +150,6 @@ public final class DynamicCreateSqlFactory {
         return sqlBuilder.toString();
     }
 
-
     public String getDynamicDelete() {
         Class<?> entityClass = providerTable.getEntityClass();
         StringBuilder sqlBuilder = new StringBuilder();
@@ -158,7 +161,6 @@ public final class DynamicCreateSqlFactory {
         sqlBuilder.append("</script>");
         return sqlBuilder.toString();
     }
-
 
     public String getDynamicCount() {
         Class<?> entityClass = providerTable.getEntityClass();
@@ -207,17 +209,6 @@ public final class DynamicCreateSqlFactory {
         return sqlBuilder.toString();
     }
 
-
-    //    end
-    //#####################################################################################################
-    //############################################公共私有方法,请勿更改######################################
-    //#####################################################################################################
-    private static final String if_set_template = "<if test=\"aliasName%s != null\">%s = #{aliasName%s},</if>";
-    private static final String if_set_string_template = "<if test=\"aliasName%s != null and aliasName%s != ''\">%s = #{aliasName%s},</if>";
-    private static final String set_template = "%s = #{aliasName%s}";
-    private static final String ALIAS_NAME = "aliasName";
-
-
     /**
      * @param aliasName       是否生成别名:
      *                        假设传了aaa:  #{aaa.parseMethod}
@@ -236,7 +227,7 @@ public final class DynamicCreateSqlFactory {
             final String setIfTemplate = if_set_template.replace(ALIAS_NAME, aliasNameNew);
             final String setIfStringTemplate = if_set_string_template.replace(ALIAS_NAME, aliasNameNew);
             for (ProviderColumn column : providerTable.getColumns()) {
-                if (column.isPrimaryKey && breakPrimaryKey) {
+                if (column.isPrimaryKey() && breakPrimaryKey) {
                     continue;
                 }
                 if (column.getColumnType().isAssignableFrom(String.class)) {
@@ -250,10 +241,9 @@ public final class DynamicCreateSqlFactory {
 
         }
 
-
         final String setTemplate = set_template.replace(ALIAS_NAME, aliasNameNew);
         for (ProviderColumn column : providerTable.getColumns()) {
-            if (column.isPrimaryKey) {
+            if (column.isPrimaryKey()) {
                 continue;
             }
             sqlBuilder.append(CommonsHelper.format(setTemplate, column.getDbColumn(), column.getJavaColumn()));
