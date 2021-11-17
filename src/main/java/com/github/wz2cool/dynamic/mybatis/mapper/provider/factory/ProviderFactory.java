@@ -7,7 +7,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 /**
  * @author wangjin
  */
@@ -24,14 +23,12 @@ public class ProviderFactory {
             return cache.get(key);
         }
         final ProviderTable providerTable = ProviderFactory.createProviderTable(providerContext);
-        providerTable.key = key;
+        providerTable.setKey(key);
         cache.put(key, providerTable);
         return providerTable;
     }
 
-
     private static ProviderTable createProviderTable(ProviderContext providerContext) {
-        final ProviderTable providerTable = new ProviderTable();
         final Class<?> mapperType = providerContext.getMapperType();
         final Method mapperMethod = providerContext.getMapperMethod();
         final String databaseId = providerContext.getDatabaseId();
