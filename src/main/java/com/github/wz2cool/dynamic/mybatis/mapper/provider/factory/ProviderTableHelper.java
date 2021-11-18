@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider.factory;
 
 import com.github.wz2cool.dynamic.mybatis.View;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
@@ -28,7 +29,7 @@ public final class ProviderTableHelper {
     }
 
     private static ProviderTable initProviderTable(Class<?> entityClass) {
-        final String tableName = Optional.ofNullable(entityClass.getAnnotation(Table.class)).map(Table::name)
+        final String defaultTableName = Optional.ofNullable(entityClass.getAnnotation(Table.class)).map(Table::name)
                 .orElse(entityClass.getSimpleName());
         //取字段
         final Field[] declaredFields = entityClass.getDeclaredFields();
@@ -69,8 +70,13 @@ public final class ProviderTableHelper {
             }
         }
         ProviderColumn[] columns = columnList.toArray(new ProviderColumn[0]);
-        final ProviderTable providerTable = ProviderTable.builder()
-                .withTableName(Optional.ofNullable(entityClass.getAnnotation(View.class)).map(View::value).orElse(tableName))
+        final String tableName = StringUtils.defaultString(StringUtils.defaultString(
+                Optional.ofNullable(entityClass.getAnnotation(View.class))
+                        .map(View::value).orElse(null),
+                Optional.ofNullable(entityClass.getAnnotation(com.github.wz2cool.dynamic.annotation.View.class))
+                        .map(com.github.wz2cool.dynamic.annotation.View::value).orElse(null)), defaultTableName);
+        return ProviderTable.builder()
+                .withTableName(tableName)
                 .withEntityClass(entityClass)
                 .withFields(declaredFields)
                 .withTransientColumns(transientColumnList.toArray(new ProviderColumn[0]))
@@ -80,7 +86,6 @@ public final class ProviderTableHelper {
                 .withColumnHash(Arrays.stream(columns)
                         .collect(Collectors.toMap(ProviderColumn::getJavaColumn, Function.identity())))
                 .build();
-        return providerTable;
     }
 
     /**
