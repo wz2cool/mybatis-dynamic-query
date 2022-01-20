@@ -61,10 +61,10 @@ FROM product;
 INSERT INTO product (product_id, category_id, product_name, price, description)
 VALUES
   (1, 1, 'Northwind Traders Chai', 18.0000, 'p1'),
-  (2, 2, 'Northwind Traders Syrup', 7.5000, 'p2'),
-  (3, 2, 'Northwind Traders Cajun Seasoning', 16.5000, 'p3'),
-  (4, 3, 'Northwind Traders Olive Oil', 16.5000, 'p4'),
-  (5, 3, 'Northwind Traders xxxx Oil', 16.5000, 'p5');
+  (2, 2, 'Northwind Traders Syrup', 9.000, 'p2'),
+  (3, 2, 'Northwind Traders Cajun Seasoning', 16.000, 'p3'),
+  (4, 3, 'Northwind Traders Olive Oil', 16.000, 'p4'),
+  (5, 3, 'Northwind Traders xxxx Oil', 16.000, 'p5');
 
 DELETE
 FROM bug;
@@ -85,4 +85,4 @@ VALUES
   (6, 'Elvira Daisy'),
   (7, 'Monica Robeson'),
   (8, 'Katherine Eliot'),
-  (9, 'Hamiltion Hamlet'),
+  (9, 'Hamiltion Hamlet');
