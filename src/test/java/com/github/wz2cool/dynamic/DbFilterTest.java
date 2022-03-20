@@ -381,27 +381,6 @@ public class DbFilterTest {
     }
 
     @Test
-    public void testBitand() throws Exception {
-        if ("h2".equalsIgnoreCase(active)) {
-            CustomFilterDescriptor bitFilter =
-                    new CustomFilterDescriptor(FilterCondition.AND,
-                            "Bitand(product_id, {0}) > {1}", 2, 0);
-            Map<String, Object> filterParams = MybatisQueryProvider.getWhereQueryParamMap(
-                    Product.class, "whereExpression", bitFilter);
-            List<Product> products = northwindDao.getProductByDynamic(filterParams);
-            assertEquals(true, products.size() > 0);
-        } else {
-            CustomFilterDescriptor bitFilter =
-                    new CustomFilterDescriptor(FilterCondition.AND,
-                            "product_id & {0} > {1}", 2, 0);
-            Map<String, Object> filterParams = MybatisQueryProvider.getWhereQueryParamMap(
-                    Product.class, "whereExpression", bitFilter);
-            List<Product> products = northwindDao.getProductByDynamic(filterParams);
-            assertEquals(true, products.size() > 0);
-        }
-    }
-
-    @Test
     public void testMultiTablesFilter() throws Exception {
         FilterDescriptor priceFilter1 =
                 new FilterDescriptor("price",

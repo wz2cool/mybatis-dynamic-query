@@ -28,7 +28,13 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.swing.border.EtchedBorder;
 import java.math.BigDecimal;
+
 import java.util.*;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.*;
@@ -403,10 +409,11 @@ public class DemoTest {
     public void testSelectAvg() {
         DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class);
         Optional<BigDecimal> avgOptional = productDao.selectAvgByDynamicQuery(Product::getPrice, query1);
-        BigDecimal sum = avgOptional.get();
+        BigDecimal avg = avgOptional.get();
         List<Product> productList = productDao.selectAll();
-        BigDecimal expectedValue = new BigDecimal(productList.stream().mapToDouble(x -> x.getPrice().doubleValue()).average().getAsDouble());
-        assertEquals(0, expectedValue.compareTo(sum));
+        BigDecimal sum = productList.stream().map(Product::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal calAvg = sum.divide(BigDecimal.valueOf(productList.size()));
+        assertEquals(0, calAvg.compareTo(avg));
     }
 
 

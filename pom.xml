@@ -6,7 +6,7 @@
 
     <groupId>com.github.wz2cool</groupId>
     <artifactId>mybatis-dynamic-query</artifactId>
-    <version>3.2.18</version>
+    <version>3.2.20</version>
     <packaging>jar</packaging>
 
     <organization>
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.196</version>
+            <version>2.0.206</version>
             <scope>test</scope>
         </dependency>
         <dependency>
