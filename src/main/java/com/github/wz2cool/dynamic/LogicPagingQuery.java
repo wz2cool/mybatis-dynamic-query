@@ -37,9 +37,41 @@ public class LogicPagingQuery<T> extends BaseFilterGroup<T, LogicPagingQuery<T>>
         sortDescriptor.setDirection(sortDirection);
     }
 
+    private LogicPagingQuery(Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown,
+                             Long lastStartPageId, Long lastEndPageId) {
+        this.clazz = clazz;
+        this.upDown = upDown;
+        this.pagingPropertyFunc = pagingPropertyFunc;
+        this.sortDirection = sortDirection;
+        String propertyName = CommonsHelper.getPropertyName(pagingPropertyFunc);
+        sortDescriptor = new SortDescriptor();
+        sortDescriptor.setPropertyName(propertyName);
+        sortDescriptor.setDirection(sortDirection);
+        this.lastEndPageId = lastEndPageId;
+        this.lastStartPageId = lastStartPageId;
+    }
+
     public static <T> LogicPagingQuery<T> createQuery(
             Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown) {
         return new LogicPagingQuery<>(clazz, pagingPropertyFunc, sortDirection, upDown);
+    }
+
+    /**
+     * create a {@link LogicPagingQuery} Object
+     *
+     * @param clazz              entity class
+     * @param pagingPropertyFunc logic paging sort property
+     * @param sortDirection      sort direction,ASC、DESC
+     * @param upDown             turn pages direction,UP(previous page)、DOWN(next page)、NONE(I don't know what means about this)
+     * @param lastStartPageId    last time page sort property start value
+     * @param lastEndPageId      last time page sort property end value
+     * @param <T>                entity class
+     * @return {@link LogicPagingQuery}
+     */
+    public static <T> LogicPagingQuery<T> createQuery(
+            Class<T> clazz, GetLongPropertyFunction<T> pagingPropertyFunc, SortDirection sortDirection, UpDown upDown,
+            Long lastStartPageId, Long lastEndPageId) {
+        return new LogicPagingQuery<>(clazz, pagingPropertyFunc, sortDirection, upDown, lastStartPageId, lastEndPageId);
     }
 
     public LogicPagingQuery<T> thenBy(GetPropertyFunction<T, Comparable> getPropertyFunc, ISortDirection sortDirection) {
