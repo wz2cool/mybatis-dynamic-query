@@ -46,8 +46,10 @@ public final class ProviderTableHelper {
                 builder.withDbColumn(ProviderTableHelper.underline(declaredField.getName()))
                         .withDbColumnTable(null);
             } else {
-                builder.withDbColumn(column.table() + "." + column.name())
-                        .withDbColumnTable(column.table());
+                String name = StringUtils.defaultIfEmpty(column.name(), ProviderTableHelper.underline(declaredField.getName()));
+                String table = StringUtils.defaultIfEmpty(column.table(), defaultTableName);
+                builder.withDbColumn(table + "." + name)
+                        .withDbColumnTable(table);
             }
             builder.withColumnType(declaredField.getType())
                     .withField(declaredField);

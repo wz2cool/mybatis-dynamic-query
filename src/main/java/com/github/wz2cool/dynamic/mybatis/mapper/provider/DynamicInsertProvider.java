@@ -35,7 +35,6 @@ public class DynamicInsertProvider {
         return sql.toString();
     }
 
-
     public String insert(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
         if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
@@ -46,6 +45,16 @@ public class DynamicInsertProvider {
         return sql;
     }
 
+    public String insertList(ProviderContext providerContext) {
+        //TODO
+        ProviderTable providerTable = ProviderFactory.create(providerContext);
+        if (DYNAMIC_QUERY_CACHE.containsKey(providerTable.getKey())) {
+            return DYNAMIC_QUERY_CACHE.get(providerTable.getKey());
+        }
+        final String sql = DynamicCreateSqlFactory.getSqlFactory(providerTable).getInsertSql(false);
+        DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
+        return sql;
+    }
 
     public String insertSelective(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
@@ -56,7 +65,6 @@ public class DynamicInsertProvider {
         DYNAMIC_QUERY_CACHE.put(providerTable.getKey(), sql);
         return sql;
     }
-
 
     public String selectCountByDynamicQuery(ProviderContext providerContext) {
         ProviderTable providerTable = ProviderFactory.create(providerContext);
