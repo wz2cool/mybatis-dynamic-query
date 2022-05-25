@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis.mapper;
 import com.github.wz2cool.dynamic.mybatis.mapper.provider.DynamicInsertProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 
+import java.util.List;
 
 /**
  * 提供基本的增加
@@ -29,4 +30,7 @@ public interface InsertMapper<T> {
      */
     @InsertProvider(type = DynamicInsertProvider.class, method = "insert")
     int insert(T entity);
+
+    @InsertProvider(type = DynamicInsertProvider.class, method = "insertList")
+    int insertList(List<T> entity);
 }
