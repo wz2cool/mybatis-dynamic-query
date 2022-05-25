@@ -64,13 +64,6 @@
     </parent>
 
     <dependencies>
-        <!--mapper-->
-        <!--        <dependency>-->
-        <!--            <groupId>tk.mybatis</groupId>-->
-        <!--            <artifactId>mapper</artifactId>-->
-        <!--            <version>4.1.5</version>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -91,14 +84,6 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-
-        <!--        &lt;!&ndash; test dependencies &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>tk.mybatis</groupId>-->
-        <!--            <artifactId>mapper-spring-boot-starter</artifactId>-->
-        <!--            <version>2.1.5</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
