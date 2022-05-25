@@ -57,6 +57,15 @@ public class DemoTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
+    public void testNewFilter() {
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, o -> o.greaterThan(1))
+                .and(Bug::getId, o -> o.lessThan(100))
+                .orderBy(Bug::getId, SortDirections::desc);
+        final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
+    }
+
+    @Test
     public void testNormPaging1() throws JsonProcessingException {
         // 传统分页
         bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));

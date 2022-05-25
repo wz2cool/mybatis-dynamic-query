@@ -3,7 +3,7 @@ package com.github.wz2cool.dynamic;
 import com.github.wz2cool.dynamic.exception.InternalRuntimeException;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
 import com.github.wz2cool.dynamic.lambda.*;
-import com.github.wz2cool.dynamic.model.UpdatePropertyConfig;
+import com.github.wz2cool.dynamic.model.SelectPropertyConfig;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
@@ -84,15 +84,15 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
         return set(enable, record, null);
     }
 
-    public UpdateQuery<T> set(T record, UnaryOperator<UpdatePropertyConfig<T>> getConfigFunc) {
+    public UpdateQuery<T> set(T record, UnaryOperator<SelectPropertyConfig<T>> getConfigFunc) {
         return set(true, record, getConfigFunc);
     }
 
-    public UpdateQuery<T> set(boolean enable, T record, UnaryOperator<UpdatePropertyConfig<T>> getConfigFunc) {
+    public UpdateQuery<T> set(boolean enable, T record, UnaryOperator<SelectPropertyConfig<T>> getConfigFunc) {
         if (enable) {
-            UpdatePropertyConfig<T> config = null;
+            SelectPropertyConfig<T> config = null;
             if (Objects.nonNull(getConfigFunc)) {
-                config = getConfigFunc.apply(new UpdatePropertyConfig<>());
+                config = getConfigFunc.apply(new SelectPropertyConfig<>());
             }
             ProviderTable providerTable = ProviderTableHelper.getProviderTable(entityClass);
             Map<String, ProviderColumn> columnHash = providerTable.getColumnHash();
@@ -219,7 +219,7 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
         return result;
     }
 
-    private Set<String> getNeedUpdatePropertyNames(Set<String> allPropertyNames, UpdatePropertyConfig<T> config) {
+    private Set<String> getNeedUpdatePropertyNames(Set<String> allPropertyNames, SelectPropertyConfig<T> config) {
         if (Objects.isNull(config)) {
             return allPropertyNames;
         }

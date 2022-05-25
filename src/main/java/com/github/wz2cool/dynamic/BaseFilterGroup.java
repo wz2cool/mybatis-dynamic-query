@@ -54,9 +54,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             IFilterOperator<BigDecimal> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -64,9 +61,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             IFilterOperator<BigDecimal> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -86,9 +80,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBytePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Byte> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -96,9 +87,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBytePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Byte> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -118,9 +106,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDatePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Date> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -128,9 +113,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDatePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Date> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -150,9 +132,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDoublePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Double> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -160,9 +139,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDoublePropertyFunction<T> getPropertyFunc,
             IFilterOperator<Double> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -182,9 +158,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetFloatPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Float> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -192,9 +165,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetFloatPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Float> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -214,9 +184,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetIntegerPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Integer> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -224,9 +191,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetIntegerPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Integer> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -246,9 +210,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetLongPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Long> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -256,9 +217,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetLongPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Long> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -278,9 +236,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetShortPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Short> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -288,9 +243,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetShortPropertyFunction<T> getPropertyFunc,
             IFilterOperator<Short> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -310,9 +262,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetStringPropertyFunction<T> getPropertyFunc,
             IFilterOperator<String> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -320,9 +269,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetStringPropertyFunction<T> getPropertyFunc,
             IFilterOperator<String> filterOperator) {
-        if (!enable) {
-            return (S) this;
-        }
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
 
@@ -348,9 +294,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<BigDecimal>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<BigDecimal> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -359,9 +302,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBigDecimalPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<BigDecimal>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<BigDecimal> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -384,9 +324,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBytePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Byte>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Byte> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -395,9 +332,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetBytePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Byte>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Byte> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -420,9 +354,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDatePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Date>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Date> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -431,9 +362,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDatePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Date>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Date> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -456,9 +384,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDoublePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Double>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Double> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -467,9 +392,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetDoublePropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Double>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Double> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -492,9 +414,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetFloatPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Float>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Float> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -503,9 +422,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetFloatPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Float>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Float> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -528,9 +444,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetIntegerPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Integer>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Integer> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -539,9 +452,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetIntegerPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Integer>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Integer> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -564,9 +474,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetLongPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Long>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Long> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -575,9 +482,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetLongPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Long>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Long> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -600,9 +504,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetShortPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Short>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Short> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -611,9 +512,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetShortPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<Short>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<Short> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -636,9 +534,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetStringPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<String>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<String> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.AND, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
@@ -647,9 +542,6 @@ public abstract class BaseFilterGroup<T, S extends BaseFilterGroup<T, S>> {
             boolean enable,
             GetStringPropertyFunction<T> getPropertyFunc,
             Function<FilterOperators, IFilterOperator<String>> filterOperatorFunc) {
-        if (!enable) {
-            return (S) this;
-        }
         final IFilterOperator<String> filterOperator = filterOperatorFunc.apply(FILTER_OPERATORS);
         return filterInternal(FilterCondition.OR, getPropertyFunc, filterOperator.getOperator(), filterOperator.getValue(), enable);
     }
