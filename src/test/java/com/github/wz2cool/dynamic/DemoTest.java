@@ -26,9 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import javax.swing.border.EtchedBorder;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,6 @@ import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -363,6 +360,20 @@ public class DemoTest {
     }
 
     @Test
+    public void testGroupByPaging() {
+        GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId)
+                .orderByNull();
+
+        final NormPagingResult<CategoryGroupCount> categoryGroupCountNormPagingResult =
+                categoryGroupCountMapper.selectByNormalPaging(NormPagingQueryWrapper.create(groupedQuery, 1, 2, false));
+        assertTrue(categoryGroupCountNormPagingResult.isHasNextPage());
+    }
+
+    @Test
     public void testGroupBy() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
@@ -380,6 +391,21 @@ public class DemoTest {
         for (CategoryGroupCount categoryGroupCount : categoryGroupCountList) {
             assertTrue(categoryGroupCount.getCount() > 1);
         }
+    }
+
+    @Test
+    public void testCountGroupBy() {
+        GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId)
+                // 这里是having 对分组筛选
+                .and(CategoryGroupCount::getCount, greaterThan(1))
+                .orderByNull();
+
+        final int i = categoryGroupCountMapper.selectCountByGroupedQuery(groupedQuery);
+
     }
 
     @Test

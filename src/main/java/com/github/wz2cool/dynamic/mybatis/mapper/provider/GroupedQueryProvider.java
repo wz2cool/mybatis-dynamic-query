@@ -54,6 +54,20 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
+    public String selectCountByGroupedQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append("SELECT COUNT(*) FROM (");
+        sql.append(SqlHelper.selectCount(entityClass));
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(GroupedQuerySqlHelper.getWhereClause());
+        sql.append(GroupedQuerySqlHelper.getGroupByClause());
+        sql.append(GroupedQuerySqlHelper.getHavingClause());
+        sql.append(") AS a");
+        return sql.toString();
+    }
+
     public String selectRowBoundsByGroupedQuery(MappedStatement ms) {
         return selectByGroupedQuery(ms);
     }
