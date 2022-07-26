@@ -27,6 +27,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.*;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -50,15 +52,6 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
-
-    @Test
-    public void testNewFilter() {
-        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
-                .and(Bug::getId, o -> o.greaterThan(1))
-                .and(Bug::getId, o -> o.lessThan(100))
-                .orderBy(Bug::getId, SortDirections::desc);
-        final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
-    }
 
     @Test
     public void testNormPaging1() throws JsonProcessingException {
@@ -564,5 +557,34 @@ public class DemoTest {
         for (Bug bug : bugs) {
             assertEquals(true, StringUtils.isNotBlank(bug.getAssignTo()));
         }
+    }
+
+    @Test
+    public void testNewFilter() {
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        for (int i = 0; i < 10; i++) {
+            Bug newBug = new Bug();
+            newBug.setId(i);
+            newBug.setAssignTo("frank");
+            newBug.setTitle("title");
+            bugDao.insert(newBug);
+        }
+
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(Bug::getId, o -> o.greaterThan(1))
+                .and(Bug::getId, o -> o.lessThan(100))
+                .orderBy(Bug::getId, SortDirections::desc);
+        final List<Bug> bugs = bugDao.selectByDynamicQuery(query);
+        assertTrue(bugs.size() > 0);
+    }
+
+    @Test
+    public void testDelayCalcNull() {
+        Bug nullBug = null;
+        DynamicQuery<Bug> query = DynamicQuery.createQuery(Bug.class)
+                .and(Objects.nonNull(nullBug) && Objects.nonNull(nullBug.getId()),
+                        Bug::getId, o -> o.isEqual(nullBug.getId()));
+        final BaseFilterDescriptor<Bug>[] filters = query.getFilters();
+        assertEquals(0, filters.length);
     }
 }
