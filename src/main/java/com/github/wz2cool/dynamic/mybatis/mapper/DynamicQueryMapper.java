@@ -1,6 +1,8 @@
 package com.github.wz2cool.dynamic.mybatis.mapper;
 
+import com.github.wz2cool.dynamic.DynamicQuery;
 import com.github.wz2cool.dynamic.NormPagingQuery;
+import com.github.wz2cool.dynamic.NormPagingQueryWrapper;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
 import org.apache.ibatis.session.RowBounds;
 import tk.mybatis.mapper.annotation.RegisterMapper;
@@ -75,4 +77,43 @@ public interface DynamicQueryMapper<T> extends
         result.setPageSize(normPagingQuery.getPageSize());
         return result;
     }
+
+    default NormPagingResult<T> selectByNormalPaging(NormPagingQueryWrapper<T, DynamicQuery<T>> normPagingQueryWrapper) {
+        NormPagingResult<T> result = new NormPagingResult<>();
+        int pageNum = normPagingQueryWrapper.getPageNum() < 1 ? 1 : normPagingQueryWrapper.getPageNum();
+        int pageSize = normPagingQueryWrapper.getPageSize();
+        int queryPageSize = pageSize + 1;
+        int offset = (pageNum - 1) * pageSize;
+        List<T> dataList = selectRowBoundsByDynamicQuery(normPagingQueryWrapper.getSearchQuery(), new RowBounds(offset, queryPageSize));
+        // 补偿当前页没有需要到上一页
+        if (normPagingQueryWrapper.isAutoBackIfEmpty() && dataList.isEmpty() && pageNum > 1) {
+            int newPageNum = pageNum - 1;
+            NormPagingQueryWrapper<T, DynamicQuery<T>> newNormPagingQueryWrapper =
+                    new NormPagingQueryWrapper<>(normPagingQueryWrapper.getSearchQuery());
+            newNormPagingQueryWrapper.setPageNum(newPageNum);
+            newNormPagingQueryWrapper.setPageSize(normPagingQueryWrapper.getPageSize());
+            newNormPagingQueryWrapper.setAutoBackIfEmpty(normPagingQueryWrapper.isAutoBackIfEmpty());
+            newNormPagingQueryWrapper.setCalcTotal(normPagingQueryWrapper.isCalcTotal());
+            return selectByNormalPaging(newNormPagingQueryWrapper);
+        }
+        if (normPagingQueryWrapper.isCalcTotal()) {
+            int totalCount = selectCountByDynamicQuery(normPagingQueryWrapper.getSearchQuery());
+            int pages = (int) Math.ceil((double) totalCount / pageSize);
+            result.setTotal(totalCount);
+            result.setPages(pages);
+        }
+        boolean hasNext = dataList.size() > pageSize;
+        boolean hasPre = pageNum > 1;
+        result.setHasNextPage(hasNext);
+        result.setHasPreviousPage(hasPre);
+        if (dataList.size() > pageSize) {
+            result.setList(dataList.subList(0, pageSize));
+        } else {
+            result.setList(dataList);
+        }
+        result.setPageNum(pageNum);
+        result.setPageSize(normPagingQueryWrapper.getPageSize());
+        return result;
+    }
+
 }
