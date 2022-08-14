@@ -117,6 +117,13 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S selectDistinct(GetCommonPropertyFunction<T> getPropertyFunction) {
+        final String propertyName = CommonsHelper.getPropertyName(getPropertyFunction);
+        this.addSelectedProperties(propertyName);
+        this.setDistinct(true);
+        return (S) this;
+    }
+
     @SafeVarargs
     public final S select(GetCommonPropertyFunction<T>... getPropertyFunctions) {
         String[] newSelectProperties = new String[getPropertyFunctions.length];
