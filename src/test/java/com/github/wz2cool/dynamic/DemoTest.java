@@ -28,11 +28,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 import static org.junit.Assert.*;
@@ -52,6 +47,17 @@ public class DemoTest {
     private CategoryGroupCountMapper categoryGroupCountMapper;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
+
+    @Test
+    public void testSelectDistinct() {
+        DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class)
+                .selectDistinct(Product::getCategoryId);
+        final List<Product> productList = productDao.selectByDynamicQuery(query1);
+
+        final List<Product> productList1 = productDao.selectAll();
+        final long count = productList1.stream().map(Product::getCategoryId).distinct().count();
+        assertEquals(count, productList.size());
+    }
 
     @Test
     public void testNormPaging1() throws JsonProcessingException {
