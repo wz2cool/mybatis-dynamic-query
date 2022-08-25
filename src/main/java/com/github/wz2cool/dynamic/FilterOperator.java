@@ -55,5 +55,9 @@ public enum FilterOperator implements Serializable {
     /**
      * Between and operator.
      */
-    BETWEEN
+    BETWEEN,
+    /**
+     *
+     */
+    NOT_CONTAINS
 }

@@ -129,7 +129,7 @@ public class QueryHelper {
             result = (filterValue == null ? "" : filterValue) + "%";
         } else if (operator == FilterOperator.END_WITH) {
             result = "%" + (filterValue == null ? "" : filterValue);
-        } else if (operator == FilterOperator.CONTAINS) {
+        } else if (operator == FilterOperator.CONTAINS || operator == FilterOperator.NOT_CONTAINS) {
             result = "%" + (filterValue == null ? "" : filterValue) + "%";
         } else {
             result = filterValue;

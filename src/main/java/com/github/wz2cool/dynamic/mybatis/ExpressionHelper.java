@@ -37,10 +37,17 @@ class ExpressionHelper {
                 return getNotInExpression(columnInfo, paramPlaceholders);
             case BETWEEN:
                 return getBetweenExpression(columnInfo, paramPlaceholders);
+            case NOT_CONTAINS:
+                return getNotLikeExpression(columnInfo, paramPlaceholders);
             default:
                 throw new UnsupportedOperationException(String.format("not support operator: %s", operator));
         }
     }
+
+     String getNotLikeExpression(final ColumnInfo columnInfo, final String... paramPlaceholders) {
+         return String.format("%s NOT LIKE #{%s}", columnInfo.getQueryColumn(), paramPlaceholders[0]);
+
+     }
 
     String getEqualExpression(final ColumnInfo columnInfo, Object filterValue, final String... paramPlaceholders) {
         if (filterValue == null) {
