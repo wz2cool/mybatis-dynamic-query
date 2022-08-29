@@ -244,13 +244,14 @@ public class QueryHelper {
         Map<String, Object> paramMap = new HashMap<>(10);
         Object[] params = customSortDescriptor.getParams();
         String expression = customSortDescriptor.getExpression();
-        for (int i = 0; i < params.length; i++) {
-            String genParamName = String.format("param_custom_sort_%s",
-                    UUID.randomUUID().toString().replace("-", ""));
-            expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
-            paramMap.put(genParamName, params[i]);
+        if (Objects.nonNull(params)) {
+            for (int i = 0; i < params.length; i++) {
+                String genParamName = String.format("param_custom_sort_%s",
+                        UUID.randomUUID().toString().replace("-", ""));
+                expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
+                paramMap.put(genParamName, params[i]);
+            }
         }
-
         ParamExpression paramExpression = new ParamExpression();
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
