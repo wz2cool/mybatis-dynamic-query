@@ -15,13 +15,13 @@ import java.util.Set;
 /**
  * @author frank
  */
-public class EnhancedInsertProvider extends BaseInsertProvider {
+public class InsertIgnoreProvider extends BaseInsertProvider {
 
-    public EnhancedInsertProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
+    public InsertIgnoreProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
     }
 
-    public String insert(MappedStatement ms) {
+    public String insertIgnore(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         //获取全部列
@@ -59,7 +59,7 @@ public class EnhancedInsertProvider extends BaseInsertProvider {
         return sql.toString();
     }
 
-    public String insertSelective(MappedStatement ms) {
+    public String insertIgnoreSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         //获取全部列
