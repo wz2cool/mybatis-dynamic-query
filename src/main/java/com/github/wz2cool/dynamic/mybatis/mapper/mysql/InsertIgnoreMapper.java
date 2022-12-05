@@ -19,5 +19,5 @@ public interface InsertIgnoreMapper<T> {
      * @return
      */
     @InsertProvider(type = InsertIgnoreProvider.class, method = "dynamicSQL")
-    int insert(T record);
+    int insertIgnore(T record);
 }
