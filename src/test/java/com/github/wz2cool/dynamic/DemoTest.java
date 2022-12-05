@@ -359,6 +359,21 @@ public class DemoTest {
     }
 
     @Test
+    public void testCustomSortGroupBy() {
+        GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                // 这里是Where 对数据筛选
+                .and(Product::getProductId, greaterThan(0L))
+                .groupBy(Product::getCategoryId);
+        CustomSortDescriptor sortDescriptor = new CustomSortDescriptor();
+        sortDescriptor.setExpression("category_id DESC");
+        groupedQuery.addSorts(sortDescriptor);
+        List<CategoryGroupCount> categoryGroupCounts = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
+        OptionalInt max = categoryGroupCounts.stream().mapToInt(x -> x.categoryId).max();
+        assertEquals(0, categoryGroupCounts.get(0).getCategoryId().compareTo(max.getAsInt()));
+    }
+
+    @Test
     public void testGroupByPaging() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
