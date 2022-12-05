@@ -1,14 +1,11 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
-import com.github.wz2cool.dynamic.BaseFilterDescriptor;
 import com.github.wz2cool.dynamic.DynamicQuery;
-import com.github.wz2cool.dynamic.BaseSortDescriptor;
 import com.github.wz2cool.dynamic.UpdateQuery;
-import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTemplate;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
