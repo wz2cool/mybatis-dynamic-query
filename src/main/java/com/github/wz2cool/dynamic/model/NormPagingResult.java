@@ -39,6 +39,18 @@ public class NormPagingResult<T> {
      */
     private List<T> list = new ArrayList<>();
 
+    private static final NormPagingResult EMPTY_NORM_PAGING_RESULT = new NormPagingResult<>();
+
+    /**
+     * 构建空的normPagingResult
+     *
+     * @param <T> 分页泛型
+     * @return 空的normPagingResult
+     */
+    public static <T> NormPagingResult<T> empty() {
+        return EMPTY_NORM_PAGING_RESULT;
+    }
+
 
     /**
      * 转换 NormPagingResult 的数据泛型

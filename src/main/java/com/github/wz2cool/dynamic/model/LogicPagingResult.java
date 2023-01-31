@@ -14,6 +14,18 @@ public class LogicPagingResult<T> {
     private long endPageId;
     private List<T> list = new ArrayList<>();
 
+    private static final LogicPagingResult EMPTY_LOGIC_PAGING_RESULT = new LogicPagingResult<>();
+
+    /**
+     * 构建空的LogicPagingResult
+     *
+     * @param <T> 分页泛型
+     * @return 空的LogicPagingResult
+     */
+    public static <T> LogicPagingResult<T> empty() {
+        return EMPTY_LOGIC_PAGING_RESULT;
+    }
+
     public boolean isHasPreviousPage() {
         return hasPreviousPage;
     }
