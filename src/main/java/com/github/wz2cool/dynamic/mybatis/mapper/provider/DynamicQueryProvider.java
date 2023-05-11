@@ -51,7 +51,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
     public static String selectCount(Class<?> entityClass) {
         Set<EntityColumn> pkColumns = EntityHelper.getPKColumns(entityClass);
         String countKey = pkColumns.size() == 1 ? pkColumns.iterator().next().getColumn() : "*";
-        String countColumns = String.format("<choose> <when test=\"%s.%s\">distinct (%s) </when > <otherwise> %s </otherwise> </choose>",
+        String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
                 getSelectUnAsColumnsClause(), countKey);
         return String.format("SELECT COUNT(%s) ", countColumns);
