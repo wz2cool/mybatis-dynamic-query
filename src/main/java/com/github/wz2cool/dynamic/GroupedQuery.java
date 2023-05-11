@@ -114,7 +114,7 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
                 this.groupByQuery.tSelectClass,
                 this.groupByQuery.getSelectedProperties(),
-                this.groupByQuery.getIgnoredProperties(), isMapUnderscoreToCamelCase);
+                this.groupByQuery.getIgnoredProperties(), isMapUnderscoreToCamelCase, false);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         return paramMap;
 

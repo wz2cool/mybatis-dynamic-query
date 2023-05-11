@@ -1,20 +1,22 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
-import com.github.wz2cool.dynamic.BaseFilterDescriptor;
 import com.github.wz2cool.dynamic.DynamicQuery;
-import com.github.wz2cool.dynamic.BaseSortDescriptor;
 import com.github.wz2cool.dynamic.UpdateQuery;
-import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.BaseEnhancedMapperTemplate;
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
+import tk.mybatis.mapper.entity.EntityColumn;
+import tk.mybatis.mapper.mapperhelper.EntityHelper;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
 import java.util.Map;
+import java.util.Set;
+
+import static com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper.getSelectUnAsColumnsClause;
 
 /**
  * @author Frank
@@ -40,10 +42,19 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
-        sql.append(SqlHelper.selectCount(entityClass));
+        sql.append(selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
+    }
+
+    public static String selectCount(Class<?> entityClass) {
+        Set<EntityColumn> pkColumns = EntityHelper.getPKColumns(entityClass);
+        String countKey = pkColumns.size() == 1 ? pkColumns.iterator().next().getColumn() : "*";
+        String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
+                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
+                getSelectUnAsColumnsClause(), countKey);
+        return String.format("SELECT COUNT(%s) ", countColumns);
     }
 
     public String selectMaxByDynamicQuery(MappedStatement ms) {

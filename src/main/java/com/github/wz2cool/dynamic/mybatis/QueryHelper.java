@@ -266,7 +266,8 @@ public class QueryHelper {
     public String toSelectColumnsExpression(final Class entityClass,
                                             final String[] selectedProperties,
                                             final String[] ignoredProperties,
-                                            final boolean mapUnderscoreToCamelCase) {
+                                            final boolean mapUnderscoreToCamelCase,
+                                            final boolean unAsColumn) {
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
         boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
@@ -281,11 +282,12 @@ public class QueryHelper {
             } else {
                 needSelectColumn = true;
             }
-
             if (needSelectColumn) {
                 // 这里我们需要判断一下，是否设置了 @column ,如果有的话，我们不做驼峰
                 String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
-                String column = String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
+                String column = unAsColumn ?
+                        String.format("%s", columnInfo.getQueryColumn()) :
+                        String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
                 columns.add(column);
             }
         }
