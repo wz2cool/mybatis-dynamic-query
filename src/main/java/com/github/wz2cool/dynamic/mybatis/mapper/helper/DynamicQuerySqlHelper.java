@@ -39,7 +39,7 @@ public class DynamicQuerySqlHelper {
     }
 
     public static String getSelectUnAsColumnsClause() {
-        return String.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.UN_AS_COLUMNS_EXPRESSION);
+        return String.format(" ${%s.%s} ", MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.UN_AS_SELECT_COLUMNS_EXPRESSION);
     }
 
     public static String getWhereClause() {
