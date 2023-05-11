@@ -20,4 +20,5 @@ public class MapperConstants {
     public static final String HAVING_EXPRESSION = "havingExpression";
     public static final String SORT_EXPRESSION = "sortExpression";
     public static final String SET_EXPRESSION = "setExpression";
+    public static final String UN_AS_COLUMNS_EXPRESSION = "unAsColumnsExpression";
 }

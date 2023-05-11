@@ -168,10 +168,12 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, this.isDistinct());
-
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,false);
+        String unAsColumnsExpression = QUERY_HELPER.toSelectColumnsExpression(
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,true);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
+        paramMap.put(MapperConstants.UN_AS_COLUMNS_EXPRESSION, unAsColumnsExpression);
         return paramMap;
     }
 }
