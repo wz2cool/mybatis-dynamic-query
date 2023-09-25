@@ -78,6 +78,12 @@ public class MapperBatchAction<M extends DynamicQueryMapper<?>> {
      */
     public int doBatchActions() {
         final List<BatchResult> batchResults = doBatchActionWithResults();
-        return batchResults.stream().flatMapToInt(x -> Arrays.stream(x.getUpdateCounts())).sum();
+        return batchResults.stream().mapToInt(x -> {
+            int effectRows = Arrays.stream(x.getUpdateCounts()).sum();
+            if (effectRows > 0) {
+                return effectRows;
+            }
+            return x.getParameterObjects().size();
+        }).sum();
     }
 }

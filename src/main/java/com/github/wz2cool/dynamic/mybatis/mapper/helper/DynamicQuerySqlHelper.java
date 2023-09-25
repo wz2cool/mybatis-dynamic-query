@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
+import tk.mybatis.mapper.entity.IDynamicTableName;
 
 /**
  * @author Frank
@@ -74,5 +75,45 @@ public class DynamicQuerySqlHelper {
 
     public static String getSelectAvg() {
         return String.format("SELECT AVG(${%s})", MapperConstants.COLUMN);
+    }
+
+    /**
+     * insert ignore into tableName - 动态表名
+     *
+     * @param entityClass
+     * @param defaultTableName
+     * @return
+     */
+    public static String insertIgnoreIntoTable(Class<?> entityClass, String defaultTableName) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT IGNORE INTO ");
+        sql.append(getDynamicTableName(entityClass, defaultTableName));
+        sql.append(" ");
+        return sql.toString();
+    }
+
+    /**
+     * 获取表名 - 支持动态表名
+     *
+     * @param entityClass
+     * @param tableName
+     * @return
+     */
+    public static String getDynamicTableName(Class<?> entityClass, String tableName) {
+        if (IDynamicTableName.class.isAssignableFrom(entityClass)) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("<choose>");
+            sql.append("<when test=\"@tk.mybatis.mapper.util.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
+            sql.append("${dynamicTableName}\n");
+            sql.append("</when>");
+            //不支持指定列的时候查询全部列
+            sql.append("<otherwise>");
+            sql.append(tableName);
+            sql.append("</otherwise>");
+            sql.append("</choose>");
+            return sql.toString();
+        } else {
+            return tableName;
+        }
     }
 }
