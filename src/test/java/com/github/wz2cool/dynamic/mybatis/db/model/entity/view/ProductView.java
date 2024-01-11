@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * Created by Frank on 2017/7/15.
  */
-@View("product LEFT JOIN category ON product.category_id = category.category_id")
+@View("product LEFT JOIN ${spring_env}category ON product.category_id = category.category_id")
 public class ProductView {
     @Column(name = "product_id", table = "product")
     private Long productID;
