@@ -9,6 +9,7 @@ import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -19,6 +20,8 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
     private BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{};
+
+    private Map<String, Object> customDynamicQueryParams = new HashMap<>();
 
     private boolean distinct;
     private Class<T> entityClass;
@@ -169,11 +172,17 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, this.isDistinct());
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,false);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, false);
         String unAsSelectColumnsExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,true);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, true);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         paramMap.put(MapperConstants.UN_AS_SELECT_COLUMNS_EXPRESSION, unAsSelectColumnsExpression);
+
+        paramMap.putAll(this.customDynamicQueryParams);
         return paramMap;
+    }
+
+    public void addQueryParams(String key, Object value) {
+        this.customDynamicQueryParams.put(key, value);
     }
 }

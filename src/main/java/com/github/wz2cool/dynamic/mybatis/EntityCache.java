@@ -1,6 +1,7 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
+import com.github.wz2cool.dynamic.helper.ParamResolverHelper;
 import com.github.wz2cool.dynamic.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +38,7 @@ class EntityCache {
 
         View view = (View) entityClass.getAnnotation(View.class);
         if (Objects.nonNull(view)) {
-            viewExpression = view.value();
+            viewExpression = ParamResolverHelper.resolveExpression(view.value());
             viewExpressionCacheMap.put(entityClass, viewExpression);
         } else {
             viewExpressionCacheMap.put(entityClass, "");
