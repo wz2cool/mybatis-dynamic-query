@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,7 +124,7 @@ class EntityCache {
                 columnInfo.setColumnName(columnName);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
-                String tableOrAlias = column == null ? "" : column.table();
+                String tableOrAlias = column == null ? "" : ParamResolverHelper.resolveExpression(column.table());
                 columnInfo.setTableOrAlias(tableOrAlias);
                 map.put(pName, columnInfo);
             }
