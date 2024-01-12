@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.builder.direction.ISortDirection;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.ParamResolverHelper;
 import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
@@ -16,6 +17,8 @@ import java.util.function.Function;
 public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> extends BaseFilterGroup<T, S> {
 
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
+
+    private static final String LAST_SQL_KEY = "mdq_last_sql";
 
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
@@ -147,6 +150,30 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S last(String lastSql) {
+        return last(true, lastSql);
+    }
+
+    public final S last(boolean enable, String lastSql) {
+        if (enable) {
+            String useLastSql = ParamResolverHelper.resolveExpression(lastSql);
+            this.customDynamicQueryParams.put(LAST_SQL_KEY, useLastSql);
+        }
+        return (S) this;
+    }
+
+    public final S queryParam(String key, Object value) {
+        return queryParam(true, key, value);
+    }
+
+    public final S queryParam(boolean enable, String key, Object value) {
+        if (enable) {
+            this.customDynamicQueryParams.put(key, value);
+        }
+        return (S) this;
+    }
+
+
     public Map<String, Object> toQueryParamMap() {
         return toQueryParamMap(false);
     }
@@ -177,12 +204,12 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
                 entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, true);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         paramMap.put(MapperConstants.UN_AS_SELECT_COLUMNS_EXPRESSION, unAsSelectColumnsExpression);
-
+        initDefaultQueryParams();
         paramMap.putAll(this.customDynamicQueryParams);
         return paramMap;
     }
 
-    public void addQueryParams(String key, Object value) {
-        this.customDynamicQueryParams.put(key, value);
+    private void initDefaultQueryParams() {
+        this.customDynamicQueryParams.putIfAbsent(LAST_SQL_KEY, "");
     }
 }

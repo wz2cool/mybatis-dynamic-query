@@ -205,6 +205,36 @@ public class DynamicMapperTest {
     }
 
     @Test
+    public void testDeleteByDynamicQueryWithLimit() {
+        User user = new User();
+        user.setId(20);
+        user.setUserName("frank20");
+        user.setPassword("frank");
+
+        User user2 = new User();
+        user2.setId(21);
+        user2.setUserName("frank21");
+        user2.setPassword("frank");
+
+        userDao.insert(user);
+        userDao.insert(user2);
+
+        DynamicQuery<User> query = DynamicQuery.createQuery(User.class)
+                .and(User::getId, o -> o.greaterThanOrEqual(20));
+        int count = userDao.selectCountByDynamicQuery(query);
+        assertEquals(2, count);
+
+        DynamicQuery<User> deleteQuery = DynamicQuery.createQuery(User.class)
+                .and(User::getId, o -> o.greaterThanOrEqual(20))
+                .last("limit #{number}")
+                .queryParam("number", 1);
+        int effectRow = userDao.deleteByDynamicQuery(deleteQuery);
+        assertEquals(1, effectRow);
+        count = userDao.selectCountByDynamicQuery(query);
+        assertEquals(1, count);
+    }
+
+    @Test
     public void testSelectAll() {
         List<User> users = userDao.selectAll();
         assertEquals(true, users.size() > 0);
