@@ -163,7 +163,13 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
     }
 
     public final S queryParam(String key, Object value) {
-        this.customDynamicQueryParams.put(key, value);
+        return queryParam(true, key, value);
+    }
+
+    public final S queryParam(boolean enable, String key, Object value) {
+        if (enable) {
+            this.customDynamicQueryParams.put(key, value);
+        }
         return (S) this;
     }
 
