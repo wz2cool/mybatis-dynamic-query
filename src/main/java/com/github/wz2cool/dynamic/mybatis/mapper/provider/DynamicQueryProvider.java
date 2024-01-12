@@ -45,6 +45,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -64,6 +65,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(DynamicQuerySqlHelper.getSelectMax());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -74,6 +76,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(DynamicQuerySqlHelper.getSelectMin());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -84,6 +87,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(DynamicQuerySqlHelper.getSelectSum());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -94,6 +98,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(DynamicQuerySqlHelper.getSelectAvg());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -103,6 +108,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -119,6 +125,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getSortClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -141,6 +148,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(DynamicQuerySqlHelper.getSetClause());
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -151,6 +159,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
+        sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
