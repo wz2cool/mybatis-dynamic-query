@@ -48,6 +48,19 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         return sql.toString();
     }
 
+    public String selectCountPropertyByDynamicQuery(MappedStatement ms) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
+                MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
+                String.format("${%s} ", MapperConstants.COLUMN), String.format("${%s} ", MapperConstants.COLUMN));
+        sql.append(String.format(String.format("SELECT COUNT(%s)", countColumns)));
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.getWhereClause());
+        return sql.toString();
+    }
+
     public static String selectCount(Class<?> entityClass) {
         Set<EntityColumn> pkColumns = EntityHelper.getPKColumns(entityClass);
         String countKey = pkColumns.size() == 1 ? pkColumns.iterator().next().getColumn() : "*";

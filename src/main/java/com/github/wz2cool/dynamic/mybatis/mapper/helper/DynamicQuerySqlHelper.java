@@ -75,4 +75,9 @@ public class DynamicQuerySqlHelper {
     public static String getSelectAvg() {
         return String.format("SELECT AVG(${%s})", MapperConstants.COLUMN);
     }
+
+    public static String getSelectCount() {
+        return String.format("SELECT COUNT(${%s})", MapperConstants.COLUMN);
+    }
+
 }

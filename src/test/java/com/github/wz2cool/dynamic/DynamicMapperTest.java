@@ -13,8 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.isEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -259,5 +258,20 @@ public class DynamicMapperTest {
         PageRowBounds pageRowBounds = new PageRowBounds(1, 2);
         List<User> users = userDao.selectRowBoundsByDynamicQuery(dynamicQuery, pageRowBounds);
         assertEquals(true, users.size() > 0);
+    }
+
+    @Test
+    public void testSelectCountPropertyByDynamicQuery() {
+        User user = new User();
+        user.setId(19);
+        user.setUserName("frank19");
+        user.setPassword("frank");
+
+        userDao.insert(user);
+        DynamicQuery<User> query = DynamicQuery.createQuery(User.class)
+                .and(User::getId, o -> o.isEqual(1));
+        query.setDistinct(true);
+        Integer result = userDao.selectCountPropertyByDynamicQuery(User::getId, query);
+        assertTrue(result > 0);
     }
 }
