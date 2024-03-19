@@ -67,7 +67,7 @@ public interface SelectByGroupedQueryMapper<TQuery, TSelect> {
         }
     }
 
-    default NormPagingResult<TSelect> selectByNormalPaging(
+    default NormPagingResult<TSelect> selectNormalPagingByGroupedQuery(
             NormPagingQueryWrapper<TSelect, GroupedQuery<TQuery, TSelect>> normPagingQueryWrapper) {
         NormPagingResult<TSelect> result = new NormPagingResult<>();
         int pageNum = normPagingQueryWrapper.getPageNum() < 1 ? 1 : normPagingQueryWrapper.getPageNum();
@@ -84,7 +84,7 @@ public interface SelectByGroupedQueryMapper<TQuery, TSelect> {
             newNormPagingQueryWrapper.setPageSize(normPagingQueryWrapper.getPageSize());
             newNormPagingQueryWrapper.setAutoBackIfEmpty(normPagingQueryWrapper.isAutoBackIfEmpty());
             newNormPagingQueryWrapper.setCalcTotal(normPagingQueryWrapper.isCalcTotal());
-            return selectByNormalPaging(newNormPagingQueryWrapper);
+            return selectNormalPagingByGroupedQuery(newNormPagingQueryWrapper);
         }
         if (normPagingQueryWrapper.isCalcTotal()) {
             int totalCount = selectCountByGroupedQuery(normPagingQueryWrapper.getSearchQuery());

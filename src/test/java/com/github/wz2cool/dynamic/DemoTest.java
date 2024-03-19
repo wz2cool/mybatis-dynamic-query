@@ -383,7 +383,7 @@ public class DemoTest {
                 .orderByNull();
 
         final NormPagingResult<CategoryGroupCount> categoryGroupCountNormPagingResult =
-                categoryGroupCountMapper.selectByNormalPaging(NormPagingQueryWrapper.create(groupedQuery, 1, 2, false));
+                categoryGroupCountMapper.selectNormalPagingByGroupedQuery(NormPagingQueryWrapper.create(groupedQuery, 1, 2, false));
         assertTrue(categoryGroupCountNormPagingResult.isHasNextPage());
     }
 

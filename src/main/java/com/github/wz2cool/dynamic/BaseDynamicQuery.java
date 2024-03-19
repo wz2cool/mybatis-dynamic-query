@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.builder.direction.ISortDirection;
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.ParamResolverHelper;
 import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import com.github.wz2cool.dynamic.lambda.GetPropertyFunction;
 import com.github.wz2cool.dynamic.mybatis.ParamExpression;
@@ -9,6 +10,7 @@ import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,9 +18,13 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
+    private static final String LAST_SQL_KEY = "mdq_last_sql";
+
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
     private BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{};
+
+    private Map<String, Object> customDynamicQueryParams = new HashMap<>();
 
     private boolean distinct;
     private Class<T> entityClass;
@@ -144,6 +150,30 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S last(String lastSql) {
+        return last(true, lastSql);
+    }
+
+    public final S last(boolean enable, String lastSql) {
+        if (enable) {
+            String useLastSql = ParamResolverHelper.resolveExpression(lastSql);
+            this.customDynamicQueryParams.put(LAST_SQL_KEY, useLastSql);
+        }
+        return (S) this;
+    }
+
+    public final S queryParam(String key, Object value) {
+        return queryParam(true, key, value);
+    }
+
+    public final S queryParam(boolean enable, String key, Object value) {
+        if (enable) {
+            this.customDynamicQueryParams.put(key, value);
+        }
+        return (S) this;
+    }
+
+
     public Map<String, Object> toQueryParamMap() {
         return toQueryParamMap(false);
     }
@@ -169,11 +199,17 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, this.isDistinct());
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,false);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, false);
         String unAsSelectColumnsExpression = QUERY_HELPER.toSelectColumnsExpression(
-                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase,true);
+                entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, true);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         paramMap.put(MapperConstants.UN_AS_SELECT_COLUMNS_EXPRESSION, unAsSelectColumnsExpression);
+        initDefaultQueryParams();
+        paramMap.putAll(this.customDynamicQueryParams);
         return paramMap;
+    }
+
+    private void initDefaultQueryParams() {
+        this.customDynamicQueryParams.putIfAbsent(LAST_SQL_KEY, "");
     }
 }

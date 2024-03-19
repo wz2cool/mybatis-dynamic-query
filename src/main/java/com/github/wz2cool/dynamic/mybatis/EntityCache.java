@@ -1,12 +1,12 @@
 package com.github.wz2cool.dynamic.mybatis;
 
 import com.github.wz2cool.dynamic.exception.PropertyNotFoundInternalException;
+import com.github.wz2cool.dynamic.helper.ParamResolverHelper;
 import com.github.wz2cool.dynamic.helper.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +37,7 @@ class EntityCache {
 
         View view = (View) entityClass.getAnnotation(View.class);
         if (Objects.nonNull(view)) {
-            viewExpression = view.value();
+            viewExpression = ParamResolverHelper.resolveExpression(view.value());
             viewExpressionCacheMap.put(entityClass, viewExpression);
         } else {
             viewExpressionCacheMap.put(entityClass, "");
@@ -124,7 +124,7 @@ class EntityCache {
                 columnInfo.setColumnName(columnName);
 
                 Column column = EntityHelper.getColumnByProperty(pName, properties);
-                String tableOrAlias = column == null ? "" : column.table();
+                String tableOrAlias = column == null ? "" : ParamResolverHelper.resolveExpression(column.table());
                 columnInfo.setTableOrAlias(tableOrAlias);
                 map.put(pName, columnInfo);
             }
