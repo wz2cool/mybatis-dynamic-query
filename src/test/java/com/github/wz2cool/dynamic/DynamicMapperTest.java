@@ -260,15 +260,15 @@ public class DynamicMapperTest {
     @Test
     public void testSelectCount() {
         User user = new User();
-        user.setId(19);
-        user.setUserName("frank19");
+        user.setId(119);
+        user.setUserName("frank119");
         user.setPassword("frank");
 
         int result = userDao.insert(user);
         assertEquals(1, result);
 
         User findUser = new User();
-        user.setId(19);
+        user.setId(119);
         result = userDao.selectCount(findUser);
         assertEquals(true, result > 0);
     }
