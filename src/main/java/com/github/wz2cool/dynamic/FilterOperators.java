@@ -46,6 +46,10 @@ public final class FilterOperators {
         return new Contains<>(value);
     }
 
+    public <R> NotContains<R> notContains(R value) {
+        return new NotContains<>(value);
+    }
+
     @SafeVarargs
     public final <R> In<R> in(R... values) {
         return new In<>(values);

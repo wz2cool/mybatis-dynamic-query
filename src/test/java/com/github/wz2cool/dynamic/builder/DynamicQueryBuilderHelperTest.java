@@ -77,6 +77,13 @@ public class DynamicQueryBuilderHelperTest {
     }
 
     @Test
+    public void noContainsTest() {
+        NotContains<String> result = DynamicQueryBuilderHelper.notContains("a");
+        Assert.assertEquals(FilterOperator.NOT_CONTAINS, result.getOperator());
+        Assert.assertEquals("a", result.getValue());
+    }
+
+    @Test
     public void inTest() {
         In<String> result = DynamicQueryBuilderHelper.in("a", "b", "c");
         Assert.assertEquals(FilterOperator.IN, result.getOperator());
