@@ -21,6 +21,7 @@ import static com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHe
 /**
  * @author Frank
  */
+@SuppressWarnings("Duplicates")
 public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
@@ -42,6 +43,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -53,10 +55,11 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
                 String.format("${%s} ", MapperConstants.COLUMN), String.format("${%s} ", MapperConstants.COLUMN));
-        sql.append(String.format(String.format("SELECT COUNT(%s)", countColumns)));
+        sql.append(String.format("SELECT COUNT(%s)", countColumns));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
@@ -75,6 +78,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(DynamicQuerySqlHelper.getSelectMax());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -86,6 +90,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(DynamicQuerySqlHelper.getSelectMin());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -97,6 +102,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(DynamicQuerySqlHelper.getSelectSum());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -108,6 +114,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(DynamicQuerySqlHelper.getSelectAvg());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -119,6 +126,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getLastClause());
@@ -130,6 +138,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         setResultType(ms, entityClass);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append("SELECT");
         sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
@@ -158,6 +167,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getUpdateBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(DynamicQuerySqlHelper.getSetClause());
         sql.append(DynamicQuerySqlHelper.getWhereClause());
@@ -169,6 +179,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
+        sql.append(DynamicQuerySqlHelper.getFirstClause());
         sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());

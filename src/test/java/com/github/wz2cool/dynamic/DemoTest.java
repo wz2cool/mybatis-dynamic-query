@@ -51,6 +51,7 @@ public class DemoTest {
     @Test
     public void testSelectDistinct() {
         DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class)
+                .first("/*polar4ai*/")
                 .selectDistinct(Product::getCategoryId);
         final List<Product> productList = productDao.selectByDynamicQuery(query1);
 
