@@ -1,7 +1,5 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.dynamic.builder.direction.Ascending;
-import com.github.wz2cool.dynamic.builder.direction.Descending;
 import com.github.wz2cool.dynamic.builder.opeartor.*;
 
 import java.util.Collection;
