@@ -20,12 +20,13 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     private static final String FIRST_SQL_KEY = "mdq_first_sql";
     private static final String LAST_SQL_KEY = "mdq_last_sql";
+    private static final String HINT_SQL_KEY = "mdq_hint_sql";
 
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
     private BaseSortDescriptor[] sorts = new BaseSortDescriptor[]{};
 
-    private Map<String, Object> customDynamicQueryParams = new HashMap<>();
+    protected Map<String, Object> customDynamicQueryParams = new HashMap<>();
 
     private boolean distinct;
     private Class<T> entityClass;
@@ -175,6 +176,23 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S hint(String hintSql) {
+        return hint(true, hintSql);
+    }
+
+    /**
+     * https://docs.oracle.com/cd/B13789_01/server.101/b10759/sql_elements006.htm#i35922
+     *
+     * @return
+     */
+    public final S hint(boolean enable, String hintSql) {
+        if (enable) {
+            String useHintSql = ParamResolverHelper.resolveExpression(hintSql);
+            this.customDynamicQueryParams.put(HINT_SQL_KEY, useHintSql);
+        }
+        return (S) this;
+    }
+
     public final S queryParam(String key, Object value) {
         return queryParam(true, key, value);
     }
@@ -225,5 +243,6 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
     private void initDefaultQueryParams() {
         this.customDynamicQueryParams.putIfAbsent(LAST_SQL_KEY, "");
         this.customDynamicQueryParams.putIfAbsent(FIRST_SQL_KEY, "");
+        this.customDynamicQueryParams.putIfAbsent(HINT_SQL_KEY, "");
     }
 }

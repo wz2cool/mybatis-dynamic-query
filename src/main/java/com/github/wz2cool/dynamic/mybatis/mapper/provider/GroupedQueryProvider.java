@@ -20,6 +20,7 @@ import static tk.mybatis.mapper.util.MsUtil.getMapperClass;
 /**
  * @author Frank
  **/
+@SuppressWarnings("Duplicates")
 public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
@@ -43,7 +44,8 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         setResultType(ms, selectClass);
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
-        sql.append("SELECT");
+        sql.append(GroupedQuerySqlHelper.getFirstClause());
+        sql.append(String.format("SELECT %s ", GroupedQuerySqlHelper.getHintClause()));
         //支持查询指定列
         sql.append(GroupedQuerySqlHelper.getSelectColumnsClause());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
@@ -51,6 +53,7 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         sql.append(GroupedQuerySqlHelper.getGroupByClause());
         sql.append(GroupedQuerySqlHelper.getHavingClause());
         sql.append(GroupedQuerySqlHelper.getSortClause());
+        sql.append(GroupedQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -58,13 +61,15 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
-        sql.append("SELECT COUNT(*) FROM (");
+        sql.append(GroupedQuerySqlHelper.getFirstClause());
+        sql.append(String.format("SELECT %s COUNT(*) FROM (", GroupedQuerySqlHelper.getHintClause()));
         sql.append(SqlHelper.selectCount(entityClass));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(GroupedQuerySqlHelper.getWhereClause());
         sql.append(GroupedQuerySqlHelper.getGroupByClause());
         sql.append(GroupedQuerySqlHelper.getHavingClause());
         sql.append(") AS a");
+        sql.append(GroupedQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -77,12 +82,14 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         //支持查询指定列
+        sql.append(GroupedQuerySqlHelper.getFirstClause());
         sql.append(GroupedQuerySqlHelper.getSelectMax());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(GroupedQuerySqlHelper.getWhereClause());
         sql.append(GroupedQuerySqlHelper.getGroupByClause());
         sql.append(GroupedQuerySqlHelper.getHavingClause());
         sql.append(GroupedQuerySqlHelper.getSortClause());
+        sql.append(GroupedQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 
@@ -95,12 +102,14 @@ public class GroupedQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(GroupedQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         //支持查询指定列
+        sql.append(GroupedQuerySqlHelper.getFirstClause());
         sql.append(GroupedQuerySqlHelper.getSelectMin());
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(GroupedQuerySqlHelper.getWhereClause());
         sql.append(GroupedQuerySqlHelper.getGroupByClause());
         sql.append(GroupedQuerySqlHelper.getHavingClause());
         sql.append(GroupedQuerySqlHelper.getSortClause());
+        sql.append(GroupedQuerySqlHelper.getLastClause());
         return sql.toString();
     }
 

@@ -1,8 +1,12 @@
 package com.github.wz2cool.dynamic;
 
 import com.github.wz2cool.dynamic.helper.CommonsHelper;
+import com.github.wz2cool.dynamic.helper.ParamResolverHelper;
 import com.github.wz2cool.dynamic.lambda.GetCommonPropertyFunction;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Frank
@@ -14,8 +18,14 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
 
     /// region select properties
 
+    private static final String FIRST_SQL_KEY = "mdq_first_sql";
+    private static final String LAST_SQL_KEY = "mdq_last_sql";
+    private static final String HINT_SQL_KEY = "mdq_hint_sql";
+
     private String[] selectedProperties = new String[]{};
     private String[] ignoredProperties = new String[]{};
+
+    private Map<String, Object> customDynamicQueryParams = new HashMap<>();
 
     public String[] getSelectedProperties() {
         return selectedProperties;
@@ -52,6 +62,47 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
         this.ignoreSelectedProperties(newIgnoreProperties);
         return this;
     }
+
+    public final GroupByQuery<TQuery, TSelect> first(String firstSql) {
+        return first(true, firstSql);
+    }
+
+    public final GroupByQuery<TQuery, TSelect> first(boolean enable, String firstSql) {
+        if (enable) {
+            String useFirstSql = ParamResolverHelper.resolveExpression(firstSql);
+            this.customDynamicQueryParams.put(FIRST_SQL_KEY, useFirstSql);
+        }
+        return this;
+    }
+
+    public final GroupByQuery<TQuery, TSelect> hint(String hintSql) {
+        return hint(true, hintSql);
+    }
+
+    /**
+     * https://docs.oracle.com/cd/B13789_01/server.101/b10759/sql_elements006.htm#i35922
+     *
+     * @return
+     */
+    public final GroupByQuery<TQuery, TSelect> hint(boolean enable, String hintSql) {
+        if (enable) {
+            String useHintSql = ParamResolverHelper.resolveExpression(hintSql);
+            this.customDynamicQueryParams.put(HINT_SQL_KEY, useHintSql);
+        }
+        return this;
+    }
+
+    public final GroupByQuery<TQuery, TSelect> queryParam(String key, Object value) {
+        return queryParam(true, key, value);
+    }
+
+    public final GroupByQuery<TQuery, TSelect> queryParam(boolean enable, String key, Object value) {
+        if (enable) {
+            this.customDynamicQueryParams.put(key, value);
+        }
+        return this;
+    }
+
 
     public void addSelectedProperties(String... newSelectedProperties) {
         setSelectedProperties(ArrayUtils.addAll(selectedProperties, newSelectedProperties));
@@ -96,4 +147,14 @@ public class GroupByQuery<TQuery, TSelect> extends BaseFilterGroup<TQuery, Group
     }
 
     /// endregion
+
+    public void initDefaultQueryParams() {
+        this.customDynamicQueryParams.putIfAbsent(LAST_SQL_KEY, "");
+        this.customDynamicQueryParams.putIfAbsent(FIRST_SQL_KEY, "");
+        this.customDynamicQueryParams.putIfAbsent(HINT_SQL_KEY, "");
+    }
+
+    public Map<String, Object> getCustomDynamicQueryParams() {
+        return customDynamicQueryParams;
+    }
 }
