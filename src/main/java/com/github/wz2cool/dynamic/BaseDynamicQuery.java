@@ -18,6 +18,7 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     private static final QueryHelper QUERY_HELPER = new QueryHelper();
 
+    private static final String FIRST_SQL_KEY = "mdq_first_sql";
     private static final String LAST_SQL_KEY = "mdq_last_sql";
 
     private String[] selectedProperties = new String[]{};
@@ -162,6 +163,18 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S first(String firstSql) {
+        return first(true, firstSql);
+    }
+
+    public final S first(boolean enable, String firstSql) {
+        if (enable) {
+            String useFirstSql = ParamResolverHelper.resolveExpression(firstSql);
+            this.customDynamicQueryParams.put(FIRST_SQL_KEY, useFirstSql);
+        }
+        return (S) this;
+    }
+
     public final S queryParam(String key, Object value) {
         return queryParam(true, key, value);
     }
@@ -211,5 +224,6 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     private void initDefaultQueryParams() {
         this.customDynamicQueryParams.putIfAbsent(LAST_SQL_KEY, "");
+        this.customDynamicQueryParams.putIfAbsent(FIRST_SQL_KEY, "");
     }
 }

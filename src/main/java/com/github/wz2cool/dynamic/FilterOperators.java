@@ -1,7 +1,5 @@
 package com.github.wz2cool.dynamic;
 
-import com.github.wz2cool.dynamic.builder.direction.Ascending;
-import com.github.wz2cool.dynamic.builder.direction.Descending;
 import com.github.wz2cool.dynamic.builder.opeartor.*;
 
 import java.util.Collection;
@@ -44,6 +42,10 @@ public final class FilterOperators {
 
     public <R> Contains<R> contains(R value) {
         return new Contains<>(value);
+    }
+
+    public <R> NotContains<R> notContains(R value) {
+        return new NotContains<>(value);
     }
 
     @SafeVarargs

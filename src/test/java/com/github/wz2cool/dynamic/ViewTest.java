@@ -26,7 +26,8 @@ public class ViewTest {
 
     @Test
     public void testSelect() {
-        DynamicQuery<ProductView> query = DynamicQuery.createQuery(ProductView.class);
+        DynamicQuery<ProductView> query = DynamicQuery.createQuery(ProductView.class)
+                .first("/*firstSql*/");
         query.queryParam("spring_env", "");
         List<ProductView> productViewList = productViewMapper.selectByDynamicQuery(query);
         Assert.assertTrue(!productViewList.isEmpty());

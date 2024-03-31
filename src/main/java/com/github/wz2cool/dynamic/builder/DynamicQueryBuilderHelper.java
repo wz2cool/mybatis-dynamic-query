@@ -56,6 +56,10 @@ public class DynamicQueryBuilderHelper {
         return new Contains<>(value);
     }
 
+    public static <R> NotContains<R> notContains(R value) {
+        return new NotContains<>(value);
+    }
+
     @SafeVarargs
     public static <R> In<R> in(R... values) {
         return new In<>(values);

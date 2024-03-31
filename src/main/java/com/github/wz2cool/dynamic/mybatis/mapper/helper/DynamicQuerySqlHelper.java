@@ -6,8 +6,10 @@ import tk.mybatis.mapper.entity.IDynamicTableName;
 /**
  * @author Frank
  */
+@SuppressWarnings("Duplicates")
 public class DynamicQuerySqlHelper {
 
+    private static final String FIRST_SQL = " ${dynamicQueryParams.mdq_first_sql}";
     private static final String LAST_SQL = " ${dynamicQueryParams.mdq_last_sql}";
 
     private DynamicQuerySqlHelper() {
@@ -122,5 +124,9 @@ public class DynamicQuerySqlHelper {
 
     public static String getLastClause() {
         return LAST_SQL;
+    }
+
+    public static String getFirstClause() {
+        return FIRST_SQL;
     }
 }
