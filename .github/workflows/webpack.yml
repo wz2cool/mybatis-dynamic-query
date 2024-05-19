@@ -17,3 +17,9 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean verify org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report -B
+                                
+    - name: Official SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v2.0.2
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
