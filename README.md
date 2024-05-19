@@ -2,7 +2,7 @@ MyBatis Dynamic Query
 =====================================
 
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://travis-ci.org/wz2cool/mybatis-dynamic-query.svg?branch=master)](https://travis-ci.org/wz2cool/mybatis-dynamic-query)
+[![Build Status](https://github.com/wz2cool/mybatis-dynamic-query/actions/workflows/webpack.yml/badge.svg?branch=master)](https://github.com/wz2cool/mybatis-dynamic-query/actions/workflows/webpack.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wz2cool/mybatis-dynamic-query/badge.svg?branch=master)](https://coveralls.io/github/wz2cool/mybatis-dynamic-query?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/597283ce368b08005906060c/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/597283ce368b08005906060c)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.wz2cool/mybatis-dynamic-query/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wz2cool/mybatis-dynamic-query)
