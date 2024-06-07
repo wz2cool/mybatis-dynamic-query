@@ -59,6 +59,7 @@ public class NormPagingQuery<T> extends BaseDynamicQuery<T, NormPagingQuery<T>> 
         dynamicQuery.setDistinct(this.isDistinct());
         dynamicQuery.setSelectedProperties(this.getSelectedProperties());
         dynamicQuery.setIgnoredProperties(this.getIgnoredProperties());
+        dynamicQuery.customDynamicQueryParams.putAll(this.customDynamicQueryParams);
         return dynamicQuery;
     }
 }

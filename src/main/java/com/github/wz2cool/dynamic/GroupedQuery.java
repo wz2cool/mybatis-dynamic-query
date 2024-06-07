@@ -116,6 +116,8 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
                 this.groupByQuery.getSelectedProperties(),
                 this.groupByQuery.getIgnoredProperties(), isMapUnderscoreToCamelCase, false);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
+        this.groupByQuery.initDefaultQueryParams();
+        paramMap.putAll(this.groupByQuery.getCustomDynamicQueryParams());
         return paramMap;
 
     }

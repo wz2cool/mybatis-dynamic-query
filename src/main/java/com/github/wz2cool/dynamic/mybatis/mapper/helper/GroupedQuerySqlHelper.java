@@ -10,6 +10,10 @@ public class GroupedQuerySqlHelper {
         throw new UnsupportedOperationException();
     }
 
+    private static final String FIRST_SQL = "${groupedQueryParams.mdq_first_sql} ";
+    private static final String LAST_SQL = " ${groupedQueryParams.mdq_last_sql}";
+    private static final String HINT_SQL = " ${groupedQueryParams.mdq_hint_sql} ";
+
     public static String getBindFilterParams(boolean isMapUnderscoreToCamelCase) {
         StringBuilder sql = new StringBuilder();
         sql.append("<bind name=\"");
@@ -51,18 +55,30 @@ public class GroupedQuerySqlHelper {
     }
 
     public static String getSelectMax() {
-        return String.format("SELECT MAX(${%s})", MapperConstants.COLUMN);
+        return String.format("SELECT %s MAX(${%s})", getHintClause(), MapperConstants.COLUMN);
     }
 
     public static String getSelectMin() {
-        return String.format("SELECT MIN(${%s})", MapperConstants.COLUMN);
+        return String.format("SELECT %s MIN(${%s})", getHintClause(), MapperConstants.COLUMN);
     }
 
     public static String getSelectSum() {
-        return String.format("SELECT SUM(${%s})", MapperConstants.COLUMN);
+        return String.format("SELECT %s SUM(${%s})", getHintClause(), MapperConstants.COLUMN);
     }
 
     public static String getSelectAvg() {
-        return String.format("SELECT AVG(${%s})", MapperConstants.COLUMN);
+        return String.format("SELECT %s AVG(${%s})", getHintClause(), MapperConstants.COLUMN);
+    }
+
+    public static String getLastClause() {
+        return LAST_SQL;
+    }
+
+    public static String getFirstClause() {
+        return FIRST_SQL;
+    }
+
+    public static String getHintClause() {
+        return HINT_SQL;
     }
 }

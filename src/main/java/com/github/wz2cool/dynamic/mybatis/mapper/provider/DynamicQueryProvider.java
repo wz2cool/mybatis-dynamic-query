@@ -16,6 +16,7 @@ import tk.mybatis.mapper.mapperhelper.SqlHelper;
 import java.util.Map;
 import java.util.Set;
 
+import static com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper.getHintClause;
 import static com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper.getSelectUnAsColumnsClause;
 
 /**
@@ -59,7 +60,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
                 String.format("${%s} ", MapperConstants.COLUMN), String.format("${%s} ", MapperConstants.COLUMN));
-        sql.append(String.format("SELECT COUNT(%s)", countColumns));
+        sql.append(String.format("SELECT %s COUNT(%s)", getHintClause(), countColumns));
         sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         return sql.toString();
@@ -71,7 +72,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         String countColumns = String.format("<choose> <when test=\"%s.%s\">DISTINCT (%s) </when > <otherwise> %s </otherwise> </choose>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT,
                 getSelectUnAsColumnsClause(), countKey);
-        return String.format("SELECT COUNT(%s) ", countColumns);
+        return String.format("SELECT %s COUNT(%s) ", getHintClause(), countColumns);
     }
 
     public String selectMaxByDynamicQuery(MappedStatement ms) {
@@ -127,7 +128,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(DynamicQuerySqlHelper.getFirstClause());
-        sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
+        sql.append(DynamicQuerySqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getLastClause());
         return sql.toString();
@@ -139,7 +140,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(DynamicQuerySqlHelper.getFirstClause());
-        sql.append("SELECT");
+        sql.append(String.format("SELECT %s ", getHintClause()));
         sql.append(String.format("<if test=\"%s.%s\">distinct</if>",
                 MapperConstants.DYNAMIC_QUERY_PARAMS, MapperConstants.DISTINCT));
         //支持查询指定列
@@ -168,7 +169,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getUpdateBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(DynamicQuerySqlHelper.getFirstClause());
-        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
+        sql.append(DynamicQuerySqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(DynamicQuerySqlHelper.getSetClause());
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getLastClause());
@@ -180,7 +181,7 @@ public class DynamicQueryProvider extends BaseEnhancedMapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(DynamicQuerySqlHelper.getBindFilterParams(ms.getConfiguration().isMapUnderscoreToCamelCase()));
         sql.append(DynamicQuerySqlHelper.getFirstClause());
-        sql.append(SqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
+        sql.append(DynamicQuerySqlHelper.updateTable(entityClass, tableName(entityClass), "example"));
         sql.append(SqlHelper.updateSetColumns(entityClass, "record", noNull, isNotEmpty()));
         sql.append(DynamicQuerySqlHelper.getWhereClause());
         sql.append(DynamicQuerySqlHelper.getLastClause());

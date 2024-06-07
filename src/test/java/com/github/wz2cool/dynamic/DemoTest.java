@@ -51,8 +51,9 @@ public class DemoTest {
     @Test
     public void testSelectDistinct() {
         DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class)
-                .first("/*polar4ai*/")
-                .selectDistinct(Product::getCategoryId);
+                .first("/*dynamicQuery first*/")
+                .selectDistinct(Product::getCategoryId)
+                .hint("/*dynamicQuery hint*/");
         final List<Product> productList = productDao.selectByDynamicQuery(query1);
 
         final List<Product> productList1 = productDao.selectAll();
@@ -63,7 +64,7 @@ public class DemoTest {
     @Test
     public void testNormPaging1() throws JsonProcessingException {
         // 传统分页
-        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class).hint("/*delete hint*/"));
         for (int i = 0; i < 10; i++) {
             Bug newBug = new Bug();
             newBug.setId(10000 + i);
@@ -72,7 +73,9 @@ public class DemoTest {
             bugDao.insert(newBug);
         }
         // default autoBackIfEmpty = false, calcTotal = true
-        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3);
+        NormPagingQuery<Bug> query1 = NormPagingQuery.createQuery(Bug.class, 2, 3)
+                .first("/*NormPagingQuery first*/")
+                .hint("/*NormPagingQuery hint*/");
         NormPagingResult<Bug> query1Result = bugDao.selectByNormalPaging(query1);
         ObjectMapper objectMapper = new ObjectMapper();
         final String json1 = objectMapper.writeValueAsString(query1Result);
@@ -205,6 +208,8 @@ public class DemoTest {
         updateBug.setTitle("titleUpdate");
 
         UpdateQuery<Bug> query = UpdateQuery.createQuery(Bug.class)
+                .first("/*updateQuery first*/")
+                .hint("/*updateQuery hint*/")
                 .set(updateBug, c -> c.ignore(Bug::getId, Bug::getTitle))
                 .and(Bug::getId, isEqual(id));
         bugDao.updateByUpdateQuery(query);
@@ -350,6 +355,8 @@ public class DemoTest {
     @Test
     public void testMaxGroupBy() {
         GroupedQuery<Product, Long> groupedQuery = GroupByQuery.createQuery(Product.class, Long.class)
+                .first("/*GroupByQuery first*/")
+                .hint("/*GroupByQuery hint*/")
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId);
@@ -362,7 +369,9 @@ public class DemoTest {
     @Test
     public void testCustomSortGroupBy() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .first("/*GroupByQuery first*/")
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                .hint("/*GroupByQuery hint*/")
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId);
@@ -377,7 +386,9 @@ public class DemoTest {
     @Test
     public void testGroupByPaging() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .first("/*GroupByQuery first*/")
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                .hint("/*GroupByQuery hint*/")
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId)
@@ -391,7 +402,9 @@ public class DemoTest {
     @Test
     public void testGroupBy() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .first("/*GroupByQuery first*/")
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                .hint("/*GroupByQuery hint*/")
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId)
@@ -411,7 +424,9 @@ public class DemoTest {
     @Test
     public void testCountGroupBy() {
         GroupedQuery<Product, CategoryGroupCount> groupedQuery = GroupByQuery.createQuery(Product.class, CategoryGroupCount.class)
+                .first("/*GroupByQuery first*/")
                 .select(CategoryGroupCount::getCategoryId, CategoryGroupCount::getCount)
+                .hint("/*GroupByQuery hint*/")
                 // 这里是Where 对数据筛选
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId)
@@ -425,7 +440,10 @@ public class DemoTest {
 
     @Test
     public void testSelectMax() {
-        DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class);
+        DynamicQuery<Product> query1 = DynamicQuery.createQuery(Product.class)
+                .first("/*DynamicQuery first*/")
+                .hint("/*DynamicQuery hint*/")
+                .last("/*DynamicQuery last*/");
         Optional<BigDecimal> maxOptional = productDao.selectMaxByDynamicQuery(Product::getPrice, query1);
         DynamicQuery<Product> query2 = DynamicQuery.createQuery(Product.class)
                 .orderBy(Product::getPrice, desc());
@@ -583,7 +601,11 @@ public class DemoTest {
 
     @Test
     public void testNewFilter() {
-        bugDao.deleteByDynamicQuery(DynamicQuery.createQuery(Bug.class));
+        DynamicQuery<Bug> deleteQuery = DynamicQuery.createQuery(Bug.class)
+                .first("/*DynamicQuery first*/")
+                .hint("/*DynamicQuery hint*/")
+                .last("/*DynamicQuery last*/");
+        bugDao.deleteByDynamicQuery(deleteQuery);
         for (int i = 0; i < 10; i++) {
             Bug newBug = new Bug();
             newBug.setId(i);
