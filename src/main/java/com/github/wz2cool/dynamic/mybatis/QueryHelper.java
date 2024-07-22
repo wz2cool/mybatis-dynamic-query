@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Frank
@@ -295,12 +296,17 @@ public class QueryHelper {
     }
 
     public String toGroupByColumnsExpression(final Class entityClass, final String[] groupByProperties) {
+        if (ArrayUtils.isEmpty(groupByProperties)) {
+            return "";
+        }
         ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
         List<String> columns = new ArrayList<>();
-        for (ColumnInfo columnInfo : columnInfos) {
-            String fieldName = columnInfo.getField().getName();
-            if (ArrayUtils.contains(groupByProperties, fieldName)) {
-                columns.add(columnInfo.getQueryColumn());
+        Map<String, String> fieldQueryColumnMap = Arrays.stream(columnInfos)
+                .collect(Collectors.toMap(x -> x.getField().getName(), ColumnInfo::getQueryColumn));
+        for (String groupByProperty : groupByProperties) {
+            if (fieldQueryColumnMap.containsKey(groupByProperty)) {
+                String queryColumn = fieldQueryColumnMap.get(groupByProperty);
+                columns.add(queryColumn);
             }
         }
         return String.join(", ", columns);
