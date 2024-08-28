@@ -10,9 +10,10 @@ public class GroupedQuerySqlHelper {
         throw new UnsupportedOperationException();
     }
 
-    private static final String FIRST_SQL = "${groupedQueryParams.mdq_first_sql} ";
-    private static final String LAST_SQL = " ${groupedQueryParams.mdq_last_sql}";
-    private static final String HINT_SQL = " ${groupedQueryParams.mdq_hint_sql} ";
+    private static final String FIRST_SQL = String.format("${%s.mdq_first_sql} ", MapperConstants.GROUPED_QUERY_PARAMS);
+    private static final String LAST_SQL = String.format(" ${%s.mdq_last_sql}", MapperConstants.GROUPED_QUERY_PARAMS);
+    private static final String HINT_SQL = String.format(" ${%s.mdq_hint_sql} ", MapperConstants.GROUPED_QUERY_PARAMS);
+    ;
 
     public static String getBindFilterParams(boolean isMapUnderscoreToCamelCase) {
         StringBuilder sql = new StringBuilder();
