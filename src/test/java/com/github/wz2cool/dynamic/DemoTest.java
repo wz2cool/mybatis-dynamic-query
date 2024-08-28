@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.wz2cool.dynamic.model.Bug;
 import com.github.wz2cool.dynamic.model.NormPagingResult;
-import com.github.wz2cool.dynamic.mybatis.db.mapper.BugDao;
-import com.github.wz2cool.dynamic.mybatis.db.mapper.CategoryGroupCountMapper;
-import com.github.wz2cool.dynamic.mybatis.db.mapper.NorthwindDao;
-import com.github.wz2cool.dynamic.mybatis.db.mapper.ProductDao;
+import com.github.wz2cool.dynamic.mybatis.db.mapper.*;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.group.CategoryGroupCount;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.Product;
+import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductBaseView;
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.view.ProductView;
 import com.github.wz2cool.dynamic.mybatis.mapper.batch.MapperBatchAction;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +43,8 @@ public class DemoTest {
     private BugDao bugDao;
     @Resource
     private CategoryGroupCountMapper categoryGroupCountMapper;
+    @Resource
+    private CategoryGroupCountMapper2 categoryGroupCountMapper2;
     @Resource
     private SqlSessionFactory sqlSessionFactory;
 
@@ -347,6 +347,19 @@ public class DemoTest {
                 .and(Product::getProductId, greaterThan(0L))
                 .groupBy(Product::getCategoryId);
         List<Long> longs = categoryGroupCountMapper.selectMinByGroupedQuery(Product::getProductId, groupedQuery);
+        for (Long aLong : longs) {
+            assertTrue(aLong > 0);
+        }
+    }
+
+    @Test
+    public void testMinGroupBy2() {
+        GroupedQuery<ProductBaseView, Long> groupedQuery = GroupByQuery.createQuery(ProductBaseView.class, Long.class)
+                // 这里是Where 对数据筛选
+                .and(ProductBaseView::getProductId, greaterThan(0L))
+                .queryParam("product_base_view", "product")
+                .groupBy(ProductBaseView::getCategoryId);
+        List<Long> longs = categoryGroupCountMapper2.selectMinByGroupedQuery(ProductBaseView::getProductId, groupedQuery);
         for (Long aLong : longs) {
             assertTrue(aLong > 0);
         }
