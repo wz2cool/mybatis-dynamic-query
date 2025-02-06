@@ -16,6 +16,43 @@ import java.util.stream.Collectors;
 public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
+    private static final ThreadLocal<String> paramPrefixHolder = ThreadLocal.withInitial(() -> "");
+
+      static class QueryScope implements AutoCloseable {
+        private final String originalPrefix;
+
+        public QueryScope(String newPrefix) {
+            this.originalPrefix = paramPrefixHolder.get();
+            paramPrefixHolder.set(newPrefix != null ? newPrefix : "");
+        }
+
+        @Override
+        public void close() {
+            paramPrefixHolder.set(originalPrefix);
+        }
+    }
+
+    public QueryScope createScope(String prefix) {
+        return new QueryScope(prefix);
+    }
+
+    private String getCurrentPrefix() {
+        return paramPrefixHolder.get();
+    }
+
+    public ParamExpression whereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
+        try (QueryScope scope = createScope("")) {
+            return toWhereExpression(entityClass, filters);
+        }
+    }
+
+    public ParamExpression whereExpressionWithPrefix(Class entityClass,
+                                                       final BaseFilterDescriptor[] filters, String prefix) {
+        try (QueryScope scope = createScope(prefix)) {
+            return toWhereExpression(entityClass, filters);
+        }
+    }
+
 
     // region and
 

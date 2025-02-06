@@ -4,6 +4,11 @@ import static com.github.wz2cool.dynamic.builder.DynamicQueryBuilderHelper.*;
 
 import com.github.wz2cool.dynamic.model.Student;
 import org.junit.Test;
+import org.springframework.util.StopWatch;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -110,8 +115,26 @@ public class DynamicQueryTest {
 
     @Test
     public void testAddIgnoredProperty() {
+        // 造3万个age属性
+        List<Integer> ages = new ArrayList<>();
+        for (int i = 0; i < 30000; i++) {
+            ages.add(i);
+        }
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        // 27066
+        //
         DynamicQuery<Student> query = DynamicQuery.createQuery(Student.class)
-                .ignore(Student::getAge, Student::getName);
+                .ignore(Student::getAge, Student::getName)
+                .and(Student::getName, isEqual("frank"))
+                .and(Student::getAge, in(ages))
+                .orderBy(Student::getAge, desc())
+                ;
+        Map<String, Object> queryParamMap = query.toQueryParamMap();
+        stopWatch.stop();
+        System.out.println("耗时：" + stopWatch.getTotalTimeMillis());
+
         String[] ignoredProperties = query.getIgnoredProperties();
         assertEquals("age", ignoredProperties[0]);
         assertEquals("name", ignoredProperties[1]);
