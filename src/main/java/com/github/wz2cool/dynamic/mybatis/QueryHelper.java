@@ -62,6 +62,7 @@ public class QueryHelper {
         }
 
         String expression = "";
+        String expressionParams = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (BaseFilterDescriptor baseFilterDescriptor : filters) {
             ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
@@ -70,9 +71,12 @@ public class QueryHelper {
 
                 if (StringUtils.isEmpty(expression)) {
                     expression = paramExpression.getExpression();
+                    expressionParams = paramExpression.getExpressionWithParam();
                 } else {
                     expression = String.format("%s %s %s",
                             expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
+                    expressionParams = String.format("%s %s %s",
+                            expressionParams, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
                 }
             }
         }
@@ -80,7 +84,9 @@ public class QueryHelper {
             return new ParamExpression();
         }
         expression = String.format("(%s)", expression);
+        expressionParams = String.format("(%s)", expressionParams);
         ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpressionWithParam(expressionParams);
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
@@ -122,40 +128,46 @@ public class QueryHelper {
         Object[] filterValues = getFilterValues(filterDescriptor);
 
         String expression;
+        String expressionWithParam;
         // keep order.
         Map<String, Object> paramMap = new LinkedHashMap<>();
         if (operator == FilterOperator.BETWEEN) {
             String paramPlaceholder1;
             String paramPlaceholder2;
             paramPlaceholder1 =
-                    String.format("%sparam_%s_BETWEEN_%s", paramPrefixHolder.get(), propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
             paramPlaceholder2 =
-                    String.format("%sparam_%s_BETWEEN_%s",paramPrefixHolder.get(), propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder1, paramPlaceholder2);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor,
+                    paramPrefixHolder.get() + paramPlaceholder1, paramPrefixHolder.get() + paramPlaceholder2);
             paramMap.put(paramPlaceholder1, filterValues[0]);
             paramMap.put(paramPlaceholder2, filterValues[1]);
         } else if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             List<String> paramPlaceholders = new ArrayList<>();
+            List<String> paramWithParamsPlaceholders = new ArrayList<>();
             for (Object filterValue : filterValues) {
                 String paramPlaceholder =
-                        String.format("%sparam_%s_%s_%s",paramPrefixHolder.get(), propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                        String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
+                paramWithParamsPlaceholders.add(paramPrefixHolder.get() + paramPlaceholder);
                 paramMap.put(paramPlaceholder, filterValue);
             }
-
             String[] paramPlaceholdersArray = paramPlaceholders.toArray(new String[paramPlaceholders.size()]);
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholdersArray);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramWithParamsPlaceholders.toArray(new String[paramPlaceholders.size()]));
         } else {
             String paramPlaceholder;
             paramPlaceholder =
-                    String.format("%sparam_%s_%s_%s",paramPrefixHolder.get(), propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramPrefixHolder.get() + paramPlaceholder);
 
             Object filterValue = processSingleFilterValue(operator, filterValues[0]);
             paramMap.put(paramPlaceholder, filterValue);
         }
-
         ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpressionWithParam(expressionWithParam);
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;

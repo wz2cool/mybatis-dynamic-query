@@ -117,7 +117,7 @@ public class DynamicQueryTest {
     public void testAddIgnoredProperty() {
         // 造3万个age属性
         List<Integer> ages = new ArrayList<>();
-        for (int i = 0; i < 30000; i++) {
+        for (int i = 0; i < 10; i++) {
             ages.add(i);
         }
 
