@@ -76,7 +76,7 @@ public class QueryHelper {
                     expression = String.format("%s %s %s",
                             expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
                     expressionParams = String.format("%s %s %s",
-                            expressionParams, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
+                            expressionParams, baseFilterDescriptor.getCondition(), paramExpression.getExpressionWithParam());
                 }
             }
         }
