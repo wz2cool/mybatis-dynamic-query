@@ -18,7 +18,7 @@ public class QueryHelper {
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
     private static final ThreadLocal<String> paramPrefixHolder = ThreadLocal.withInitial(() -> "");
 
-      static class QueryScope implements AutoCloseable {
+    static class QueryScope implements AutoCloseable {
         private final String originalPrefix;
 
         public QueryScope(String newPrefix) {
@@ -47,7 +47,7 @@ public class QueryHelper {
     }
 
     public ParamExpression whereExpressionWithPrefix(Class entityClass,
-                                                       final BaseFilterDescriptor[] filters, String prefix) {
+                                                     final BaseFilterDescriptor[] filters, String prefix) {
         try (QueryScope scope = createScope(prefix)) {
             return toWhereExpression(entityClass, filters);
         }
@@ -128,9 +128,9 @@ public class QueryHelper {
             String paramPlaceholder1;
             String paramPlaceholder2;
             paramPlaceholder1 =
-                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("%sparam_%s_BETWEEN_%s", paramPrefixHolder.get(), propertyPath, UUID.randomUUID().toString().replace("-", ""));
             paramPlaceholder2 =
-                    String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("%sparam_%s_BETWEEN_%s",paramPrefixHolder.get(), propertyPath, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder1, paramPlaceholder2);
             paramMap.put(paramPlaceholder1, filterValues[0]);
             paramMap.put(paramPlaceholder2, filterValues[1]);
@@ -138,7 +138,7 @@ public class QueryHelper {
             List<String> paramPlaceholders = new ArrayList<>();
             for (Object filterValue : filterValues) {
                 String paramPlaceholder =
-                        String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                        String.format("%sparam_%s_%s_%s",paramPrefixHolder.get(), propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
                 paramMap.put(paramPlaceholder, filterValue);
             }
@@ -148,7 +148,7 @@ public class QueryHelper {
         } else {
             String paramPlaceholder;
             paramPlaceholder =
-                    String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
+                    String.format("%sparam_%s_%s_%s",paramPrefixHolder.get(), propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
 
             Object filterValue = processSingleFilterValue(operator, filterValues[0]);
