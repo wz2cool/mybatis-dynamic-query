@@ -1,15 +1,16 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.batch;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @author Frank
@@ -54,6 +55,9 @@ public class MapperBatchAction<M extends DynamicQueryMapper<?>> {
      * @return batch result.
      */
     public List<BatchResult> doBatchActionWithResults() {
+        if (Objects.isNull(this.actions) || this.actions.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<BatchResult> result = new ArrayList<>();
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
             final M mapper = sqlSession.getMapper(mapperClass);
