@@ -16,11 +16,12 @@ import java.util.stream.Collectors;
 public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
+    private static final String EMPTY_STRING = "";
 
     // region and
 
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
-        return toWhereExpression(entityClass, filters, "");
+        return toWhereExpression(entityClass, filters, EMPTY_STRING);
     }
 
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters, String paramPrefix) {
@@ -60,7 +61,7 @@ public class QueryHelper {
     }
 
     ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor) {
-        return toWhereExpression(entityClass, baseFilterDescriptor, null);
+        return toWhereExpression(entityClass, baseFilterDescriptor, EMPTY_STRING);
     }
 
     ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor, String paramPrefix) {
@@ -78,7 +79,7 @@ public class QueryHelper {
     }
 
     ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor) {
-        return toWhereExpression(customFilterDescriptor, null);
+        return toWhereExpression(customFilterDescriptor, EMPTY_STRING);
     }
 
     ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor, String paramPrefix) {
@@ -98,10 +99,6 @@ public class QueryHelper {
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
-    }
-
-    private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
-        return toWhereExpression(entityClass, filterDescriptor, null);
     }
 
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor, String paramPrefix) {
