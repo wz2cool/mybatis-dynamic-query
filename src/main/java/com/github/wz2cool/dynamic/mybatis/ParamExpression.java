@@ -9,7 +9,7 @@ import java.util.Map;
 public class ParamExpression {
     private String expression = "";
     private Map<String, Object> paramMap = new LinkedHashMap<>();
-
+    private String expressionWithParam = "";
     public String getExpression() {
         return expression;
     }
@@ -20,5 +20,13 @@ public class ParamExpression {
 
     public Map<String, Object> getParamMap() {
         return paramMap;
+    }
+
+    public String getExpressionWithParam() {
+        return expressionWithParam;
+    }
+
+    public void setExpressionWithParam(String expressionWithParam) {
+        this.expressionWithParam = expressionWithParam;
     }
 }

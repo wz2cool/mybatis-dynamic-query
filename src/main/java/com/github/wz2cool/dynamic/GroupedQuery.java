@@ -83,15 +83,9 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         // 筛选
         ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
-                this.getQueryClass(), this.groupByQuery.getFilters());
-        String whereExpression = whereParamExpression.getExpression();
+                this.getQueryClass(), this.groupByQuery.getFilters(), MapperConstants.GROUPED_QUERY_PARAMS + ".");
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
-        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
-            whereExpression = whereExpression.replace(key, newKey);
-        }
-        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
+        paramMap.put(MapperConstants.WHERE_EXPRESSION, whereParamExpression.getExpressionWithParam());
         // 分组
         String groupColumnExpression = QUERY_HELPER.toGroupByColumnsExpression(
                 this.groupByQuery.tQueryClass, this.groupByQuery.getGroupedProperties());

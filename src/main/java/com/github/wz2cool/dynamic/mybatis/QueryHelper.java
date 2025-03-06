@@ -20,22 +20,30 @@ public class QueryHelper {
     // region and
 
     public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
+        return toWhereExpression(entityClass, filters, "");
+    }
+
+    public ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor[] filters, String paramPrefix) {
         if (filters == null || filters.length == 0) {
             return new ParamExpression();
         }
 
         String expression = "";
+        String expressionParams = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (BaseFilterDescriptor baseFilterDescriptor : filters) {
-            ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
+            ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor, paramPrefix);
             if (paramExpression != null && StringUtils.isNotBlank(paramExpression.getExpression())) {
                 paramMap.putAll(paramExpression.getParamMap());
 
                 if (StringUtils.isEmpty(expression)) {
                     expression = paramExpression.getExpression();
+                    expressionParams = paramExpression.getExpressionWithParam();
                 } else {
                     expression = String.format("%s %s %s",
                             expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
+                    expressionParams = String.format("%s %s %s",
+                            expressionParams, baseFilterDescriptor.getCondition(), paramExpression.getExpressionWithParam());
                 }
             }
         }
@@ -43,32 +51,45 @@ public class QueryHelper {
             return new ParamExpression();
         }
         expression = String.format("(%s)", expression);
+        expressionParams = String.format("(%s)", expressionParams);
         ParamExpression paramExpression = new ParamExpression();
         paramExpression.setExpression(expression);
+        paramExpression.setExpressionWithParam(expressionParams);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
     }
 
     ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor) {
+        return toWhereExpression(entityClass, baseFilterDescriptor, null);
+    }
+
+    ParamExpression toWhereExpression(Class entityClass, final BaseFilterDescriptor baseFilterDescriptor, String paramPrefix) {
         if (baseFilterDescriptor instanceof FilterDescriptor) {
-            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor);
+            return toWhereExpression(entityClass, (FilterDescriptor) baseFilterDescriptor, paramPrefix);
         } else if (baseFilterDescriptor instanceof FilterGroupDescriptor) {
             FilterGroupDescriptor filterGroupDescriptor = (FilterGroupDescriptor) baseFilterDescriptor;
-            return toWhereExpression(entityClass, filterGroupDescriptor.getFilters());
+            return toWhereExpression(entityClass, filterGroupDescriptor.getFilters(), paramPrefix);
         } else if (baseFilterDescriptor instanceof CustomFilterDescriptor) {
             CustomFilterDescriptor customFilterDescriptor = (CustomFilterDescriptor) baseFilterDescriptor;
-            return toWhereExpression(customFilterDescriptor);
+            return toWhereExpression(customFilterDescriptor, paramPrefix);
         } else {
             return new ParamExpression();
         }
     }
 
     ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor) {
+        return toWhereExpression(customFilterDescriptor, null);
+    }
+
+    ParamExpression toWhereExpression(final CustomFilterDescriptor customFilterDescriptor, String paramPrefix) {
         Map<String, Object> paramMap = new HashMap<>(10);
         Object[] params = customFilterDescriptor.getParams();
         String expression = customFilterDescriptor.getExpression();
         for (int i = 0; i < params.length; i++) {
             String genParamName = String.format("param_custom_filter_%s", UUID.randomUUID().toString().replace("-", ""));
+            if (StringUtils.isNotBlank(paramPrefix)) {
+                genParamName = String.format("%s.%s", paramPrefix, genParamName);
+            }
             expression = expression.replace(String.format("{%s}", i), String.format("#{%s}", genParamName));
             paramMap.put(genParamName, params[i]);
         }
@@ -80,11 +101,16 @@ public class QueryHelper {
     }
 
     private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor) {
+        return toWhereExpression(entityClass, filterDescriptor, null);
+    }
+
+    private ParamExpression toWhereExpression(final Class entityClass, final FilterDescriptor filterDescriptor, String paramPrefix) {
         String propertyPath = filterDescriptor.getPropertyName();
         FilterOperator operator = filterDescriptor.getOperator();
         Object[] filterValues = getFilterValues(filterDescriptor);
 
         String expression;
+        String expressionWithParam;
         // keep order.
         Map<String, Object> paramMap = new LinkedHashMap<>();
         if (operator == FilterOperator.BETWEEN) {
@@ -95,24 +121,29 @@ public class QueryHelper {
             paramPlaceholder2 =
                     String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder1, paramPlaceholder2);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramPrefix + paramPlaceholder1, paramPrefix + paramPlaceholder2);
             paramMap.put(paramPlaceholder1, filterValues[0]);
             paramMap.put(paramPlaceholder2, filterValues[1]);
         } else if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             List<String> paramPlaceholders = new ArrayList<>();
+            List<String> paramWithParamsPlaceholders = new ArrayList<>();
             for (Object filterValue : filterValues) {
                 String paramPlaceholder =
                         String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
+                paramWithParamsPlaceholders.add(paramPrefix + paramPlaceholder);
                 paramMap.put(paramPlaceholder, filterValue);
             }
 
             String[] paramPlaceholdersArray = paramPlaceholders.toArray(new String[paramPlaceholders.size()]);
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholdersArray);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramWithParamsPlaceholders.toArray(new String[paramPlaceholders.size()]));
         } else {
             String paramPlaceholder;
             paramPlaceholder =
                     String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramPrefix + paramPlaceholder);
 
             Object filterValue = processSingleFilterValue(operator, filterValues[0]);
             paramMap.put(paramPlaceholder, filterValue);
@@ -120,6 +151,7 @@ public class QueryHelper {
 
         ParamExpression paramExpression = new ParamExpression();
         paramExpression.setExpression(expression);
+        paramExpression.setExpressionWithParam(expressionWithParam);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
     }
