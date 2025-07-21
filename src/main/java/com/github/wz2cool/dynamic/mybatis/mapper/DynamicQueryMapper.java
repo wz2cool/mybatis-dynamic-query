@@ -56,6 +56,7 @@ public interface DynamicQueryMapper<T> extends
             newNormalPagingQuery.setSorts(normPagingQuery.getSorts());
             newNormalPagingQuery.setSelectedProperties(normPagingQuery.getSelectedProperties());
             newNormalPagingQuery.setIgnoredProperties(normPagingQuery.getIgnoredProperties());
+            newNormalPagingQuery.setCustomDynamicQueryParams(normPagingQuery.getCustomDynamicQueryParams());
             return selectByNormalPaging(newNormalPagingQuery);
         }
         if (normPagingQuery.isCalcTotal()) {
