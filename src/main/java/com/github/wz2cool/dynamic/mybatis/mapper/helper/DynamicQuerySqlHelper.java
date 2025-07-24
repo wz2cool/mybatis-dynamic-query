@@ -1,20 +1,14 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
-import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.entity.IDynamicTableName;
 import tk.mybatis.mapper.util.StringUtil;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * @author Frank
@@ -165,29 +159,26 @@ public class DynamicQuerySqlHelper {
         return sql.toString();
     }
 
-    public static Boolean hasPostgresql(MappedStatement ms) {
-        DataSource dataSource = ms.getConfiguration().getEnvironment().getDataSource();
-        try (Connection connection = dataSource.getConnection()) {
-            DatabaseMetaData metaData = connection.getMetaData();
-            String url = metaData.getURL();
-            // jdbc:postgresql
-            return  url.startsWith("jdbc:postgresql");
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
     public static Optional<String> insertIgnoreIntoGreenPlumTable(Class<?> entityClass) {
         Set<String> uniqueKeys = new HashSet<>();
         // 获取@Table 注解中的唯一约束
         Table tableAnnotation = entityClass.getAnnotation(Table.class);
-        if (tableAnnotation != null) {
+        if (Objects.nonNull(tableAnnotation)) {
             UniqueConstraint[] constraints = tableAnnotation.uniqueConstraints();
             for (UniqueConstraint constraint : constraints) {
                 uniqueKeys.addAll(Arrays.asList(constraint.columnNames()));
             }
         }
         if (uniqueKeys.isEmpty()) {
+            //  默认主键
+            for (Field field : entityClass.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    uniqueKeys.add(field.getName());
+                }
+            }
+        }
+        if (uniqueKeys.isEmpty()) {
+            // 主键和唯一键都没有，正常插入
             return Optional.empty();
         }
         StringBuilder sql = new StringBuilder();

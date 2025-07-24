@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.EnhancedSqlHelper;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.MapperException;
@@ -15,9 +16,9 @@ import java.util.Set;
 /**
  * @author frank
  */
-public class InsertIgnoreProvider extends BaseInsertProvider {
+public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
 
-    public InsertIgnoreProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
+    public InsertIgnorePostgresqlProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
     }
 
@@ -28,7 +29,7 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        sql.append(EnhancedSqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columnList) {
@@ -56,6 +57,7 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
+        DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass).ifPresent(sql::append);
         return sql.toString();
     }
 
@@ -66,7 +68,7 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        sql.append(EnhancedSqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
@@ -108,6 +110,7 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
+        DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass).ifPresent(sql::append);
         return sql.toString();
     }
 
