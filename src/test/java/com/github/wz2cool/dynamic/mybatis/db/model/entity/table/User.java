@@ -3,6 +3,7 @@ package com.github.wz2cool.dynamic.mybatis.db.model.entity.table;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -13,7 +14,9 @@ import javax.persistence.Transient;
  * \* Description:
  * \
  */
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id"})
+})
 public class User {
     @Id
     private Integer id;

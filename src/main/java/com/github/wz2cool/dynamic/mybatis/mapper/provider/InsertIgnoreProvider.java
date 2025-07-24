@@ -1,5 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
+import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.EnhancedSqlHelper;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.MapperException;
@@ -10,6 +11,7 @@ import tk.mybatis.mapper.mapperhelper.SelectKeyHelper;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 import tk.mybatis.mapper.provider.base.BaseInsertProvider;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,7 +30,13 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        boolean hasPostgresql = DynamicQuerySqlHelper.hasPostgresql(ms);
+        Optional<String> pgSqlOptional = DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass);
+        if (hasPostgresql && pgSqlOptional.isPresent()){
+            sql.append(SqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        }else {
+            sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        }
         sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columnList) {
@@ -56,6 +64,9 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
+        if (hasPostgresql && pgSqlOptional.isPresent()) {
+            sql.append(pgSqlOptional.get());
+        }
         return sql.toString();
     }
 
@@ -66,7 +77,13 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        boolean hasPostgresql = DynamicQuerySqlHelper.hasPostgresql(ms);
+        Optional<String> pgSqlOptional = DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass);
+        if (hasPostgresql && pgSqlOptional.isPresent()){
+            sql.append(SqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        }else {
+            sql.append(EnhancedSqlHelper.insertIgnoreIntoTable(entityClass, tableName(entityClass)));
+        }
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
@@ -108,6 +125,9 @@ public class InsertIgnoreProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
+        if (hasPostgresql && pgSqlOptional.isPresent()) {
+            sql.append(pgSqlOptional.get());
+        }
         return sql.toString();
     }
 

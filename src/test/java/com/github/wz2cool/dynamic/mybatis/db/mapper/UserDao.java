@@ -2,6 +2,7 @@ package com.github.wz2cool.dynamic.mybatis.db.mapper;
 
 import com.github.wz2cool.dynamic.mybatis.db.model.entity.table.User;
 import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
+import com.github.wz2cool.dynamic.mybatis.mapper.mysql.InsertIgnoreMapper;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -12,5 +13,5 @@ import com.github.wz2cool.dynamic.mybatis.mapper.DynamicQueryMapper;
  * \* Description:
  * \
  */
-public interface UserDao extends DynamicQueryMapper<User> {
+public interface UserDao extends DynamicQueryMapper<User>, InsertIgnoreMapper<User> {
 }
