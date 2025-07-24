@@ -173,7 +173,7 @@ public class DynamicQuerySqlHelper {
             //  默认主键
             for (Field field : entityClass.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Id.class)) {
-                    uniqueKeys.add(field.getName());
+                    uniqueKeys.add(camelToUnderscore(field.getName()));
                 }
             }
         }
@@ -186,6 +186,22 @@ public class DynamicQuerySqlHelper {
         sql.append(String.join(",", uniqueKeys));
         sql.append(") DO NOTHING");
         return Optional.of(sql.toString());
+    }
+
+    public static String camelToUnderscore(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append("_").append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     public static String deleteFromTable(Class<?> entityClass, String defaultTableName) {
