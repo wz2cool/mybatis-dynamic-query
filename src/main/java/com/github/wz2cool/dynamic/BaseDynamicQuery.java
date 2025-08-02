@@ -43,6 +43,14 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return sorts;
     }
 
+    public Map<String, Object> getCustomDynamicQueryParams() {
+        return  customDynamicQueryParams;
+    }
+
+    public void setCustomDynamicQueryParams(Map<String, Object> customDynamicQueryParams) {
+        this.customDynamicQueryParams = customDynamicQueryParams;
+    }
+
     public void setSorts(BaseSortDescriptor[] sorts) {
         this.sorts = sorts;
     }
