@@ -1,7 +1,6 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.provider;
 
 import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.EnhancedSqlHelper;
 import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.MapperException;
 import tk.mybatis.mapper.entity.EntityColumn;
@@ -13,9 +12,12 @@ import tk.mybatis.mapper.provider.base.BaseInsertProvider;
 
 import java.util.Set;
 
+import static tk.mybatis.mapper.mapperhelper.SqlHelper.insertIntoTable;
+
 /**
  * @author frank
  */
+@SuppressWarnings("all")
 public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
 
     public InsertIgnorePostgresqlProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
@@ -29,7 +31,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
         dealColumn(columnList, logicDeleteColumn, sql);
@@ -46,7 +48,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
         Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
-        sql.append(EnhancedSqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(insertIntoTable(entityClass, tableName(entityClass)));
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
@@ -63,7 +65,6 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
-
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
         dealColumn(columnList, logicDeleteColumn, sql);
         sql.append("</trim>");
