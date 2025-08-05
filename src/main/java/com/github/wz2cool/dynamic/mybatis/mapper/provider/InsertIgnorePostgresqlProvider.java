@@ -32,34 +32,12 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
         sql.append(EnhancedSqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
-        for (EntityColumn column : columnList) {
-            if (!column.isInsertable()) {
-                continue;
-            }
-            if (logicDeleteColumn != null && logicDeleteColumn == column) {
-                sql.append(SqlHelper.getLogicDeletedValue(column, false)).append(",");
-                continue;
-            }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
-            //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
-            if (column.isIdentity()) {
-                sql.append(SqlHelper.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
-            } else {
-                //其他情况值仍然存在原property中
-                sql.append(SqlHelper.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
-            }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
-            if (column.isIdentity()) {
-                sql.append(SqlHelper.getIfCacheIsNull(column, column.getColumnHolder() + ","));
-            } else {
-                //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
-                sql.append(SqlHelper.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
-            }
-        }
+        dealColumn(columnList, logicDeleteColumn, sql);
         sql.append("</trim>");
         DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
         return sql.toString();
     }
+
 
     public String insertIgnoreSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -87,28 +65,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
         sql.append("</trim>");
 
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
-        for (EntityColumn column : columnList) {
-            if (!column.isInsertable()) {
-                continue;
-            }
-            if (logicDeleteColumn != null && logicDeleteColumn == column) {
-                sql.append(SqlHelper.getLogicDeletedValue(column, false)).append(",");
-                continue;
-            }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
-            //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
-            if (column.isIdentity()) {
-                sql.append(SqlHelper.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
-            } else {
-                //其他情况值仍然存在原property中
-                sql.append(SqlHelper.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
-            }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
-            //序列的情况
-            if (column.isIdentity()) {
-                sql.append(SqlHelper.getIfCacheIsNull(column, column.getColumnHolder() + ","));
-            }
-        }
+        dealColumn(columnList, logicDeleteColumn, sql);
         sql.append("</trim>");
         DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
         return sql.toString();
@@ -144,6 +101,33 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
                 sql.append("\"/>");
             }
 
+        }
+    }
+
+    private void dealColumn(Set<EntityColumn> columnList, EntityColumn logicDeleteColumn, StringBuilder sql) {
+        for (EntityColumn column : columnList) {
+            if (!column.isInsertable()) {
+                continue;
+            }
+            if (logicDeleteColumn != null && logicDeleteColumn == column) {
+                sql.append(SqlHelper.getLogicDeletedValue(column, false)).append(",");
+                continue;
+            }
+            //优先使用传入的属性值,当原属性property!=null时，用原属性
+            //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
+            if (column.isIdentity()) {
+                sql.append(SqlHelper.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
+            } else {
+                //其他情况值仍然存在原property中
+                sql.append(SqlHelper.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+            }
+            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
+            if (column.isIdentity()) {
+                sql.append(SqlHelper.getIfCacheIsNull(column, column.getColumnHolder() + ","));
+            } else {
+                //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
+                sql.append(SqlHelper.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+            }
         }
     }
 }
