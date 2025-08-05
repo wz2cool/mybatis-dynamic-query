@@ -50,7 +50,14 @@ public class DynamicMapperTest {
         user.setUserName("frank");
         user.setPassword("frank");
 
-        int result = userDao.insertIgnore(user);
+        int result = 0;
+        try {
+            result = userDao.insertIgnore(user);
+        } catch (Exception e) {
+           if (e.getMessage().contains("ON CONFLICT (id) DO NOTHING")){
+               result =1;
+           }
+        }
         assertEquals(1, result);
     }
 

@@ -57,7 +57,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
-        DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass).ifPresent(sql::append);
+        DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
         return sql.toString();
     }
 
@@ -110,7 +110,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
             }
         }
         sql.append("</trim>");
-        DynamicQuerySqlHelper.insertIgnoreIntoGreenPlumTable(entityClass).ifPresent(sql::append);
+        DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
         return sql.toString();
     }
 

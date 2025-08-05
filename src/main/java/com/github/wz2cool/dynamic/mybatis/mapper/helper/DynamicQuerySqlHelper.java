@@ -159,7 +159,7 @@ public class DynamicQuerySqlHelper {
         return sql.toString();
     }
 
-    public static Optional<String> insertIgnoreIntoGreenPlumTable(Class<?> entityClass) {
+    public static Optional<String> insertIgnoreIntoPostgresqlTable(Class<?> entityClass) {
         Set<String> uniqueKeys = new HashSet<>();
         // 获取@Table 注解中的唯一约束
         Table tableAnnotation = entityClass.getAnnotation(Table.class);
@@ -188,13 +188,19 @@ public class DynamicQuerySqlHelper {
         return Optional.of(sql.toString());
     }
 
-    public static String camelToUnderscore(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
+    /**
+     * 字段驼峰转下划线
+     *
+     * @param param 地段
+     * @return 结果
+     */
+    public static String camelToUnderscore(String param) {
+        if (param == null || param.isEmpty()) {
+            return param;
         }
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
+        for (int i = 0; i < param.length(); i++) {
+            char c = param.charAt(i);
             if (Character.isUpperCase(c)) {
                 result.append("_").append(Character.toLowerCase(c));
             } else {
