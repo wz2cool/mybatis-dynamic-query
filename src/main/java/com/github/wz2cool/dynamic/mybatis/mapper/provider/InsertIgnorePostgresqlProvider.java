@@ -15,9 +15,8 @@ import java.util.Set;
 import static tk.mybatis.mapper.mapperhelper.SqlHelper.insertIntoTable;
 
 /**
- * @author frank
+ * @author zfx
  */
-@SuppressWarnings("all")
 public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
 
     public InsertIgnorePostgresqlProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
@@ -25,51 +24,12 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
     }
 
     public String insertIgnore(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        //获取全部列
-        Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
-        EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
-        processKey(sql, entityClass, ms, columnList);
-        sql.append(insertIntoTable(entityClass, tableName(entityClass)));
-        sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
-        sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
-        dealColumn(columnList, logicDeleteColumn, sql);
-        sql.append("</trim>");
-        DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
-        return sql.toString();
+        return buildInsertIgnoreSql(ms, false);
     }
 
 
     public String insertIgnoreSelective(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        //获取全部列
-        Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
-        EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
-        processKey(sql, entityClass, ms, columnList);
-        sql.append(insertIntoTable(entityClass, tableName(entityClass)));
-        sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
-        for (EntityColumn column : columnList) {
-            if (!column.isInsertable()) {
-                continue;
-            }
-            if (column.isIdentity()) {
-                sql.append(column.getColumn()).append(",");
-            } else {
-                if (logicDeleteColumn != null && logicDeleteColumn == column) {
-                    sql.append(column.getColumn()).append(",");
-                    continue;
-                }
-                sql.append(SqlHelper.getIfNotNull(column, column.getColumn() + ",", isNotEmpty()));
-            }
-        }
-        sql.append("</trim>");
-        sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
-        dealColumn(columnList, logicDeleteColumn, sql);
-        sql.append("</trim>");
-        DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
-        return sql.toString();
+        return buildInsertIgnoreSql(ms, true);
     }
 
     private void processKey(StringBuilder sql, Class<?> entityClass, MappedStatement ms, Set<EntityColumn> columnList) {
@@ -105,7 +65,7 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
         }
     }
 
-    private void dealColumn(Set<EntityColumn> columnList, EntityColumn logicDeleteColumn, StringBuilder sql) {
+    private void dealColumn(Set<EntityColumn> columnList, EntityColumn logicDeleteColumn, StringBuilder sql, boolean selective) {
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
                 continue;
@@ -126,9 +86,41 @@ public class InsertIgnorePostgresqlProvider extends BaseInsertProvider {
             if (column.isIdentity()) {
                 sql.append(SqlHelper.getIfCacheIsNull(column, column.getColumnHolder() + ","));
             } else {
-                //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
-                sql.append(SqlHelper.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                if (!selective){
+                    //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
+                    sql.append(SqlHelper.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                }
             }
         }
+    }
+    private String buildInsertIgnoreSql(MappedStatement ms, boolean selective) {
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        Set<EntityColumn> columnList = EntityHelper.getColumns(entityClass);
+        EntityColumn logicDeleteColumn = SqlHelper.getLogicDeleteColumn(entityClass);
+        processKey(sql, entityClass, ms, columnList);
+        sql.append(insertIntoTable(entityClass, tableName(entityClass)));
+
+        if (selective) {
+            sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
+            for (EntityColumn column : columnList) {
+                if (!column.isInsertable()) continue;
+                if (column.isIdentity() || (logicDeleteColumn != null && logicDeleteColumn == column)) {
+                    sql.append(column.getColumn()).append(",");
+                } else {
+                    sql.append(SqlHelper.getIfNotNull(column, column.getColumn() + ",", isNotEmpty()));
+                }
+            }
+            sql.append("</trim>");
+        } else {
+            sql.append(SqlHelper.insertColumns(entityClass, false, false, false));
+        }
+
+        sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");
+        dealColumn(columnList, logicDeleteColumn, sql, selective);
+        sql.append("</trim>");
+
+        DynamicQuerySqlHelper.insertIgnoreIntoPostgresqlTable(entityClass).ifPresent(sql::append);
+        return sql.toString();
     }
 }
