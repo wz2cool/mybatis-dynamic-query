@@ -16,6 +16,43 @@ import java.util.stream.Collectors;
 public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
+    private static final ThreadLocal<String> paramPrefixHolder = ThreadLocal.withInitial(() -> "");
+
+    static class QueryScope implements AutoCloseable {
+        private final String originalPrefix;
+
+        public QueryScope(String newPrefix) {
+            this.originalPrefix = paramPrefixHolder.get();
+            paramPrefixHolder.set(newPrefix != null ? newPrefix : "");
+        }
+
+        @Override
+        public void close() {
+            paramPrefixHolder.set(originalPrefix);
+        }
+    }
+
+    public QueryScope createScope(String prefix) {
+        return new QueryScope(prefix);
+    }
+
+    private String getCurrentPrefix() {
+        return paramPrefixHolder.get();
+    }
+
+    public ParamExpression whereExpression(Class entityClass, final BaseFilterDescriptor[] filters) {
+        try (QueryScope scope = createScope("")) {
+            return toWhereExpression(entityClass, filters);
+        }
+    }
+
+    public ParamExpression whereExpressionWithPrefix(Class entityClass,
+                                                     final BaseFilterDescriptor[] filters, String prefix) {
+        try (QueryScope scope = createScope(prefix)) {
+            return toWhereExpression(entityClass, filters);
+        }
+    }
+
 
     // region and
 
@@ -25,6 +62,7 @@ public class QueryHelper {
         }
 
         String expression = "";
+        String expressionParams = "";
         Map<String, Object> paramMap = new LinkedHashMap<>();
         for (BaseFilterDescriptor baseFilterDescriptor : filters) {
             ParamExpression paramExpression = toWhereExpression(entityClass, baseFilterDescriptor);
@@ -33,9 +71,12 @@ public class QueryHelper {
 
                 if (StringUtils.isEmpty(expression)) {
                     expression = paramExpression.getExpression();
+                    expressionParams = paramExpression.getExpressionWithParam();
                 } else {
                     expression = String.format("%s %s %s",
                             expression, baseFilterDescriptor.getCondition(), paramExpression.getExpression());
+                    expressionParams = String.format("%s %s %s",
+                            expressionParams, baseFilterDescriptor.getCondition(), paramExpression.getExpressionWithParam());
                 }
             }
         }
@@ -43,7 +84,9 @@ public class QueryHelper {
             return new ParamExpression();
         }
         expression = String.format("(%s)", expression);
+        expressionParams = String.format("(%s)", expressionParams);
         ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpressionWithParam(expressionParams);
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
@@ -85,6 +128,7 @@ public class QueryHelper {
         Object[] filterValues = getFilterValues(filterDescriptor);
 
         String expression;
+        String expressionWithParam;
         // keep order.
         Map<String, Object> paramMap = new LinkedHashMap<>();
         if (operator == FilterOperator.BETWEEN) {
@@ -95,30 +139,35 @@ public class QueryHelper {
             paramPlaceholder2 =
                     String.format("param_%s_BETWEEN_%s", propertyPath, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder1, paramPlaceholder2);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor,
+                    paramPrefixHolder.get() + paramPlaceholder1, paramPrefixHolder.get() + paramPlaceholder2);
             paramMap.put(paramPlaceholder1, filterValues[0]);
             paramMap.put(paramPlaceholder2, filterValues[1]);
         } else if (operator == FilterOperator.IN || operator == FilterOperator.NOT_IN) {
             List<String> paramPlaceholders = new ArrayList<>();
+            List<String> paramWithParamsPlaceholders = new ArrayList<>();
             for (Object filterValue : filterValues) {
                 String paramPlaceholder =
                         String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
                 paramPlaceholders.add(paramPlaceholder);
+                paramWithParamsPlaceholders.add(paramPrefixHolder.get() + paramPlaceholder);
                 paramMap.put(paramPlaceholder, filterValue);
             }
-
             String[] paramPlaceholdersArray = paramPlaceholders.toArray(new String[paramPlaceholders.size()]);
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholdersArray);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramWithParamsPlaceholders.toArray(new String[paramPlaceholders.size()]));
         } else {
             String paramPlaceholder;
             paramPlaceholder =
                     String.format("param_%s_%s_%s", propertyPath, operator, UUID.randomUUID().toString().replace("-", ""));
             expression = generateFilterExpression(entityClass, filterDescriptor, paramPlaceholder);
+            expressionWithParam = generateFilterExpression(entityClass, filterDescriptor, paramPrefixHolder.get() + paramPlaceholder);
 
             Object filterValue = processSingleFilterValue(operator, filterValues[0]);
             paramMap.put(paramPlaceholder, filterValue);
         }
-
         ParamExpression paramExpression = new ParamExpression();
+        paramExpression.setExpressionWithParam(expressionWithParam);
         paramExpression.setExpression(expression);
         paramExpression.getParamMap().putAll(paramMap);
         return paramExpression;
