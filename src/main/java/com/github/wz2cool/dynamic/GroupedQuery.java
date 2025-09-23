@@ -83,14 +83,9 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         // 筛选
         ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
-                this.getQueryClass(), this.groupByQuery.getFilters());
+                MapperConstants.GROUPED_QUERY_PARAMS, this.getQueryClass(), this.groupByQuery.getFilters());
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
-        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
-            whereExpression = whereExpression.replace(key, newKey);
-        }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
         // 分组
         String groupColumnExpression = QUERY_HELPER.toGroupByColumnsExpression(
@@ -98,14 +93,8 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
         paramMap.put(MapperConstants.GROUP_COLUMNS_EXPRESSION, groupColumnExpression);
         // having
         ParamExpression havingParamExpression = QUERY_HELPER.toWhereExpression(
-                this.getSelectClass(), this.getFilters());
+                MapperConstants.GROUPED_QUERY_PARAMS, this.getSelectClass(), this.getFilters());
         String havingExpression = havingParamExpression.getExpression();
-        for (Map.Entry<String, Object> param : havingParamExpression.getParamMap().entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.GROUPED_QUERY_PARAMS, key);
-            havingExpression = havingExpression.replace(key, newKey);
-            paramMap.put(key, param.getValue());
-        }
         paramMap.put(MapperConstants.HAVING_EXPRESSION, havingExpression);
         // 排序
         ParamExpression sortExpression = QUERY_HELPER.toSortExpression(this.getSelectClass(), sorts);

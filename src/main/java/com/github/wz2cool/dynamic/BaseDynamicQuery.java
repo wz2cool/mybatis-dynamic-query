@@ -225,19 +225,10 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         String[] selectedProperties = this.getSelectedProperties();
         String[] ignoredProperties = this.getIgnoredProperties();
 
-        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
+        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
+                MapperConstants.DYNAMIC_QUERY_PARAMS, entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
-        String[] searchTextArray = paramMap.keySet().toArray(new String[0]);
-        String[] replaceTextArray = new String[paramMap.size()];
-        for (int i = 0; i < searchTextArray.length; i++) {
-            String key = searchTextArray[i];
-            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
-            replaceTextArray[i] = newKey;
-        }
-        if (ArrayUtils.isNotEmpty(searchTextArray)) {
-            whereExpression = StringUtils.replaceEach(whereExpression, searchTextArray, replaceTextArray);
-        }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
         ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);

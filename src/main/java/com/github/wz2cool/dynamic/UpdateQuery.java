@@ -191,14 +191,10 @@ public class UpdateQuery<T> extends BaseFilterGroup<T, UpdateQuery<T>> {
 
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         BaseFilterDescriptor[] filters = this.getFilters();
-        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(entityClass, filters);
+        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
+                MapperConstants.DYNAMIC_QUERY_PARAMS, entityClass, filters);
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
-        for (Map.Entry<String, Object> param : paramMap.entrySet()) {
-            String key = param.getKey();
-            String newKey = String.format("%s.%s", MapperConstants.DYNAMIC_QUERY_PARAMS, key);
-            whereExpression = whereExpression.replace(key, newKey);
-        }
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
         final Map<String, Object> updateParamMap = toUpdateParamMap(isMapUnderscoreToCamelCase, setColumnValueMap);
