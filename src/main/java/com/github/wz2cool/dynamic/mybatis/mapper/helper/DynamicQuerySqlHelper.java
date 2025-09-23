@@ -4,6 +4,12 @@ import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import tk.mybatis.mapper.entity.IDynamicTableName;
 import tk.mybatis.mapper.util.StringUtil;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.lang.reflect.Field;
+import java.util.*;
+
 /**
  * @author Frank
  */
@@ -151,6 +157,57 @@ public class DynamicQuerySqlHelper {
         sql.append(getDynamicTableName(entityClass, defaultTableName, entityName));
         sql.append(" ");
         return sql.toString();
+    }
+
+    public static Optional<String> insertIgnoreIntoPostgresqlTable(Class<?> entityClass) {
+        Set<String> uniqueKeys = new HashSet<>();
+        // 获取@Table 注解中的唯一约束
+        Table tableAnnotation = entityClass.getAnnotation(Table.class);
+        if (Objects.nonNull(tableAnnotation)) {
+            UniqueConstraint[] constraints = tableAnnotation.uniqueConstraints();
+            for (UniqueConstraint constraint : constraints) {
+                uniqueKeys.addAll(Arrays.asList(constraint.columnNames()));
+            }
+        }
+        if (uniqueKeys.isEmpty()) {
+            //  默认主键
+            for (Field field : entityClass.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    uniqueKeys.add(camelToUnderscore(field.getName()));
+                }
+            }
+        }
+        if (uniqueKeys.isEmpty()) {
+            // 主键和唯一键都没有，正常插入
+            return Optional.empty();
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("ON CONFLICT (");
+        sql.append(String.join(",", uniqueKeys));
+        sql.append(") DO NOTHING");
+        return Optional.of(sql.toString());
+    }
+
+    /**
+     * 字段驼峰转下划线
+     *
+     * @param param 地段
+     * @return 结果
+     */
+    public static String camelToUnderscore(String param) {
+        if (param == null || param.isEmpty()) {
+            return param;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < param.length(); i++) {
+            char c = param.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append("_").append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     public static String deleteFromTable(Class<?> entityClass, String defaultTableName) {
