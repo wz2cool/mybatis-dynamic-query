@@ -1,7 +1,5 @@
 package com.github.wz2cool.dynamic.mybatis.mapper.helper;
 
-import com.github.wz2cool.dynamic.mybatis.MybatisQueryProvider;
-import com.github.wz2cool.dynamic.mybatis.mapper.helper.DynamicQuerySqlHelper;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
