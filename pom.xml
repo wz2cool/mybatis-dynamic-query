@@ -9,6 +9,8 @@
     <version>3.2.33</version>
     <packaging>jar</packaging>
 
+    <name>mybatis-dynamic-query</name>
+
     <organization>
         <name>wz2cool</name>
         <url>https://github.com/wz2cool</url>
