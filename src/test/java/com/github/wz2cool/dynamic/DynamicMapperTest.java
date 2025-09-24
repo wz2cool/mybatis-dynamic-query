@@ -43,6 +43,25 @@ public class DynamicMapperTest {
     }
 
     @Test
+    public void testInsertIgnore() {
+        // greenplum 需要在@table注解上指明唯一键才生效
+        User user = new User();
+        user.setId(10);
+        user.setUserName("frank");
+        user.setPassword("frank");
+
+        int result = 0;
+        try {
+            result = userDao.insertIgnore(user);
+        } catch (Exception e) {
+           if (e.getMessage().contains("ON CONFLICT (id) DO NOTHING")){
+               result =1;
+           }
+        }
+        assertEquals(1, result);
+    }
+
+    @Test
     public void testInsertSelective() {
         User user = new User();
         user.setId(11);

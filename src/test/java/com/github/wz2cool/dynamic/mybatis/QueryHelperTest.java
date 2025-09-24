@@ -89,11 +89,11 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
-        assertEquals("name = #{placeholder}", result);
+        String result = queryHelper.generateFilterExpression("prefix", Student.class, filterDescriptor, "placeholder");
+        assertEquals("name = #{prefix.placeholder}", result);
 
         filterDescriptor.setValue(null);
-        result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        result = queryHelper.generateFilterExpression("name", Student.class, filterDescriptor, "placeholder");
         assertEquals("name IS NULL", result);
     }
 
@@ -102,7 +102,7 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "notProperty", FilterOperator.EQUAL, "frank");
 
-        queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
     }
 
     @Test
@@ -110,7 +110,7 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.LESS_THAN, 30);
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
         assertEquals("age < #{placeholder}", result);
     }
 
@@ -119,7 +119,7 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.LESS_THAN_OR_EQUAL, 30);
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
         assertEquals("age <= #{placeholder}", result);
     }
 
@@ -128,11 +128,11 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.NOT_EQUAL, 30);
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
         assertEquals("age <> #{placeholder}", result);
 
         filterDescriptor.setValue(null);
-        result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
         assertEquals("age IS NOT NULL", result);
     }
 
@@ -141,7 +141,7 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.GREATER_THAN_OR_EQUAL, 30);
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor, "placeholder");
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor, "placeholder");
         assertEquals("age >= #{placeholder}", result);
     }
 
@@ -186,11 +186,11 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.IN, new String[]{"frank", "Marry"});
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor,
                 "placeholder1", "placeholder2");
         assertEquals("name IN (#{placeholder1},#{placeholder2})", result);
 
-        result = queryHelper.generateFilterExpression(Student.class, filterDescriptor);
+        result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor);
         assertEquals("FALSE", result);
     }
 
@@ -199,11 +199,11 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.NOT_IN, new String[]{"frank", "Marry"});
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor,
                 "placeholder1", "placeholder2");
         assertEquals("name NOT IN (#{placeholder1},#{placeholder2})", result);
 
-        result = queryHelper.generateFilterExpression(Student.class, filterDescriptor);
+        result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor);
         assertEquals("TRUE", result);
     }
 
@@ -212,7 +212,7 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.BETWEEN, new int[]{1, 100});
 
-        String result = queryHelper.generateFilterExpression(Student.class, filterDescriptor,
+        String result = queryHelper.generateFilterExpression("", Student.class, filterDescriptor,
                 "placeholder1", "placeholder2");
         assertEquals("age BETWEEN #{placeholder1} AND #{placeholder2}", result);
     }
@@ -231,14 +231,14 @@ public class QueryHelperTest {
         FilterDescriptor filterDescriptor =
                 new FilterDescriptor(FilterCondition.AND, "age", FilterOperator.EQUAL, 20);
 
-        ParamExpression result = queryHelper.toWhereExpression(Student.class, filterDescriptor);
+        ParamExpression result = queryHelper.toWhereExpression("", Student.class, filterDescriptor);
         assertEquals(true, result.getExpression().startsWith("age = #{param_age_EQUAL"));
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_EQUAL"));
         assertEquals(20, result.getParamMap().values().iterator().next());
 
         filterDescriptor.setOperator(FilterOperator.BETWEEN);
         filterDescriptor.setValue(new int[]{20, 30});
-        result = queryHelper.toWhereExpression(Student.class, filterDescriptor);
+        result = queryHelper.toWhereExpression("", Student.class, filterDescriptor);
         assertEquals(true, result.getExpression().startsWith("age BETWEEN #{param_age_BETWEEN"));
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_BETWEEN"));
         List<Object> values = new ArrayList<>();
@@ -248,7 +248,7 @@ public class QueryHelperTest {
 
         filterDescriptor.setOperator(FilterOperator.IN);
         filterDescriptor.setValue(new int[]{20, 30, 40, 50});
-        result = queryHelper.toWhereExpression(Student.class, filterDescriptor);
+        result = queryHelper.toWhereExpression("", Student.class, filterDescriptor);
         assertEquals(true, result.getExpression().startsWith("age IN (#{param_age_IN"));
         assertEquals(true, result.getParamMap().keySet().iterator().next().startsWith("param_age_IN"));
         values = new ArrayList<>();
@@ -258,10 +258,10 @@ public class QueryHelperTest {
         assertEquals(40, values.get(2));
         assertEquals(50, values.get(3));
 
-        result = queryHelper.toWhereExpression(Student.class, (BaseFilterDescriptor) null);
+        result = queryHelper.toWhereExpression("", Student.class, (BaseFilterDescriptor) null);
         assertEquals("", result.getExpression());
 
-        result = queryHelper.toWhereExpression(Student.class, (BaseFilterDescriptor[]) null);
+        result = queryHelper.toWhereExpression("", Student.class, (BaseFilterDescriptor[]) null);
         assertEquals("", result.getExpression());
     }
 
@@ -274,7 +274,7 @@ public class QueryHelperTest {
                 new FilterDescriptor(FilterCondition.AND, "name", FilterOperator.EQUAL, "frank");
         filterGroupDescriptor.addFilters(ageFilter, nameFilter);
 
-        ParamExpression result = queryHelper.toWhereExpression(Student.class, filterGroupDescriptor);
+        ParamExpression result = queryHelper.toWhereExpression("", Student.class, filterGroupDescriptor);
         String pattern = "^\\(age = #\\{param_age_EQUAL_\\w+\\} AND name = #\\{param_name_EQUAL_\\w+\\}\\)$";
         boolean test = Pattern.matches(pattern, result.getExpression());
         assertEquals(true, test);
@@ -287,7 +287,7 @@ public class QueryHelperTest {
         customFilterDescriptor.setExpression("age > {0} AND age <= {1}");
         customFilterDescriptor.setParams(20, 30);
 
-        ParamExpression result = queryHelper.toWhereExpression(Student.class, customFilterDescriptor);
+        ParamExpression result = queryHelper.toWhereExpression("", Student.class, customFilterDescriptor);
         assertEquals(true, result.getParamMap().values().contains(20));
         assertEquals(true, result.getParamMap().values().contains(30));
     }
