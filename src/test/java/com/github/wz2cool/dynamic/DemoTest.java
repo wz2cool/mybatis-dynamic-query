@@ -425,7 +425,8 @@ public class DemoTest {
                 .and(CategoryGroupCount::getCount, greaterThan(1))
                 .orderByNull();
 
-        categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
+        List<CategoryGroupCount> categoryGroupCounts = categoryGroupCountMapper.selectByGroupedQuery(groupedQuery);
+        assertFalse(categoryGroupCounts.isEmpty());
 
         List<CategoryGroupCount> categoryGroupCountList =
                 categoryGroupCountMapper.selectRowBoundsByGroupedQuery(groupedQuery, new RowBounds(0, 10));

@@ -96,9 +96,13 @@ public class GroupedQuery<TQuery, TSelect> extends BaseFilterGroup<TSelect, Grou
                 MapperConstants.GROUPED_QUERY_PARAMS, this.getSelectClass(), this.getFilters());
         String havingExpression = havingParamExpression.getExpression();
         paramMap.put(MapperConstants.HAVING_EXPRESSION, havingExpression);
+        paramMap.putAll(havingParamExpression.getParamMap());
+
         // 排序
-        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(this.getSelectClass(), sorts);
-        paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
+        ParamExpression sortParamExpression = QUERY_HELPER.toSortExpression(this.getSelectClass(), sorts);
+        paramMap.put(MapperConstants.SORT_EXPRESSION, sortParamExpression.getExpression());
+        paramMap.putAll(sortParamExpression.getParamMap());
+
         // 选择
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
                 this.groupByQuery.tSelectClass,
