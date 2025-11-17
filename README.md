@@ -5,7 +5,7 @@ MyBatis Dynamic Query
 [![Build Status](https://github.com/wz2cool/mybatis-dynamic-query/actions/workflows/webpack.yml/badge.svg?branch=master)](https://github.com/wz2cool/mybatis-dynamic-query/actions/workflows/webpack.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wz2cool/mybatis-dynamic-query/badge.svg?branch=master)](https://coveralls.io/github/wz2cool/mybatis-dynamic-query?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/597283ce368b08005906060c/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/597283ce368b08005906060c)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.wz2cool/mybatis-dynamic-query.svg)](https://search.maven.org/artifact/com.github.wz2cool/mybatis-dynamic-query)   
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.wz2cool/mybatis-dynamic-query.svg)](https://central.sonatype.com/artifact/com.github.wz2cool/mybatis-dynamic-query)   
 
 The MyBatis Dynamic Query framework makes it easier to generate "where" and "order" expression dynamically in mapper xml.
 <b>mybatis-dynamic-query comes to solve four problem:</b>
