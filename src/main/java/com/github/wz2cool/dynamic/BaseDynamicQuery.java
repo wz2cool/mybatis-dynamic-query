@@ -220,18 +220,15 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
 
     public Map<String, Object> toQueryParamMap(boolean isMapUnderscoreToCamelCase) {
         Class<?> entityClass = this.getEntityClass();
-        BaseFilterDescriptor[] filters = this.getFilters();
-        BaseSortDescriptor[] sorts = this.getSorts();
         String[] selectedProperties = this.getSelectedProperties();
         String[] ignoredProperties = this.getIgnoredProperties();
 
-        ParamExpression whereParamExpression = QUERY_HELPER.toWhereExpression(
-                MapperConstants.DYNAMIC_QUERY_PARAMS, entityClass, filters);
+        ParamExpression whereParamExpression = toWhereExpression();
         String whereExpression = whereParamExpression.getExpression();
         Map<String, Object> paramMap = whereParamExpression.getParamMap();
         paramMap.put(MapperConstants.WHERE_EXPRESSION, whereExpression);
 
-        ParamExpression sortExpression = QUERY_HELPER.toSortExpression(entityClass, sorts);
+        ParamExpression sortExpression = toSortExpression();
         paramMap.put(MapperConstants.SORT_EXPRESSION, sortExpression.getExpression());
         paramMap.put(MapperConstants.DISTINCT, this.isDistinct());
         String selectColumnExpression = QUERY_HELPER.toSelectColumnsExpression(
@@ -243,6 +240,17 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         initDefaultQueryParams();
         paramMap.putAll(this.customDynamicQueryParams);
         return paramMap;
+    }
+
+    public ParamExpression toWhereExpression() {
+        Class<?> entityClass = this.getEntityClass();
+        return QUERY_HELPER.toWhereExpression(
+                MapperConstants.DYNAMIC_QUERY_PARAMS, entityClass, this.getFilters());
+    }
+
+    public ParamExpression toSortExpression() {
+        Class<?> entityClass = this.getEntityClass();
+        return QUERY_HELPER.toSortExpression(entityClass, this.getSorts());
     }
 
     private void initDefaultQueryParams() {
