@@ -213,6 +213,17 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
         return (S) this;
     }
 
+    public final S queryParam(final Map<String, Object> paramMap) {
+        return queryParam(true, paramMap);
+    }
+
+    public final S queryParam(boolean enable, final Map<String, Object> paramMap) {
+        if (enable) {
+            this.customDynamicQueryParams.putAll(paramMap);
+        }
+        return (S) this;
+    }
+
 
     public Map<String, Object> toQueryParamMap() {
         return toQueryParamMap(false);
