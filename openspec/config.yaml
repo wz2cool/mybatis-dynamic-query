@@ -1,20 +1,113 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# Project context — injected into every artifact's instructions as
+# <project_context>. Constraints for the AI writing the artifact; never copy
+# this block into proposal.md / design.md / specs / tasks.md.
+context: |
+  ## 项目
+  mybatis-dynamic-query：Java 8 / Maven 库，为 tk.mybatis 提供动态查询
+  （DynamicQuery / GroupedQuery / UpdateQuery）。核心 SQL 由 @SelectProvider
+  在 MyBatis 启动期生成模板、运行期用 paramMap 渲染。
+  测试：JUnit 4 + Spring Boot 1.5，默认 profile = h2（H2 2.0.206 内存库）；
+  另有 mysql / postgresql / sqlserver profile，均指向内网实例。
+  测试无 @Transactional / @Rollback，共享同一个 H2 实例且不隔离：新增预置数据
+  会波及既有断言。
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  ## 硬性约定：改动代码必须配套测试用例
+  - 任何改动 src/main 行为的工作，必须在同一次变更内产出测试用例；
+    仅改文档 / 注释 / 格式的除外。
+  - 用例要能证明行为变化：修复类先写能复现问题的用例（改前失败、改后通过）；
+    新增或变更行为要有对应的数值断言或 SQL 形状断言。
+    不接受「只加实现、不加用例」的改动。
+  - 用例写入本仓库既有测试体系（src/test/java，JUnit 4 + Spring Boot），
+    并遵守上文的隔离约束：新增数据在用例内插入并自行清理，
+    不改 schema-*.sql 的公共预置数据。
+  - 确实无法自动化的目标（如 mysql / postgresql / sqlserver 无可用实例），
+    必须在 tasks 中显式登记为人工验收项，写明「未自动化」+ 原因 + 手工验证步骤；
+    不允许以「无法测试」为由静默跳过。判定「无法自动化」须给出实际依据
+    （如确认 pom 无驱动、实例不可达），不能只凭假设。
+  - 运行方式：本机 mvn -o test 离线当前不可用（见下方「环境边界」），
+    写 tasks 时须给出可执行的测试运行方式或前置条件。
+
+  ## 硬性约定：代码注释必须规范、且用英文
+  适用于 src/main 下新增或修改的 Java 代码；doc 类改动同样遵守。
+  - 语言：新增/修改的注释与 Javadoc 一律用英文。禁止新增中文注释。
+    既有中文注释按「不改就不动」处理：只有当所在方法/字段被本次改动触及，
+    才顺手改写为英文，避免整文件重排造成的无关 diff。
+  - 类/接口/枚举：必须有 Javadoc，含用途一句话说明；延续本仓库既有约定
+    补 `@author Frank`（main 下 112 个类中 102 个已有）。泛型参数用 `@param <T>`。
+  - public / protected 方法：必须有 Javadoc，写清行为与副作用；
+    参数用 `@param`、返回值用 `@return`、受检异常用 `@throws`（tag 拼写须准确，
+    本仓库既有 `@param`/`@return` 共 300+ 处，保持一致）。
+  - 方法内部：只注释「为什么」而非「做什么」；不写与代码重复的废话注释。
+    涉及非显然实现决策（如方言差异、NULL 语义、模板拼接顺序）必须写明理由。
+  - SQL / 模板片段相关代码：注释须说明该片段在最终 SQL 中的位置与约束
+    （例如派生表列名唯一性、子句相对 `${mdq_last_sql}` 的位置），
+    这类约束只靠读代码看不出来。
+  - 不使用行尾注释堆砌；不提交注释掉的死代码；TODO / FIXME 须写成
+    `// TODO(<owner>): <what and why>` 并说明触发条件或关联 issue。
+  - 校验方式：本仓库**无 checkstyle / PMD 等自动校验**（已验证：无配置文件、
+    无相关插件）。故注释规范靠人工 review 保证，写 tasks 时须把「注释符合本规范」
+    列为验收项；不得声称有工具自动拦截。
+  - 另注意 `maven-javadoc-plugin` 挂在 release profile（2.10.4）：
+    格式非法的 Javadoc（如未闭合标签、错误 tag）会导致发布构建失败，
+    故 Javadoc 的合法性不是可选的美观问题。
+
+  ## 工具选择（重要）
+  1) 代码事实（符号、签名、调用关系、改动影响面）
+     - 取源码优先用 codegraph_explore：.codegraph/ 索引在本仓库根目录，
+       一次调用返回逐行原文，比 grep + read 循环省往返。
+     - 但本仓库的 codegraph 有两处已知盲区，**不可单独采信它的 caller / tests 结论**：
+       a. 前缀撞名：selectCount 的 "caller" 会把 `selectCountByGroupedQuery(...)`
+          的声明行、以及测试方法名 testSelectCount() 误报为调用；
+       b. 解不开 tk.mybatis 间接层：mapper 接口 → @SelectProvider → Provider
+          的调用边为空，mapper 继承链也为空
+          （如 ProductViewMapper → SelectViewByDynamicQueryMapper →
+          SelectCountByDynamicQueryMapper 查不到）。
+     - 因此：用 codegraph 取源码，用 grep 复核 caller 归属与继承链。
+  2) 文档（openspec/ 下的 .md）
+     - codegraph 索引 0 个 markdown，完全不覆盖文档，不要试图用它 review 规格。
+     - 改用 openspec CLI：
+       - openspec validate --all --strict            结构/格式校验
+       - openspec show <change> --json              解析出的 delta / requirement / scenario
+       - openspec status --change <change> --json    artifact 完成度
+       - openspec instructions <artifact> --change <change> --json
+                                                     该 artifact 的格式契约（template/instruction）
+  3) 事实性断言（SQL 语法、跨库行为、NULL 语义、报错文本）
+     - 必须实际执行验证，不能只靠阅读代码或查文档推断。
+     - 本机可离线直连 H2：javac + 独立 JDBC 探针，
+       jar 在 ~/.m2/repository/com/h2database/h2/2.0.206/h2-2.0.206.jar。
+     - H2 的 `MODE=MySQL` **不等价于** MySQL：它接受 MySQL 拒绝的行值构造器
+       `COUNT(DISTINCT (a, b))`，故不能用 H2 推断 MySQL 行为。
+
+  ## 环境边界（写 tasks 验收项时必须考虑）
+  - pom 无 MySQL 驱动、本机 docker 不可用、mysql / postgresql / sqlserver
+    profile 指向内网地址 → 这三库无法本地自动化验证，只能列为人工验收项，
+    并在文档中显式标注「未实测」。
+  - `mvn -o test`（离线）当前不可用：本地仓库缺
+    maven-resources-plugin:3.4.0，离线模式无法解析（联网可否需另验）。
+    故「默认 h2 profile 全量回归通过」不是无条件可完成的任务，
+    写 tasks 时需一并给出验证前置条件。
+
+# Per-artifact rules (optional) — additive to the schema's built-in guidance.
+# Keyed by artifact id (proposal / design / specs / tasks), each a string list.
+# 生效后会以 <rules> 单独注入对应 artifact 的 instructions（不写入文档正文）。
+rules:
+  proposal:
+    - 若本次改动涉及 src/main 行为变化，Impact 中必须写明配套测试用例及其覆盖范围；未声明测试的代码改动不予接受
+    - 说明该改动是否为破坏性变更；若是，必须点名受影响的具体 API 与规避方式
+    - 若改动涉及 src/main 代码，Impact 中须声明注释将按英文规范补齐（新增/修改处），并说明是否触及既有中文注释
+  design:
+    - 为每个行为变化给出对应的验证方式（数值断言 / SQL 形状断言 / 人工验收），并注明该验证是本机实测还是仅基于文档推断
+    - 无法自动化的验证（如缺驱动、无实例）必须给出实际依据，并在 Risks 中登记为人工验收项
+    - 设计涉及非显然实现决策（方言差异 / NULL 语义 / 模板拼接顺序）时，须在设计说明中给出注释将承载的理由，避免该理由只存在于提交信息里
+  specs:
+    - 每个 ADDED/MODIFIED Requirement 至少有一个可自动化的 Scenario 与之对应；确不能自动化的 Scenario 必须显式标注为人工验收并说明原因
+    - Scenario 中的 THEN 不得出现未经实测的断言；若结论来自文档或推测，须在 requirement 文本中标注为未验证
+  tasks:
+    - 必须包含测试任务，且与实现任务置于同一变更内；含修复类任务时，先写能复现问题的用例（改前失败、改后通过）
+    - 每个跨库 / 跨环境行为验收项必须标注该库是本机实测还是人工验收；无法自动化的须写明原因与手工验证步骤
+    - 给出实际可执行的测试运行方式；若默认的 mvn -o test 不可用，须写明前置条件或替代验证方式
+    - 任务描述不得包含未经实测却以确定语气陈述的结论（如具体报错码、某库行为）
+    - 必须包含「注释」任务：为新增/修改的类补类级 Javadoc、为 public/protected 方法补 Javadoc（含 @param/@return/@throws），并说明英文注释要求
+    - 注释规范列为验收项；须注明本仓库无 checkstyle/PMD 自动校验，靠人工 review，不得声称已由工具拦截
