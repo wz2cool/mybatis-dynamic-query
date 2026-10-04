@@ -74,7 +74,7 @@
 
 > 注：CHANGELOG 自 2019 年 v2.0.12 起停更，3.2.29–3.2.36 的历次发版未写入，自 v3.2.37 起恢复维护。
 
-## [v3.2.37](https://github.com/wz2cool/mybatis-dynamic-query/tree/v3.2.37) (2026-09-24)
+## [v3.2.37](https://github.com/wz2cool/mybatis-dynamic-query/tree/v3.2.37) (2026-10-04)
 
 **Bug fix**
 - distinct count 的列表达式多于一个时（含未显式 `select()` 时兜底的全列形态），跨数据库修复：MySQL 报 `ERROR 1241 (Operand should contain 1 column(s))`（SQL Server 不支持行值构造器——已在 SQL Server 2017 容器实测复现 `Incorrect syntax near ','`）的问题，现在统一渲染为 `SELECT COUNT(*) FROM ( SELECT DISTINCT <cols> FROM <table> <where> ) mdq_count`（query 版 `select(a, b) + setDistinct(true)` 与 property 版 `selectCountPropertyByDynamicQuery("a, b", query)` 同等适用）。
