@@ -3,7 +3,7 @@
 ## ADDED Requirements
 
 ### Requirement: 多列 DISTINCT 计数 SHALL 生成跨数据库可移植的子查询包裹 SQL
-当查询启用 distinct 且选中列多于一个时，count 类方法（`selectCountByDynamicQuery`）SHALL 渲染为 `SELECT COUNT(*) FROM ( SELECT DISTINCT <cols> FROM <table> <where> ) mdq_count`（派生表别名必须存在），而非行值构造器内联形式 `COUNT(DISTINCT (a, b))`。子查询内的列 SHALL 使用带 AS 别名的列表达式（与列表查询同一子句），以保证派生表列名唯一。
+当查询启用 distinct 且选中列多于一个时，count 类方法（`selectCountByDynamicQuery`）SHALL 渲染为 `SELECT COUNT(*) FROM ( SELECT DISTINCT <cols> FROM <table> <where> ) mdq_count`（派生表别名必须存在），而非行值构造器内联形式 `COUNT(DISTINCT (a, b))`。子查询内的列 SHALL 使用按下标生成的唯一 AS 别名（`mdq_col_0`、`mdq_col_1` …，经 `QueryHelper.toCountColumnsExpression`），以保证派生表列名唯一；别名 SHALL NOT 取自字段名——驼峰转下划线转换非单射（`fooBar` 与 `foo_bar` 均映射为 `foo_bar`），字段名别名会在派生表中报 `Duplicate column name`。
 
 #### Scenario: 多列 distinct count 在 H2 下数值正确
 - **WHEN** 对含重复组合与 NULL 组合的数据执行 `DynamicQuery.select(a, b).setDistinct(true)` 后调用 `selectCountByDynamicQuery`
@@ -41,14 +41,14 @@
 - **THEN** 按真实列数（1 列）判定为单列，维持内联形式，不进入子查询分支，计数语义与现状一致
 
 ### Requirement: 非 DISTINCT 计数 SHALL 与现状逐字节一致
-未启用 distinct 时，count SHALL 维持既有渲染（主键列或 `*` 的 `COUNT(...)`），不得引入子查询包裹，且渲染结果与升级前逐字节一致（含行值构造器内联形式 `COUNT(DISTINCT (a, b))`——property 路径未 distinct 的多列列串仍渲染该形态，其执行报错属既有行为，不属本变更修复范围）。
+未启用 distinct 时，count SHALL 维持既有渲染（主键列或 `*` 的 `COUNT(...)`），不得引入子查询包裹，且渲染结果与升级前逐字节一致（含 property 路径未 distinct 的多列列串的既有渲染 `COUNT( a, b )`——其执行报错属既有行为，不属本变更修复范围）。
 
 #### Scenario: 普通 count 渲染等价
 - **WHEN** 渲染未启用 distinct 的 count SQL
 - **THEN** SQL 与既有版本逐字节一致，不含 `SELECT DISTINCT` 与派生表
 
 ### Requirement: property 版计数 SHALL 支持多列并保持单列行为
-`selectCountPropertyByDynamicQuery` 的列为调用方传入的裸串（无结构信息），判定采用「列串含逗号」启发式：传入含逗号的列串且启用 distinct 时 SHALL 走子查询包裹；传入单列时 SHALL 维持内联形式；未启用 distinct 时 SHALL NOT 施加 DISTINCT 语义（该形态的执行报错属既有行为，不属本变更修复范围）。已知限制（升级前 H2 可用 → 升级后报错，见 proposal/design 披露）：列串含同名列（如视图的 `product.description, category.description`）时派生表列名冲突，调用方须自行加别名。
+`selectCountPropertyByDynamicQuery` 的列为调用方传入的裸串（无结构信息），判定经 SQL 语法解析（内嵌 shaded JSqlParser）确定列数：列串解析为多个列且启用 distinct 时 SHALL 走子查询包裹；解析为单个表达式（含逗号位于括号/引号内的表达式，如 COALESCE(a, b)）SHALL 维持内联标量形式；解析失败时 SHALL 回退内联标量形式（升级前行为）；未启用 distinct 时 SHALL NOT 施加 DISTINCT 语义（该形态的执行报错属既有行为，不属本变更修复范围）。已知限制（升级前 H2 可用 → 升级后报错，见 proposal/design 披露）：多列列串含同名列（如视图的 `product.description, category.description`）时派生表列名冲突，调用方须自行加别名；SQL Server 要求派生表表达式列显式命名，多列列串中的表达式须自行加别名。
 
 #### Scenario: property 版多列子查询包裹
 - **WHEN** 传入 `"a, b"` 并启用 distinct 执行 `selectCountPropertyByDynamicQuery`

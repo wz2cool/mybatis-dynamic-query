@@ -1,0 +1,14 @@
+mybatis-dynamic-query
+Copyright (c) wz2cool
+
+This product bundles a shaded copy of JSqlParser (com.github.jsqlparser:jsqlparser:2.0),
+relocated under com.github.wz2cool.dynamic.shaded.jsqlparser.
+JSqlParser is Copyright (c) the JSQLParser project (https://github.com/JSQLParser/JSqlParser).
+JSqlParser 2.0 is dual-licensed under LGPL-2.1 or Apache-2.0 (as declared in its POM and
+bundle manifest); this distribution elects the Apache License, Version 2.0:
+  https://www.apache.org/licenses/LICENSE-2.0.txt
+
+This product also depends at runtime on:
+  - tk.mybatis:mapper (The MIT License, https://github.com/abel533/mapper-parent/blob/master/LICENSE)
+  - org.mybatis:mybatis (Apache License 2.0)
+  - commons-lang3, jackson-annotations (Apache License 2.0)

@@ -22,4 +22,6 @@ public class MapperConstants {
     public static final String SORT_EXPRESSION = "sortExpression";
     public static final String SET_EXPRESSION = "setExpression";
     public static final String UN_AS_SELECT_COLUMNS_EXPRESSION = "unAsSelectColumnsExpression";
+    public static final String COUNT_SELECT_COLUMNS_EXPRESSION = "countSelectColumnsExpression";
+    public static final String MULTI_COLUMN_DISTINCT = "multiColumnDistinct";
 }

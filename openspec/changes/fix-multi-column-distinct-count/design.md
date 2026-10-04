@@ -96,3 +96,24 @@ count SQL 由 `@SelectProvider` 启动期生成模板、运行期渲染参数。
 2. CHANGELOG 是否恢复维护（本文件自 2019 年 v2.0.12 起停更，3.2.29–3.2.36 历次发版均未写入）——当前默认：恢复，新增 v3.2.37 条目并注明历史断层；若决定不恢复，tasks 4.1 改为 release notes / PR 描述记录。
 
 其余（命名、helper 归属、单列策略、模板形状、databaseId 扩展位）已在探索阶段收敛。
+
+## Implementation Notes（实施期修正）
+
+实施期经最小探针实证，发现 D4/D6 的字节推导基于两个与实际不符的前提，已按实证结果修正实现（spec 的逐字节契约本身不受影响，四个未触碰分支经渲染对照验证逐字节一致）：
+
+1. **MyBatis 版本与空白模型**：实际依赖为 mybatis **3.5.6**（非 D4 所述 3.4.6）。3.5.6 的 `DynamicContext` 用 `StringJoiner(" ")` 连接各根级 SqlNode 的输出（choose 级空白确实被丢弃，但每个节点输出之间会补一个空格）；且 tk.mybatis `SqlHelper.fromTable` 返回 `" FROM x "`（**自带尾随空格**）。现状渲染因此是：`COUNT(` + 空格(节点连接) + `DISTINCT ( x ) ` + 空格(节点连接) + `)` + 空格 + ` FROM users `。
+2. **修正后的片段字面值**（与 D6 所列不同）：query 版 singleInner = `" DISTINCT (" + getSelectUnAsColumnsClause() + ")  "`、otherwiseInner = `"  " + countKey + "  "`；property 版 singleInner = `" DISTINCT (${column} )  "`、otherwiseInner = `"  ${column}   "`。外层格式串为 `SELECT %s%s`（节点连接符代替了原空格）；property 版 fromTable 需 `stripStart` 剥离先导空格以抵消节点连接符（query 版保留，因其现状渲染本就多一个连接空格）。字节契约的最终依据是 `CountSqlShapeTest` 中的精确断言与升级前基线对照，而非本文所列推导。
+
+### 实施期补充：计数子查询唯一别名（评审后修复）
+
+外部评审（另一次 AI review，2026-09-24）指出：query 版多列分支原复用 `getSelectColumnsClause()`（AS 别名取自 `camelCaseToUnderscore(fieldName)`），该转换**非单射**——如 `fooBar` 与 `foo_bar` 两字段都生成别名 `foo_bar`；列表查询可容忍重复输出列名，派生表不能，H2 实测报 `Duplicate column name`。故 query 版多列分支改用**按下标生成的唯一别名** `mdq_col_<i>`（新增 `QueryHelper.toCountColumnsExpression`，经 `countSelectColumnsExpression` 参数进入模板）；子查询别名从不被外部引用，改动零语义影响，`count == SELECT DISTINCT 列表行数` 不变量不变，且对视图同名列更稳健。property 版仍为裸列串（无结构信息），维持既有披露限制。回归用例：`MultiColumnDistinctPredicateTest.testCountColumnsExpressionUsesUniqueIndexAliases` + `CountSqlShapeTest` 的 `mdq_col_0` 形状锁定。
+
+另按本仓库 openspec/config.yaml 注释规范：新增/修改的 main 代码注释与 Javadoc 已转为英文、TODO 补 owner、新 public 方法补齐 Javadoc。
+
+### 实施期补充二：property 启发式改为顶层逗号解析（第二轮外部评审驱动）
+
+D3 的 Non-Goal 前提"lambda 版经 getQueryColumnByProperty **恒产单列名**，永不触发多列分支"被实证证伪：映射列表达式自身可含逗号（如 `@Column(name = "CONCAT(a, b)")`），此时 **lambda 类型化重载**（调用点看不见逗号）也会误入多列分支，静默改变 NULL 语义——设计前提失效，决策随之重审。property 路径判定由 `contains(",")` 改为**顶层逗号解析**（括号深度 + 单/双引号字面量状态机，含 SQL 双写转义）：`COALESCE(a, b)`、`CONCAT(a, ',')` 等单个表达式回到标量路径（升级前语义），仅顶层逗号分隔的多列走包裹；歧义一律回退标量（= 升级前渲染，安全方向）。残余限制（注释内逗号、反引号/方括号引名不识别）已在 javadoc 披露。回归：`MultiColumnDistinctPredicateTest` 解析器边界用例 + `DistinctCountH2Test.propertyPath_singleExpressionWithCommas_staysScalar`（两变体均 = 2，原 3 vs 2 披露限制用例随之移除）。
+
+### 实施期补充三：判定机制最终形态——内嵌 shaded JSqlParser（第四轮外部评审后定案）
+
+property 路径的"手写启发式"（无论 contains 还是顶层逗号扫描）都存在结构性盲区（反引号/方括号引名内逗号、注释内逗号），且经探针实证 **lambda 重载会把实体 @Column 映射表达式里的逗号带进判定**——调用点不可见，"调用方自理"论据不成立。最终定案：判定改用 **JSqlParser 4.6→实测对齐 2.0** 的语法树判定（包装伪语句解析，读 selectItems 数量），手写状态机删除。依赖与冲突处理：**maven-shade 重定位**——jsqlparser 全部类 relocation 进 `com.github.wz2cool.dynamic.shaded.jsqlparser` 并内嵌产物 jar，reduced pom 不含该依赖声明：下游类路径零感知、与任意版本 PageHelper（2.0）/MyBatis-Plus（4.x）物理零冲突；本树测试中 PageHelper 5.1.10 与 shaded 副本亦共存（2.0 对齐后四类 46 例仅剩既有视图漂移）。选 2.0 而非 4.6 的原因：与测试树 PageHelper 5.1.10 的编译目标一致（4.6 会触发其 SQL Server 方言 `NoSuchMethodError`），且探针实测 2.0 对九种列串判定全部正确；解析失败（方言/畸形）一律回退标量 = 升级前渲染，安全方向。残余成本：jar 增重 ~450KB（内嵌私有副本）、永久 pin 2.0（上游语法修复需主动重 shade）、Apache 2.0 声明需随分发保留。

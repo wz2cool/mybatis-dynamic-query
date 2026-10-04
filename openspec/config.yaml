@@ -81,9 +81,13 @@ context: |
        `COUNT(DISTINCT (a, b))`，故不能用 H2 推断 MySQL 行为。
 
   ## 环境边界（写 tasks 验收项时必须考虑）
-  - pom 无 MySQL 驱动、本机 docker 不可用、mysql / postgresql / sqlserver
-    profile 指向内网地址 → 这三库无法本地自动化验证，只能列为人工验收项，
-    并在文档中显式标注「未实测」。
+  - 编写本文件时：pom 无 MySQL 驱动、本机 docker 不可用、mysql / postgresql / sqlserver
+    profile 指向内网地址 → 这三库无法本地自动化验证，只能列为人工验收项。
+    更新于 2026-09-24（change fix-multi-column-distinct-count task 3.7）：已新增
+    test 作用域 mysql-connector-java 5.1.49、升级 postgresql 驱动至 42.2.29，且本机
+    docker 可用，已用 MySQL 5.7 / PostgreSQL 9.6 / SQL Server 2017 容器完成该三库的
+    验收（结果记录于该 change 的 tasks.md）。未来变更可据此直接复用容器方案，
+    不必再降级为纯人工验收。
   - `mvn -o test`（离线）当前不可用：本地仓库缺
     maven-resources-plugin:3.4.0，离线模式无法解析（联网可否需另验）。
     故「默认 h2 profile 全量回归通过」不是无条件可完成的任务，

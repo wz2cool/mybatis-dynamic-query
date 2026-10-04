@@ -6,7 +6,7 @@
 
     <groupId>com.github.wz2cool</groupId>
     <artifactId>mybatis-dynamic-query</artifactId>
-    <version>3.2.36</version>
+    <version>3.2.37</version>
     <packaging>jar</packaging>
 
     <name>mybatis-dynamic-query</name>
@@ -139,9 +139,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.49</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc4</version>
+            <version>42.2.29</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -156,6 +162,13 @@
             <version>1.2.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <!-- 与本树 PageHelper 5.1.10 所需版本一致（避免版本冲突）；
+                 该依赖经 shade 重定位内嵌进产物 jar，不会传递给下游 -->
+            <version>2.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -168,6 +181,53 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 把 JSqlParser 重定位进本库命名空间并内嵌进产物 jar：
+                                 下游 pom 不再出现 jsqlparser 依赖声明（reduced pom），
+                                 与下游可能使用的任意 JSqlParser 版本（PageHelper/MyBatis-Plus）
+                                 包名隔离、零冲突。
+                                 artifactSet 必须限定只内嵌 jsqlparser：shade 默认会内嵌全部
+                                 compile 依赖（mybatis/jackson/commons-lang3/tk.mybatis），
+                                 并把它们从 reduced pom 中删除——等于给下游强加未重定位的
+                                 类副本，制造类影子化版本冲突 -->
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.github.jsqlparser:jsqlparser</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>com.github.jsqlparser:jsqlparser</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/*.EC</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.sf.jsqlparser</pattern>
+                                    <shadedPattern>com.github.wz2cool.dynamic.shaded.jsqlparser</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
@@ -189,6 +249,37 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- 阿里巴巴 Java 开发手册(p3c)静态检查：手动触发 mvn pmd:pmd / pmd:check，
+                 不绑定生命周期，避免既有历史欠账阻塞常规构建；
+                 p3c-pmd 2.1.1 需 PMD 6.x，与 maven-pmd-plugin 3.13.0 兼容 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <targetJdk>1.8</targetJdk>
+                    <includeTests>true</includeTests>
+                    <printFailingErrors>true</printFailingErrors>
+                    <rulesets>
+                        <ruleset>rulesets/java/ali-comment.xml</ruleset>
+                        <ruleset>rulesets/java/ali-concurrent.xml</ruleset>
+                        <ruleset>rulesets/java/ali-exception.xml</ruleset>
+                        <ruleset>rulesets/java/ali-flowcontrol.xml</ruleset>
+                        <ruleset>rulesets/java/ali-naming.xml</ruleset>
+                        <ruleset>rulesets/java/ali-oop.xml</ruleset>
+                        <ruleset>rulesets/java/ali-orm.xml</ruleset>
+                        <ruleset>rulesets/java/ali-other.xml</ruleset>
+                        <ruleset>rulesets/java/ali-set.xml</ruleset>
+                    </rulesets>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.alibaba.p3c</groupId>
+                        <artifactId>p3c-pmd</artifactId>
+                        <version>2.1.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
         <testResources>

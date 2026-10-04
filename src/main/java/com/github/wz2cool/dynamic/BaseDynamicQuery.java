@@ -9,7 +9,6 @@ import com.github.wz2cool.dynamic.mybatis.ParamExpression;
 import com.github.wz2cool.dynamic.mybatis.QueryHelper;
 import com.github.wz2cool.dynamic.mybatis.mapper.constant.MapperConstants;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -248,8 +247,18 @@ public abstract class BaseDynamicQuery<T, S extends BaseFilterGroup<T, S>> exten
                 entityClass, selectedProperties, ignoredProperties, isMapUnderscoreToCamelCase, true);
         paramMap.put(MapperConstants.SELECT_COLUMNS_EXPRESSION, selectColumnExpression);
         paramMap.put(MapperConstants.UN_AS_SELECT_COLUMNS_EXPRESSION, unAsSelectColumnsExpression);
+        // Only the multi-column distinct branch of the count template renders
+        // ${dynamicQueryParams.countSelectColumnsExpression}, so the alias list is built
+        // just for that case and left empty otherwise.
+        boolean multiColumnDistinct = this.isDistinct()
+                && QUERY_HELPER.countSelectColumns(entityClass, selectedProperties, ignoredProperties) > 1;
+        String countColumnsExpression = multiColumnDistinct
+                ? QUERY_HELPER.toCountColumnsExpression(entityClass, selectedProperties, ignoredProperties)
+                : "";
+        paramMap.put(MapperConstants.COUNT_SELECT_COLUMNS_EXPRESSION, countColumnsExpression);
         initDefaultQueryParams();
         paramMap.putAll(this.customDynamicQueryParams);
+        paramMap.put(MapperConstants.MULTI_COLUMN_DISTINCT, multiColumnDistinct);
         return paramMap;
     }
 
