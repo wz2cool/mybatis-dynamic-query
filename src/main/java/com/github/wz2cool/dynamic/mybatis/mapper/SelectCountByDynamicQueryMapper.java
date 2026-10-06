@@ -28,6 +28,21 @@ public interface SelectCountByDynamicQueryMapper<T> {
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
     int selectCountByDynamicQuery(@Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 
+    /**
+     * select count by a raw column expression with dynamic query.
+     *
+     * @param column       raw column expression, e.g. {@code "user_name"} or {@code "category_id, price"}
+     * @param dynamicQuery dynamic query
+     * @return the count of items
+     * @deprecated the free-form column string cannot be checked by the compiler: typos
+     * and invalid expressions only fail at runtime, so it is error-prone. Use
+     * {@link #selectCountPropertyByDynamicQuery(GetPropertyFunction, DynamicQuery)} for a
+     * single column instead. For a multi-column distinct count there is no property-string
+     * replacement: use {@code dynamicQuery.select(colA, colB)} with
+     * {@code dynamicQuery.setDistinct(true)} and call
+     * {@link #selectCountByDynamicQuery(DynamicQuery)}.
+     */
+    @Deprecated
     @SelectProvider(type = DynamicQueryProvider.class, method = "dynamicSQL")
     Integer selectCountPropertyByDynamicQuery(@Param(MapperConstants.COLUMN) String column, @Param(MapperConstants.DYNAMIC_QUERY) DynamicQuery<T> dynamicQuery);
 
@@ -36,6 +51,7 @@ public interface SelectCountByDynamicQueryMapper<T> {
         return TypeHelper.getInteger(result);
     }
 
+    @SuppressWarnings("deprecation")
     default <R extends Comparable<?>> Object selectCountPropertyByDynamicQueryInternal(
             GetPropertyFunction<T, R> getPropertyFunction, DynamicQuery<T> dynamicQuery) {
         String propertyName = CommonsHelper.getPropertyName(getPropertyFunction);

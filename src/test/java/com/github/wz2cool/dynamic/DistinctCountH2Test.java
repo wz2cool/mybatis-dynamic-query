@@ -106,6 +106,7 @@ public class DistinctCountH2Test {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void propertyMultiColumnDistinctCount_h2Numeric() throws SQLException {
         try {
@@ -185,6 +186,7 @@ public class DistinctCountH2Test {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void propertyPath_singleExpressionWithCommas_staysScalar() throws SQLException {
         // 顶层逗号解析修复后：单个表达式（逗号位于括号/引号内）不再被误判为多列，
