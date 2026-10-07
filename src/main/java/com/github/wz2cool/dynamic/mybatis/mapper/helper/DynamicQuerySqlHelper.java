@@ -19,6 +19,8 @@ public class DynamicQuerySqlHelper {
     private static final String FIRST_SQL = "${dynamicQueryParams.mdq_first_sql} ";
     private static final String LAST_SQL = " ${dynamicQueryParams.mdq_last_sql}";
     private static final String HINT_SQL = " ${dynamicQueryParams.mdq_hint_sql} ";
+    /** Derived-table alias closing the multi-column distinct count sub-query. */
+    private static final String COUNT_DERIVED_TABLE_ALIAS = "mdq_count";
 
     private DynamicQuerySqlHelper() {
         throw new UnsupportedOperationException();
@@ -88,6 +90,45 @@ public class DynamicQuerySqlHelper {
 
     public static String getSelectAvg() {
         return String.format("SELECT %s AVG(${%s})", getHintClause(), MapperConstants.COLUMN);
+    }
+
+    /**
+     * Builds the count column clause: a flat three-branch choose where multi-column distinct
+     * renders a derived-table wrap ({@code COUNT(*) FROM ( SELECT DISTINCT ...}; the derived-table
+     * alias is provided by the closing fragment {@link #getCountDistinctCloseClause(String)}),
+     * single-column distinct keeps the inline {@code COUNT(DISTINCT ( x ))}, and non-distinct
+     * renders a plain {@code COUNT(...)}.
+     * <p>The three fragment parameters are directly embeddable template text (they carry their own
+     * {@code ${}} placeholders and legacy space padding), not bare OGNL names. The multi-column
+     * when must come before the distinct when (the multi-column condition implies distinct).
+     * <p>TODO(Frank): reserve a MyBatis databaseId dialect extension point — applications that
+     * configure databaseId could switch back to native inline rendering per dialect
+     * (mysql without parentheses / h2, postgresql with parentheses). Not enabled by default.
+     *
+     * @param multiColumnTest OGNL test expression of the multi-column branch
+     * @param multiCols       column fragment after {@code SELECT DISTINCT} in the multi-column branch
+     * @param singleInner     fragment between {@code COUNT(} and {@code )} of the single-column branch
+     * @param otherwiseInner  fragment between {@code COUNT(} and {@code )} of the non-distinct branch
+     * @return the embeddable three-branch choose text
+     */
+    public static String getCountColumnsClause(String multiColumnTest, String multiCols, String singleInner, String otherwiseInner) {
+        return "<choose>"
+                + "<when test=\"" + multiColumnTest + "\">COUNT(*) FROM ( SELECT DISTINCT" + multiCols + "</when>"
+                + "<when test=\"" + MapperConstants.DYNAMIC_QUERY_PARAMS + "." + MapperConstants.DISTINCT + "\">COUNT(" + singleInner + ")</when>"
+                + "<otherwise>COUNT(" + otherwiseInner + ")</otherwise>"
+                + "</choose>";
+    }
+
+    /**
+     * Closing-parenthesis fragment of the multi-column distinct derived table, placed between
+     * WHERE and {@code ${mdq_last_sql}}. Its test condition must stay identical to the
+     * multi-column when test of {@link #getCountColumnsClause(String, String, String, String)}.
+     *
+     * @param multiColumnTest OGNL test expression of the multi-column branch
+     * @return a fragment shaped like {@code <if test="...">) mdq_count</if>}
+     */
+    public static String getCountDistinctCloseClause(String multiColumnTest) {
+        return "<if test=\"" + multiColumnTest + "\">) " + COUNT_DERIVED_TABLE_ALIAS + "</if>";
     }
 
     /**

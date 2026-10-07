@@ -71,3 +71,19 @@
 ## v2.0.12 (2019-05-22)
 **feature**
 - add InsertList support
+
+> 注：CHANGELOG 自 2019 年 v2.0.12 起停更，3.2.29–3.2.36 的历次发版未写入，自 v3.2.37 起恢复维护。
+
+## [v3.2.37](https://github.com/wz2cool/mybatis-dynamic-query/tree/v3.2.37) (2026-10-04)
+
+**Bug fix**
+- distinct count 的列表达式多于一个时（含未显式 `select()` 时兜底的全列形态），跨数据库修复：MySQL 报 `ERROR 1241 (Operand should contain 1 column(s))`（SQL Server 不支持行值构造器——已在 SQL Server 2017 容器实测复现 `Incorrect syntax near ','`）的问题，现在统一渲染为 `SELECT COUNT(*) FROM ( SELECT DISTINCT <cols> FROM <table> <where> ) mdq_count`（query 版 `select(a, b) + setDistinct(true)` 与 property 版 `selectCountPropertyByDynamicQuery("a, b", query)` 同等适用）。
+- 渲染形态从行值内联 `COUNT(DISTINCT (a, b))` 变为上述子查询包裹，计数结果不变（多列组合视为相等，NULL 组合计一行，与 `SELECT DISTINCT` 列表查询严格一致）。
+- query 版子查询内的列使用按列下标生成的唯一别名（`mdq_col_0` …），保证派生表列名唯一，View 实体同名列（如 `product.description` / `category.description`）不再报 `Duplicate column name`（property 版子查询使用裸列串，见下一条）。
+- **破坏性变化**：property 版（`selectCountPropertyByDynamicQuery`）传入的裸列串遇到视图同名列时，从「H2 可用（实测）」变为报 `Duplicate column name`（该场景在 H2 实测报错；PostgreSQL/SQL Server 未实测此场景——PostgreSQL 的派生表允许同名列输出，大概率不受影响）。规避方式：改用 query 版（`select(a, b) + setDistinct(true)`，子查询自动带唯一别名），或为列串自行加别名。property 版的多列判定经 **内嵌 SQL 语法解析器**（JSqlParser，已 shade 重定位内嵌进本库 jar，不新增下游依赖、不产生版本冲突）确定：逗号位于括号或引号内的单个表达式（如 `COALESCE(a, b)`、`CONCAT(a, ',')`）维持标量 distinct，NULL 排除语义与升级前一致；仅当列串存在多个列时才走子查询包裹。注意 SQL Server 要求派生表列必须显式命名——多列列串中含**不带别名的表达式**时在该库会报 `No column name was specified`（纯列引用自动得名，不受影响），表达式请自行加别名。
+- 单字段 distinct count 渲染与语义零变化（标量 distinct 排除 NULL 行为不变）；未启用 distinct 的 count 渲染零变化。
+
+## v3.2.38 (unreleased)
+
+**Deprecated**
+- `SelectCountByDynamicQueryMapper` 的 property 版字符串重载 `selectCountPropertyByDynamicQuery(String column, DynamicQuery)` 标记为 `@Deprecated`：裸列串绕过编译期检查，列名拼错、逗号/引号写错都只能在运行期暴露，容易导致代码错误。单列场景请改用类型安全的 lambda 重载 `selectCountPropertyByDynamicQuery(GetPropertyFunction, DynamicQuery)`；多列 distinct count 没有列串替代形式，请改用 `dynamicQuery.select(colA, colB)` + `setDistinct(true)` + `selectCountByDynamicQuery(query)`（子查询自动带唯一别名）。本次仅标记废弃，方法行为、SQL 渲染与 lambda 重载均不变，既有调用无需迁移即可继续使用。

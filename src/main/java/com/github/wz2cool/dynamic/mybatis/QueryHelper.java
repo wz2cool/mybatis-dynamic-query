@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 public class QueryHelper {
     private final EntityCache entityCache = EntityCache.getInstance();
     private final ExpressionHelper expressionHelper = new ExpressionHelper();
+    /** Prefix of the index-based unique aliases used inside the count sub-query. */
+    private static final String COUNT_SUBQUERY_COLUMN_ALIAS_PREFIX = "mdq_col_";
 
     // region and
 
@@ -286,8 +288,72 @@ public class QueryHelper {
                                             final String[] ignoredProperties,
                                             final boolean mapUnderscoreToCamelCase,
                                             final boolean unAsColumn) {
-        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<ColumnInfo> selectedColumnInfos =
+                getSelectedColumnInfos(entityClass, selectedProperties, ignoredProperties);
         List<String> columns = new ArrayList<>();
+        for (ColumnInfo columnInfo : selectedColumnInfos) {
+            String fieldName = columnInfo.getField().getName();
+            // The alias derives from the Java field name only; the column expression itself
+            // comes from getQueryColumn(), which already honors an explicit @Column mapping.
+            String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
+            String column = unAsColumn ?
+                    String.format("%s", columnInfo.getQueryColumn()) :
+                    String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
+            columns.add(column);
+        }
+        return String.join(", ", columns);
+    }
+
+    /**
+     * Returns the number of columns selected for the entity, sharing the same
+     * column-selection logic as {@link #toSelectColumnsExpression(Class, String[], String[], boolean, boolean)}
+     * so the count judgement can never diverge from the rendered select list.
+     *
+     * @param entityClass        the entity class
+     * @param selectedProperties explicitly selected properties, may be null or empty
+     * @param ignoredProperties  explicitly ignored properties, may be null or empty
+     * @return number of selected columns
+     */
+    public int countSelectColumns(final Class entityClass,
+                                  final String[] selectedProperties,
+                                  final String[] ignoredProperties) {
+        return getSelectedColumnInfos(entityClass, selectedProperties, ignoredProperties).size();
+    }
+
+    /**
+     * Builds the column list for the multi-column distinct count sub-query
+     * ({@code SELECT COUNT(*) FROM ( SELECT DISTINCT <expr> ... )}), one column per selected
+     * property, each aliased with a count-specific unique alias ({@code mdq_col_&lt;i&gt;}).
+     * <p>Unlike {@link #toSelectColumnsExpression(Class, String[], String[], boolean, boolean)},
+     * aliases are derived from the column index rather than the field name: the field-name
+     * derivation is not injective under camelCase-to-snake_case conversion (e.g. {@code fooBar}
+     * and {@code foo_bar} both map to {@code foo_bar}), and derived tables require unique output
+     * column names, so field-derived aliases could collide. These aliases are only used inside
+     * the count sub-query and never referenced externally, so index-based aliases are always safe.
+     *
+     * @param entityClass        the entity class
+     * @param selectedProperties explicitly selected properties, may be null or empty
+     * @param ignoredProperties  explicitly ignored properties, may be null or empty
+     * @return comma-separated {@code <column> AS mdq_col_<i>} list
+     */
+    public String toCountColumnsExpression(final Class entityClass,
+                                           final String[] selectedProperties,
+                                           final String[] ignoredProperties) {
+        List<ColumnInfo> selectedColumnInfos =
+                getSelectedColumnInfos(entityClass, selectedProperties, ignoredProperties);
+        List<String> columns = new ArrayList<>();
+        for (int i = 0; i < selectedColumnInfos.size(); i++) {
+            columns.add(String.format("%s AS %s%s",
+                    selectedColumnInfos.get(i).getQueryColumn(), COUNT_SUBQUERY_COLUMN_ALIAS_PREFIX, i));
+        }
+        return String.join(", ", columns);
+    }
+
+    private List<ColumnInfo> getSelectedColumnInfos(final Class entityClass,
+                                                    final String[] selectedProperties,
+                                                    final String[] ignoredProperties) {
+        ColumnInfo[] columnInfos = entityCache.getColumnInfos(entityClass);
+        List<ColumnInfo> selectedColumnInfos = new ArrayList<>();
         boolean isSelectedPropertiesNotEmpty = ArrayUtils.isNotEmpty(selectedProperties);
         boolean isIgnoredPropertiesNotEmpty = ArrayUtils.isNotEmpty(ignoredProperties);
         for (ColumnInfo columnInfo : columnInfos) {
@@ -301,15 +367,10 @@ public class QueryHelper {
                 needSelectColumn = true;
             }
             if (needSelectColumn) {
-                // 这里我们需要判断一下，是否设置了 @column ,如果有的话，我们不做驼峰
-                String useFieldName = mapUnderscoreToCamelCase ? EntityHelper.camelCaseToUnderscore(fieldName) : fieldName;
-                String column = unAsColumn ?
-                        String.format("%s", columnInfo.getQueryColumn()) :
-                        String.format("%s AS %s", columnInfo.getQueryColumn(), useFieldName);
-                columns.add(column);
+                selectedColumnInfos.add(columnInfo);
             }
         }
-        return String.join(", ", columns);
+        return selectedColumnInfos;
     }
 
     public String toGroupByColumnsExpression(final Class entityClass, final String[] groupByProperties) {
